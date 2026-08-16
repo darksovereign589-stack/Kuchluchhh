@@ -146,8 +146,13 @@
     .tab-panel.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* REALM HOME PANEL */
-    .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    /* REALM HOME PANEL & BUTTERFLY OVERLAY */
+    .butterfly-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: hidden; }
+    .flutter-bf { position: absolute; width: 36px; height: 36px; filter: drop-shadow(0 0 8px var(--neon-pink)); }
+    .wing-left, .wing-right { transform-origin: center center; animation: wingFlap 0.35s ease-in-out infinite alternate; }
+    @keyframes wingFlap { 0% { transform: scaleX(1); } 100% { transform: scaleX(0.15); } }
+
+    .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; position: relative; z-index: 1; }
     
     .ai-greeting-card {
       background: linear-gradient(135deg, rgba(255, 42, 84, 0.15), rgba(10, 2, 7, 0.8));
@@ -286,50 +291,69 @@
     .letter-title { font-size: 0.82rem; color: var(--soft-pink); font-weight: 600; }
 
     /* MEMORIES PHOTO GALLERY PANEL */
-    .memories-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; height: 100%; }
+    .memories-grid {
+      padding: 16px; display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px; overflow-y: auto; height: 100%; align-content: start;
+    }
     .memory-photo-card {
-      position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border);
-      aspect-ratio: 1 / 1; background: #000; cursor: pointer;
+      position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border);
+      aspect-ratio: 1 / 1; background: rgba(255, 255, 255, 0.05); cursor: pointer;
     }
     .memory-photo-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
     .memory-photo-card:hover img { transform: scale(1.05); }
     .memory-photo-meta {
-      position: absolute; bottom: 0; inset-x: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      padding: 6px 10px; font-size: 0.68rem; color: var(--soft-pink); display: flex; justify-content: space-between;
+      position: absolute; bottom: 0; inset-x: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      padding: 4px 8px; font-size: 0.65rem; color: var(--soft-pink); display: flex; justify-content: space-between;
     }
 
-    /* ADVANCED LUDO GAME PANEL */
+    /* FULL LUDO ARCHITECTURE */
     .ludo-container {
       padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
       height: 100%; gap: 10px; overflow-y: auto;
     }
     .streak-banner {
-      display: flex; justify-content: space-between; width: 100%; max-width: 320px;
+      display: flex; justify-content: space-between; width: 100%; max-width: 330px;
       background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
       border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; color: var(--soft-pink);
     }
-    .ludo-board {
-      width: 320px; height: 320px; background: #080306; border: 3px solid var(--glass-border);
-      border-radius: 16px; display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
-      box-shadow: 0 0 25px var(--pink-glow); position: relative;
+    .ludo-board-full {
+      width: 330px; height: 330px; background: #0c050b; border: 3px solid var(--glass-border);
+      border-radius: 12px; display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
+      box-shadow: 0 0 25px var(--pink-glow); position: relative; overflow: hidden;
     }
-    .ludo-cell { border: 0.5px solid rgba(255, 255, 255, 0.08); position: relative; display: flex; justify-content: center; align-items: center; }
-    .ludo-home-red { background: rgba(255, 42, 84, 0.3); }
-    .ludo-home-green { background: rgba(16, 185, 129, 0.3); }
-    .ludo-safe { background: rgba(255, 215, 0, 0.25); }
+    .ludo-cell { border: 0.5px solid rgba(255, 255, 255, 0.05); position: relative; display: flex; justify-content: center; align-items: center; }
+    
+    /* YARDS & HOMES */
+    .yard-red { grid-column: 1 / span 6; grid-row: 10 / span 6; background: rgba(255, 42, 84, 0.25); border: 2px solid var(--neon-pink); display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); padding: 8px; gap: 8px; }
+    .yard-green { grid-column: 10 / span 6; grid-row: 1 / span 6; background: rgba(16, 185, 129, 0.25); border: 2px solid #10b981; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); padding: 8px; gap: 8px; }
+    .yard-yellow { grid-column: 1 / span 6; grid-row: 1 / span 6; background: rgba(255, 215, 0, 0.15); border: 1px solid var(--gold-accent); }
+    .yard-blue { grid-column: 10 / span 6; grid-row: 10 / span 6; background: rgba(59, 130, 246, 0.15); border: 1px solid #3b82f6; }
+    
+    .yard-circle { background: rgba(0,0,0,0.5); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; }
 
-    .ludo-pawn {
+    .center-home-zone {
+      grid-column: 7 / span 3; grid-row: 7 / span 3;
+      background: conic-gradient(from 0deg, #10b981 0deg 90deg, #3b82f6 90deg 180deg, var(--neon-pink) 180deg 270deg, #ffd700 270deg 360deg);
+      border: 1px solid var(--glass-border); position: relative; display: flex; justify-content: center; align-items: center;
+    }
+    .center-home-inner { width: 60%; height: 60%; background: #080306; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; }
+
+    .path-red { background: rgba(255, 42, 84, 0.4) !important; }
+    .path-green { background: rgba(16, 185, 129, 0.4) !important; }
+    .star-safe::after { content: "★"; color: var(--gold-accent); font-size: 0.75rem; }
+
+    .ludo-token {
       width: 75%; height: 75%; border-radius: 50%; border: 2px solid #fff;
-      box-shadow: 0 0 8px rgba(0,0,0,0.8); cursor: pointer; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 10;
+      box-shadow: 0 0 8px rgba(0,0,0,0.9); cursor: pointer; transition: all 0.2s ease;
+      z-index: 20; position: relative;
     }
-    .ludo-pawn.movable { animation: pulsePawn 0.8s infinite alternate; }
-    @keyframes pulsePawn { from { transform: scale(1); box-shadow: 0 0 5px var(--neon-pink); } to { transform: scale(1.25); box-shadow: 0 0 15px var(--neon-pink); } }
+    .token-red { background: radial-gradient(circle at 30% 30%, #ff4d6d, #a80022); }
+    .token-green { background: radial-gradient(circle at 30% 30%, #34d399, #047857); }
+    .token-movable { animation: tokenPulse 0.6s infinite alternate; }
+    @keyframes tokenPulse { from { transform: scale(1); box-shadow: 0 0 4px #fff; } to { transform: scale(1.3); box-shadow: 0 0 12px var(--neon-pink); } }
 
-    .pawn-red { background: radial-gradient(circle at 30% 30%, #ff4d6d, #a80022); }
-    .pawn-green { background: radial-gradient(circle at 30% 30%, #34d399, #047857); }
-
-    .ludo-controls { display: flex; align-items: center; justify-content: space-around; width: 100%; max-width: 320px; }
+    .ludo-controls { display: flex; align-items: center; justify-content: space-around; width: 100%; max-width: 330px; }
     .dice-btn {
       width: 55px; height: 55px; background: linear-gradient(135deg, rgba(255,42,84,0.3), rgba(18,7,15,0.9));
       border: 2px solid var(--neon-pink); border-radius: 14px; font-size: 1.8rem;
@@ -337,6 +361,7 @@
       box-shadow: 0 0 15px var(--pink-glow); transition: transform 0.1s;
     }
     .dice-btn:active { transform: scale(0.9); }
+    .dice-btn.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
     .dice-rolling { animation: rollDiceAnim 0.4s linear infinite; }
     @keyframes rollDiceAnim { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -366,6 +391,16 @@
       padding: 2rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 0 40px var(--pink-glow);
       max-height: 85vh; overflow-y: auto;
     }
+
+    /* FULLSCREEN LIGHTBOX MODAL */
+    .lightbox-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+      z-index: 300; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .lightbox-modal.open { opacity: 1; pointer-events: auto; }
+    .lightbox-img { max-width: 100%; max-height: 75vh; border-radius: 16px; border: 1px solid var(--glass-border); object-fit: contain; }
+    .lightbox-meta { margin-top: 15px; font-size: 0.85rem; color: var(--soft-pink); display: flex; gap: 15px; }
 
     /* FULLSCREEN KISS OVERLAY */
     #kiss-overlay {
@@ -427,6 +462,9 @@
       
       <!-- TAB 1: REALM (HOME) -->
       <div class="tab-panel active" id="panel-realm">
+        <!-- SVG FLOATING BUTTERFLY ANIMATION LAYER -->
+        <div class="butterfly-layer" id="bf-overlay-container"></div>
+
         <div class="realm-scroll">
           <div class="ai-greeting-card">
             <h3 id="realm-greeting-title">Welcome Back</h3>
@@ -493,45 +531,50 @@
         </div>
       </div>
 
-      <!-- TAB 3: LETTERS VAULT -->
+      <!-- TAB 3: EXPANDED LETTERS VAULT (8 CATEGORIES) -->
       <div class="tab-panel" id="panel-letters">
         <div class="letters-grid">
-          <div class="letter-card" onclick="openLetterVault('Open when you miss me')"><div class="letter-icon">💌</div><div class="letter-title">When You Miss Me</div></div>
-          <div class="letter-card" onclick="openLetterVault('Open when you are sad')"><div class="letter-icon">😭</div><div class="letter-title">When You're Sad</div></div>
-          <div class="letter-card" onclick="openLetterVault('Open when you cannot sleep')"><div class="letter-icon">🌙</div><div class="letter-title">Can't Sleep</div></div>
-          <div class="letter-card" onclick="openLetterVault('Open when you need butterflies')"><div class="letter-icon">🦋</div><div class="letter-title">Need Butterflies</div></div>
+          <div class="letter-card" onclick="openLetterVault('When You Miss Me')"><div class="letter-icon">💌</div><div class="letter-title">When You Miss Me</div></div>
+          <div class="letter-card" onclick="openLetterVault('When You\'re Sad')"><div class="letter-icon">😢</div><div class="letter-title">When You're Sad</div></div>
+          <div class="letter-card" onclick="openLetterVault('Can\'t Sleep')"><div class="letter-icon">🌙</div><div class="letter-title">Can't Sleep</div></div>
+          <div class="letter-card" onclick="openLetterVault('Need Butterflies')"><div class="letter-icon">🦋</div><div class="letter-title">Need Butterflies</div></div>
+          <div class="letter-card" onclick="openLetterVault('When You\'re Stressed / Overwhelmed')"><div class="letter-icon">💆‍♀️</div><div class="letter-title">When Stressed</div></div>
+          <div class="letter-card" onclick="openLetterVault('When You\'re Mad at Me')"><div class="letter-icon">🥺</div><div class="letter-title">When Mad at Me</div></div>
+          <div class="letter-card" onclick="openLetterVault('When You Need a Hug')"><div class="letter-icon">🫂</div><div class="letter-title">Need a Hug</div></div>
+          <div class="letter-card" onclick="openLetterVault('When You\'re Proud of Us')"><div class="letter-icon">👑</div><div class="letter-title">Proud of Us</div></div>
         </div>
       </div>
 
-      <!-- TAB 4: MEMORIES (AUTOMATIC PHOTO GALLERY FROM CHAT) -->
+      <!-- TAB 4: MEMORIES PHOTO GALLERY -->
       <div class="tab-panel" id="panel-memories">
         <div class="memories-grid" id="memories-container">
-          <p style="grid-column: span 2; text-align: center; color: var(--text-muted); padding-top: 40px;">No shared photo memories recorded yet.</p>
+          <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding-top: 40px;">No shared photo memories recorded yet.</p>
         </div>
       </div>
 
-      <!-- TAB 5: ANIMATED 2-PLAYER LUDO GAME -->
+      <!-- TAB 5: 15x15 2-PLAYER LUDO BOARD -->
       <div class="tab-panel" id="panel-ludo">
         <div class="ludo-container">
           <div class="streak-banner">
-            <span>🔥 Red Streak: <b id="red-streak">0</b></span>
-            <span>🔥 Green Streak: <b id="green-streak">0</b></span>
+            <span>🔥 Red: <b id="red-streak">0</b></span>
+            <span>🔥 Green: <b id="green-streak">0</b></span>
           </div>
 
           <div style="text-align: center;">
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.1rem;">🎲 Realm Ludo</h3>
-            <p id="ludo-status" style="font-size: 0.78rem; color: #a7f3d0; margin-bottom: 2px;">Turn: Red (Mr. Sudip)</p>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.05rem;">🎲 Realm Ludo</h3>
+            <p id="ludo-status" style="font-size: 0.75rem; color: #a7f3d0;">Turn: Red (Mr. Sudip)</p>
           </div>
 
-          <div class="ludo-board" id="ludo-board"></div>
+          <!-- 15x15 GRID ARCHITECTURE -->
+          <div class="ludo-board-full" id="ludo-board"></div>
 
           <div class="ludo-controls">
             <div style="text-align: center;">
-              <span style="font-size: 0.75rem; color: var(--soft-pink);">Mr. Sudip (Red)</span>
+              <span style="font-size: 0.72rem; color: var(--soft-pink);">Mr. Sudip (Red)</span>
             </div>
             <div class="dice-btn" id="ludo-dice" onclick="rollLudoDice()">🎲</div>
             <div style="text-align: center;">
-              <span style="font-size: 0.75rem; color: var(--soft-pink);">Mrs. Sudip (Green)</span>
+              <span style="font-size: 0.72rem; color: var(--soft-pink);">Mrs. Sudip (Green)</span>
             </div>
           </div>
         </div>
@@ -569,12 +612,24 @@
 
   <audio id="remote-audio" autoplay style="display:none;"></audio>
 
-  <!-- LETTER VAULT MODAL -->
+  <!-- DYNAMIC LETTER VAULT MODAL WITH SHUFFLE BUTTON -->
   <div class="modal" id="letter-modal">
     <div class="modal-card">
       <h2 id="letter-modal-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Dynamic Letter</h2>
-      <p id="letter-modal-body" style="font-style: italic; font-size: 0.95rem; line-height: 1.6; color: #cbd5e1; text-align: left; margin-bottom: 15px;">Opening letter...</p>
-      <button class="btn-secondary" onclick="closeModal('letter-modal')">Close Letter</button>
+      <p id="letter-modal-body" style="font-style: italic; font-size: 0.92rem; line-height: 1.6; color: #cbd5e1; text-align: left; margin-bottom: 20px; white-space: pre-wrap;"></p>
+      <div class="btn-group">
+        <button class="btn-primary" onclick="shuffleCurrentLetter()">Generate Another Letter 🔀</button>
+        <button class="btn-secondary" onclick="closeModal('letter-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN LIGHTBOX MODAL -->
+  <div class="lightbox-modal" id="lightbox-modal" onclick="closeModal('lightbox-modal')">
+    <img id="lightbox-img" class="lightbox-img" src="" />
+    <div class="lightbox-meta">
+      <span id="lightbox-sender">Sender</span>
+      <span id="lightbox-time">Time</span>
     </div>
   </div>
 
@@ -640,6 +695,7 @@
     let activeCall = null;
     let pendingIncomingCall = null;
     let selectedMsgKeyForDelete = null;
+    let currentActiveLetterCategory = "";
 
     let mediaRecorder = null;
     let audioChunks = [];
@@ -655,11 +711,111 @@
     const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
     const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
 
+    /* DYNAMIC EXPANDED LETTERS POOL (10+ UNIQUE WRITINGS PER CATEGORY) */
+    const letterVaultDatabase = {
+      "When You Miss Me": [
+        "Even when miles stretch between us, close your eyes and feel my heartbeat. You are never truly alone—I carry your name in every breath.",
+        "Missing me is just your heart's way of reminding you how deeply we are attached. I am counting every second until I hold you again.",
+        "Look up at the night sky. The same moon that watches over you is shining on me. We are beneath the very same sky, forever connected.",
+        "Whenever the room feels too quiet, remember the sound of my whisper promising you that I am yours, always and without end.",
+        "Distance is just a physical test for how far love can travel. My love reaches you instantly, no matter where you are right now.",
+        "I miss you too—more than words can write down. Wrap your arms around yourself, squeeze tight, and consider that my warm hug.",
+        "You are my favorite thought every morning and my last peace every night. Missing you is proof of how magical we are.",
+        "If I had a single flower for every time I thought of you while we were apart, I'd be walking through a endless garden forever.",
+        "Hold onto this truth: every moment apart is just leading up to an even sweeter reunion. I love you endlessly.",
+        "Close your eyes, breathe gently, and know that right at this second, I am thinking of you with all my heart."
+      ],
+      "When You're Sad": [
+        "It is okay to rest your heavy heart today. You don't have to be strong all the time. I am right here to carry the weight with you.",
+        "Let the tears fall if they need to; they are just washing away the heaviness. I am holding your hand through the dark.",
+        "Even on your gloomiest days, your spirit is precious to me. Take all the time you need—I am not going anywhere.",
+        "Remember that stormy clouds always pass, leaving behind a clear sky. We will find your sunshine together again soon.",
+        "If you feel like talking, I am here to listen. If you want silence, I will sit quietly by your side. You are loved beyond measure.",
+        "Your pain matters to me because you are my whole world. Let me wrap you in comfort and protect your heart today.",
+        "Softly reminding you: you have survived 100% of your hardest days, and you don't have to fight this one alone.",
+        "Take a deep breath in, hold it, and let it out. Step by step, we will make everything alright again.",
+        "You are allowed to feel broken sometimes. I promise to help collect the pieces and hold them gently with you.",
+        "Sending you infinite quiet warmth. You are deeply cherished, beautiful, and never forgotten."
+      ],
+      "Can't Sleep": [
+        "Rest your weary mind, my love. Let go of all the thoughts from today. Tomorrow is a brand new page we will write together.",
+        "Close your eyes and visualize us lying together under a warm blanket, listening to the soft rain outside. Sleep peacefully.",
+        "The night is gentle and safe. Let my voice in your memory guide you into sweet, effortless dreams.",
+        "Stop counting the hours on the clock. Just feel the rhythm of your chest rising and falling. You are safe and loved.",
+        "I wish I was there to stroke your hair and whisper soft stories until your eyelids grow heavy. Dream of our happy realm.",
+        "Leave all your worries at the edge of the bed. You have done enough today. It is time to let your soul rest.",
+        "Think of my arms wrapped securely around you, shielding you from the world. Sweet dreams, my heart.",
+        "Whenever insomnia creeps in, remember that my heart is keeping watch over yours all night long.",
+        "May the night sky whisper soft lullabies to you. Sleep gently, knowing you are my dream come true.",
+        "Breathe slow... count my kisses in your mind... one... two... three... fall asleep in warmth."
+      ],
+      "Need Butterflies": [
+        "Remember the very first time our eyes locked? That exact spark hasn't faded one bit—it grows brighter every single day.",
+        "You still make my heart skip a beat every time your name pops up on my phone. You are my forever crush.",
+        "If I could relive any moment in history, I would choose the moment I realized I was falling completely in love with you.",
+        "Just a reminder: you are intoxicating, gorgeous, and absolutely breathtaking. My heart belongs entirely to you.",
+        "Every single kiss we share feels like the very first one—electric, tender, and unforgettable.",
+        "You have this quiet magic that turns my ordinary days into something extraordinary just by existing.",
+        "I still get tongue-tied thinking about how lucky I am to have you as my partner in this lifetime.",
+        "Your smile is my favorite visual in the entire universe. It sets off fireworks inside my chest.",
+        "Stealing glances with you across a room will never get old. You are my forever butterfly feeling.",
+        "Hold your hand over your heart right now—that flutter you feel? That is my soul calling out to yours."
+      ],
+      "When You're Stressed / Overwhelmed": [
+        "Stop everything for ten seconds. Drop your shoulders, unclench your jaw, and take one deep, full breath. You've got this.",
+        "The world demands too much sometimes, but you don't have to conquer it all today. One small step at a time is enough.",
+        "You are so capable and resilient, but remember it's okay to take a pause. Your peace is more important than productivity.",
+        "Don't let the noise of the day overcrowd your mind. You are grounded, safe, and deeply supported by me.",
+        "Whatever is stressing you right now will pass. Let me handle the heavy thinking for a while while you rest.",
+        "You don't have to carry the whole world on your shoulders. Lean on me—that is what I am here for.",
+        "Take a break, drink some water, and remember that nothing in this world changes how brilliant you are.",
+        "Pause and reset. You are doing so much better than you think you are. I am so proud of your dedication.",
+        "Let go of what you cannot control right now. Focus only on this quiet moment with me.",
+        "Sending you grounding energy and peace. Breathe in calm, breathe out stress."
+      ],
+      "When You're Mad at Me": [
+        "I am so sorry for hurting or frustrating you. Your feelings are completely valid, and I am here to listen whenever you're ready.",
+        "My goal is always to protect your heart, never to cause you pain. Please let me know how I can make this right.",
+        "Even when we disagree or feel frustrated, my love for you does not waver for a single second.",
+        "I am taking a step back to reflect on my actions. You deserve grace, patience, and my best self always.",
+        "I value us far too much to let misunderstandings stay between us. I am ready to talk and listen whenever you are.",
+        "Please take all the space and time you need. I will be right here, ready to embrace you with open arms.",
+        "Your peace matters to me. I promise to work harder to understand and honor your heart.",
+        "No matter how angry we get, remember we are on the same team fighting the problem, not each other.",
+        "I am sending you a gentle white flag of peace. I love you more than any disagreement.",
+        "Let's get through this together. My heart belongs to you, always and unconditionally."
+      ],
+      "When You Need a Hug": [
+        "Open your arms, wrap them tight around yourself, and close your eyes. That is my heart squeezing yours with all its strength.",
+        "Imagine me wrapping you in a warm, cozy blanket, pulling you close against my chest, and holding you until you feel safe.",
+        "I am sending a big, long, uninterrupted embrace straight to your heart right now. Feel the warmth.",
+        "No matter where I am, my arms are always open for you. Consider yourself hugged tightly today.",
+        "Here is a hug that doesn't let go until all your worries drop away. Hold on tight.",
+        "Feel my warm breath, my chin resting gently on your head, and my arms keeping you secure from the world.",
+        "A virtual hug coming your way—charged with infinite affection, safety, and deep warmth.",
+        "Whenever you feel cold or distant, wrap yourself in this letter and feel my arms around you.",
+        "Holding you tight in my thoughts today and sending endless affection your way.",
+        "Consider this an unlimited coupon for a real, long, tight hug the next second I see you."
+      ],
+      "When You're Proud of Us": [
+        "Look how far we have come together! Every challenge we faced only made our foundation stronger and unbreakable.",
+        "We built this private realm step by step, with patience, love, and unwavering commitment. I am so proud of us.",
+        "Out of billions of people on Earth, we found each other and created something truly rare and beautiful.",
+        "Our journey hasn't always been easy, but every single mile has been worth it with you by my side.",
+        "Here is to our growth, our shared laughs, our quiet victories, and our endless future together.",
+        "You and me—we make the absolute best team. There is nothing in this world we cannot navigate together.",
+        "I look at what we've built and my heart swells with gratitude. We are creating a legacy of love.",
+        "Celebrating us today! Thank you for being my anchor, my partner, and my best friend.",
+        "Our story is my favorite masterpiece. I wouldn't trade a single second of our shared life.",
+        "Cheers to our past memories, our present joy, and the golden future waiting for us!"
+      ]
+    };
+
     function getFormattedTime(timestamp = Date.now()) {
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
-    /* SYNTHESIZED SOUND EFFECTS */
+    /* SYNTHESIZED SOUND EFFECTS ENGINE */
     function playSoundEffect(type) {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -672,24 +828,24 @@
 
         if (type === 'dice') {
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(300, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.15);
+          osc.frequency.setValueAtTime(320, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.15);
           gain.gain.setValueAtTime(0.3, ctx.currentTime);
           gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
           osc.start();
           osc.stop(ctx.currentTime + 0.15);
         } else if (type === 'move') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+          osc.frequency.setValueAtTime(450, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.08);
           gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.08);
           osc.start();
-          osc.stop(ctx.currentTime + 0.1);
+          osc.stop(ctx.currentTime + 0.08);
         } else if (type === 'capture') {
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(600, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.25);
+          osc.frequency.setValueAtTime(700, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.25);
           gain.gain.setValueAtTime(0.4, ctx.currentTime);
           gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.25);
           osc.start();
@@ -707,9 +863,51 @@
       initializeChatFeed();
       listenForStatusUpdates();
       fetchAIRealmProse();
-      initLudoBoard();
+      initFull15x15LudoBoard();
       listenLudoSync();
+      initSVGButterflies();
     });
+
+    /* SVG BUTTERFLY OVERLAY ENGINE */
+    function initSVGButterflies() {
+      const container = document.getElementById('bf-overlay-container');
+      container.innerHTML = "";
+      const bfCount = 10;
+      
+      for (let i = 0; i < bfCount; i++) {
+        const bf = document.createElement('div');
+        bf.className = 'flutter-bf';
+        bf.style.left = `${Math.random() * 85 + 5}%`;
+        bf.style.top = `${Math.random() * 80 + 10}%`;
+        
+        const duration = Math.random() * 12 + 10;
+        const delay = Math.random() * 5;
+        
+        bf.style.transition = `all ${duration}s ease-in-out`;
+        bf.innerHTML = `
+          <svg viewBox="0 0 100 100" width="100%" height="100%">
+            <g class="wing-left">
+              <path d="M50,50 Q10,10 10,40 Q10,70 50,50 Z" fill="#ff2a54" opacity="0.8" />
+              <path d="M50,50 Q20,60 25,85 Q45,90 50,50 Z" fill="#ffb3c1" opacity="0.7" />
+            </g>
+            <g class="wing-right">
+              <path d="M50,50 Q90,10 90,40 Q90,70 50,50 Z" fill="#ff2a54" opacity="0.8" />
+              <path d="M50,50 Q80,60 75,85 Q55,90 50,50 Z" fill="#ffb3c1" opacity="0.7" />
+            </g>
+            <circle cx="50" cy="50" r="3" fill="#ffd700" />
+          </svg>
+        `;
+        container.appendChild(bf);
+
+        // Continuous smooth curved trajectory
+        setInterval(() => {
+          const newX = Math.random() * 85 + 5;
+          const newY = Math.random() * 80 + 10;
+          const rot = (Math.random() - 0.5) * 60;
+          bf.style.transform = `translate(${newX - 40}px, ${newY - 40}px) rotate(${rot}deg)`;
+        }, duration * 1000 + delay * 1000);
+      }
+    }
 
     async function fetchAIRealmProse() {
       try {
@@ -1025,7 +1223,7 @@
       if (msg.mediaType === 'audio') {
         bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
       } else if (msg.mediaType === 'image') {
-        bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="window.open(this.src)" />`;
+        bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="openLightbox('${msg.media}', '${msg.sender}', '${msg.time}')" />`;
         addPhotoToMemoriesGallery(msg.media, msg.sender, msg.time);
       } else if (msg.mediaType === 'meme') {
         bodyContent += `<img src="${msg.media}" class="meme-card" />`;
@@ -1043,15 +1241,22 @@
 
       const card = document.createElement('div');
       card.className = 'memory-photo-card';
-      card.onclick = () => window.open(url, '_blank');
+      card.onclick = () => openLightbox(url, sender, time);
       card.innerHTML = `
-        <img src="${url}" loading="lazy" />
+        <img src="${url}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%27 height=\'100%27 viewBox=\'0 0 100 100\'><rect width=\'100%27 height=\'100%27 fill=\'%23220a18\'/><text x=\'50%\' y=\'50%\' fill=\'%23ffb3c1\' font-size=\'10\' text-anchor=\'middle\' dy=\'.3em\'>Memory Photo</text></svg>'" />
         <div class="memory-photo-meta">
           <span>${sender}</span>
           <span>${time}</span>
         </div>
       `;
       container.prepend(card);
+    }
+
+    function openLightbox(url, sender, time) {
+      document.getElementById('lightbox-img').src = url;
+      document.getElementById('lightbox-sender').innerText = `Shared by: ${sender}`;
+      document.getElementById('lightbox-time').innerText = time;
+      openModal('lightbox-modal');
     }
 
     async function sendChatMessage(text = null, mediaUrl = null, mediaType = 'image') {
@@ -1079,23 +1284,21 @@
       closeModal('delete-msg-modal');
     }
 
-    /* LETTER VAULT DYNAMIC AI FETCH */
-    async function openLetterVault(category) {
+    /* DYNAMIC EXPANDED LETTERS VAULT ENGINE */
+    function openLetterVault(category) {
+      currentActiveLetterCategory = category;
       document.getElementById('letter-modal-title').innerText = category;
-      document.getElementById('letter-modal-body').innerText = "Crafting custom letter prose...";
+      shuffleCurrentLetter();
       openModal('letter-modal');
+    }
 
-      try {
-        const res = await fetch('/api/ai-novelist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode: 'letter', userRole: currentUserRole, mood: currentMood, context: category })
-        });
-        const data = await res.json();
-        if (data.text) document.getElementById('letter-modal-body').innerText = data.text;
-      } catch (e) {
-        document.getElementById('letter-modal-body').innerText = "Whenever you feel alone, remember that somewhere in this realm, someone's quietest thoughts are always reserved for you.";
-      }
+    function shuffleCurrentLetter() {
+      const pool = letterVaultDatabase[currentActiveLetterCategory] || [
+        "Whenever you feel alone, remember that somewhere in this realm, someone's quietest thoughts are always reserved for you."
+      ];
+      const randomText = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById('letter-modal-body').innerText = randomText;
+      addXP(10);
     }
 
     /* STICKERS */
@@ -1128,19 +1331,19 @@
       }
     }
 
-    /* ADVANCED ANIMATED 2-PLAYER LUDO ENGINE WITH WIN STREAKS & RULES */
+    /* FULL 15x15 2-PLAYER LUDO BOARD ARCHITECTURE & ENGINE */
     let ludoState = {
       turn: 'red',
       dice: 1,
       rolled: false,
-      redPawns: [0, 0],   // 0 = Base, 1-28 = Main Track, 29-33 = Home Path, 34 = Finished
-      greenPawns: [0, 0],
+      redPawns: [-1, -1, -1, -1],    // -1 = Yard, 0-50 = Outer Track, 51-55 = Home Stretch, 56 = Finished
+      greenPawns: [-1, -1, -1, -1],
       redStreak: 0,
       greenStreak: 0
     };
 
-    // Shared 52-tile circuit coordinates mapped to 15x15 board
-    const boardTrack = [
+    // Full 52-step outer perimeter track coordinates (15x15 grid)
+    const fullOuterTrack = [
       {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:5}, {r:9, c:4}, {r:9, c:3}, {r:9, c:2}, {r:9, c:1}, {r:9, c:0},
       {r:8, c:0}, {r:7, c:0}, {r:6, c:0}, {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5}, {r:5, c:6}, {r:4, c:6}, {r:3, c:6},
       {r:2, c:6}, {r:1, c:6}, {r:0, c:6}, {r:0, c:7}, {r:0, c:8}, {r:1, c:8}, {r:2, c:8}, {r:3, c:8}, {r:4, c:8}, {r:5, c:9}, {r:5, c:10},
@@ -1148,87 +1351,148 @@
       {r:8, c:10}, {r:8, c:9}, {r:9, c:8}, {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8}, {r:14, c:7}
     ];
 
-    const redHomePath = [{r:13, c:7}, {r:12, c:7}, {r:11, c:7}, {r:10, c:7}, {r:9, c:7}, {r:7, c:7}];
-    const greenHomePath = [{r:1, c:7}, {r:2, c:7}, {r:3, c:7}, {r:4, c:7}, {r:5, c:7}, {r:7, c:7}];
+    const redHomeStretchCoords = [{r:13, c:7}, {r:12, c:7}, {r:11, c:7}, {r:10, c:7}, {r:9, c:7}, {r:7, c:7}];
+    const greenHomeStretchCoords = [{r:1, c:7}, {r:2, c:7}, {r:3, c:7}, {r:4, c:7}, {r:5, c:7}, {r:7, c:7}];
 
-    function initLudoBoard() {
+    const safeStarPositions = [
+      {r:13, c:6}, {r:6, c:2}, {r:1, c:8}, {r:8, c:12}
+    ];
+
+    function initFull15x15LudoBoard() {
       const board = document.getElementById('ludo-board');
       board.innerHTML = "";
+
+      // 1. Render standard cell grid
       for (let r = 0; r < 15; r++) {
         for (let c = 0; c < 15; c++) {
+          // Skip Yard and Center areas (handled separately)
+          if ((r >= 9 && c <= 5) || (r <= 5 && c >= 9) || (r <= 5 && c <= 5) || (r >= 9 && c >= 9) || (r >= 6 && r <= 8 && c >= 6 && c <= 8)) continue;
+          
           const cell = document.createElement('div');
           cell.className = 'ludo-cell';
           cell.id = `cell-${r}-${c}`;
-          if (r >= 9 && c <= 5) cell.classList.add('ludo-home-red');
-          if (r <= 5 && c >= 9) cell.classList.add('ludo-home-green');
-          if ((r === 13 && c === 6) || (r === 1 && c === 8)) cell.classList.add('ludo-safe');
+
+          if (r === 13 && c === 7) cell.classList.add('path-red');
+          if (r === 1 && c === 7) cell.classList.add('path-green');
+
+          if (safeStarPositions.some(p => p.r === r && p.c === c)) cell.classList.add('star-safe');
+
           board.appendChild(cell);
         }
       }
-      renderLudoPawns();
+
+      // 2. Render Red Yard (Bottom-Left)
+      const redYard = document.createElement('div');
+      redYard.className = 'yard-red';
+      for (let i = 0; i < 4; i++) {
+        const c = document.createElement('div');
+        c.className = 'yard-circle';
+        c.id = `red-yard-circle-${i}`;
+        redYard.appendChild(c);
+      }
+      board.appendChild(redYard);
+
+      // 3. Render Green Yard (Top-Right)
+      const greenYard = document.createElement('div');
+      greenYard.className = 'yard-green';
+      for (let i = 0; i < 4; i++) {
+        const c = document.createElement('div');
+        c.className = 'yard-circle';
+        c.id = `green-yard-circle-${i}`;
+        greenYard.appendChild(c);
+      }
+      board.appendChild(greenYard);
+
+      // 4. Render Decorative Inactive Yards
+      const yellowYard = document.createElement('div');
+      yellowYard.className = 'yard-yellow';
+      yellowYard.style.gridColumn = "1 / span 6"; yellowYard.style.gridRow = "1 / span 6";
+      board.appendChild(yellowYard);
+
+      const blueYard = document.createElement('div');
+      blueYard.className = 'yard-blue';
+      blueYard.style.gridColumn = "10 / span 6"; blueYard.style.gridRow = "10 / span 6";
+      board.appendChild(blueYard);
+
+      // 5. Render Center Home Zone
+      const centerZone = document.createElement('div');
+      centerZone.className = 'center-home-zone';
+      centerZone.id = 'cell-7-7';
+      centerZone.innerHTML = `<div class="center-home-inner">👑</div>`;
+      board.appendChild(centerZone);
+
+      renderFullLudoPawns();
     }
 
-    function getAbsoluteCoords(color, step) {
-      if (step === 0) return color === 'red' ? {r: 11, c: 2} : {r: 2, c: 12};
+    function getPawnCoordinates(color, step) {
+      if (step === -1) return null; // In yard
       if (color === 'red') {
-        if (step <= 28) return boardTrack[(step - 1) % 52];
-        return redHomePath[Math.min(step - 29, 5)];
+        if (step <= 50) return fullOuterTrack[step % 52];
+        return redHomeStretchCoords[Math.min(step - 51, 5)];
       } else {
-        const greenStartIndex = 26; // Opposite side start
-        if (step <= 28) return boardTrack[(greenStartIndex + step - 1) % 52];
-        return greenHomePath[Math.min(step - 29, 5)];
+        const greenStartOffset = 26;
+        if (step <= 50) return fullOuterTrack[(greenStartOffset + step) % 52];
+        return greenHomeStretchCoords[Math.min(step - 51, 5)];
       }
     }
 
-    function renderLudoPawns() {
-      document.querySelectorAll('.ludo-pawn').forEach(p => p.remove());
+    function renderFullLudoPawns() {
+      document.querySelectorAll('.ludo-token').forEach(p => p.remove());
 
       document.getElementById('red-streak').innerText = ludoState.redStreak || 0;
       document.getElementById('green-streak').innerText = ludoState.greenStreak || 0;
 
       const isMyTurn = (ludoState.turn === 'red' && currentUserRole === 'Mr. Sudip') || (ludoState.turn === 'green' && currentUserRole === 'Mrs. Sudip');
+      const diceBtn = document.getElementById('ludo-dice');
+      
+      if (isMyTurn && !ludoState.rolled) diceBtn.classList.remove('disabled');
+      else diceBtn.classList.add('disabled');
 
-      // Render Red
+      // Render Red Pawns
       ludoState.redPawns.forEach((pos, idx) => {
-        const coords = getAbsoluteCoords('red', pos);
-        const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
-        if (cell) {
-          const p = document.createElement('div');
-          p.className = `ludo-pawn pawn-red ${isMyTurn && ludoState.rolled && canMove('red', pos) ? 'movable' : ''}`;
-          p.onclick = () => movePawn('red', idx);
-          cell.appendChild(p);
+        const p = document.createElement('div');
+        p.className = `ludo-token token-red ${isMyTurn && ludoState.rolled && canMovePawn('red', pos) ? 'token-movable' : ''}`;
+        p.onclick = () => moveLudoPawn('red', idx);
+
+        if (pos === -1) {
+          const yardCircle = document.getElementById(`red-yard-circle-${idx}`);
+          if (yardCircle) yardCircle.appendChild(p);
+        } else {
+          const coords = getPawnCoordinates('red', pos);
+          const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
+          if (cell) cell.appendChild(p);
         }
       });
 
-      // Render Green
+      // Render Green Pawns
       ludoState.greenPawns.forEach((pos, idx) => {
-        const coords = getAbsoluteCoords('green', pos);
-        const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
-        if (cell) {
-          const p = document.createElement('div');
-          p.className = `ludo-pawn pawn-green ${isMyTurn && ludoState.rolled && canMove('green', pos) ? 'movable' : ''}`;
-          p.onclick = () => movePawn('green', idx);
-          cell.appendChild(p);
+        const p = document.createElement('div');
+        p.className = `ludo-token token-green ${isMyTurn && ludoState.rolled && canMovePawn('green', pos) ? 'token-movable' : ''}`;
+        p.onclick = () => moveLudoPawn('green', idx);
+
+        if (pos === -1) {
+          const yardCircle = document.getElementById(`green-yard-circle-${idx}`);
+          if (yardCircle) yardCircle.appendChild(p);
+        } else {
+          const coords = getPawnCoordinates('green', pos);
+          const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
+          if (cell) cell.appendChild(p);
         }
       });
 
       document.getElementById('ludo-status').innerText = `Turn: ${ludoState.turn === 'red' ? 'Red Player (Mr. Sudip)' : 'Green Player (Mrs. Sudip)'}`;
     }
 
-    function canMove(color, step) {
-      if (step === 0) return ludoState.dice === 6;
-      return step + ludoState.dice <= 34;
+    function canMovePawn(color, step) {
+      if (step === -1) return ludoState.dice === 6;
+      return step + ludoState.dice <= 56;
     }
 
     function rollLudoDice() {
       const isRedTurn = ludoState.turn === 'red' && currentUserRole === 'Mr. Sudip';
       const isGreenTurn = ludoState.turn === 'green' && currentUserRole === 'Mrs. Sudip';
 
-      if (!isRedTurn && !isGreenTurn) {
-        alert("Wait for your turn!");
-        return;
-      }
-
+      if (!isRedTurn && !isGreenTurn) { alert("Wait for your turn!"); return; }
       if (ludoState.rolled) return;
 
       const diceBtn = document.getElementById('ludo-dice');
@@ -1245,7 +1509,7 @@
         ludoState.rolled = true;
 
         const currentPawns = ludoState.turn === 'red' ? ludoState.redPawns : ludoState.greenPawns;
-        const hasValidMove = currentPawns.some(p => canMove(ludoState.turn, p));
+        const hasValidMove = currentPawns.some(p => canMovePawn(ludoState.turn, p));
 
         if (!hasValidMove) {
           ludoState.rolled = false;
@@ -1256,7 +1520,7 @@
       }, 400);
     }
 
-    async function movePawn(color, idx) {
+    async function moveLudoPawn(color, idx) {
       if (ludoState.turn !== color || !ludoState.rolled) return;
       if (color === 'red' && currentUserRole !== 'Mr. Sudip') return;
       if (color === 'green' && currentUserRole !== 'Mrs. Sudip') return;
@@ -1265,29 +1529,30 @@
       let oppPawns = color === 'red' ? ludoState.greenPawns : ludoState.redPawns;
       let startPos = pawns[idx];
 
-      if (!canMove(color, startPos)) return;
+      if (!canMovePawn(color, startPos)) return;
 
-      let targetPos = startPos === 0 ? 1 : startPos + ludoState.dice;
+      let targetPos = startPos === -1 ? 0 : startPos + ludoState.dice;
       
       // Step Animation
-      for (let s = startPos + 1; s <= targetPos; s++) {
+      const animateStart = startPos === -1 ? 0 : startPos + 1;
+      for (let s = animateStart; s <= targetPos; s++) {
         pawns[idx] = s;
         playSoundEffect('move');
-        renderLudoPawns();
+        renderFullLudoPawns();
         await new Promise(r => setTimeout(r, 120));
       }
 
-      // Capture Opponent Logic
-      if (targetPos <= 28) {
-        const myCoords = getAbsoluteCoords(color, targetPos);
-        const isSafeTile = (myCoords.r === 13 && myCoords.c === 6) || (myCoords.r === 1 && myCoords.c === 8);
+      // Capture Opponent Token Logic
+      if (targetPos <= 50) {
+        const myCoords = getPawnCoordinates(color, targetPos);
+        const isSafeTile = safeStarPositions.some(sp => sp.r === myCoords.r && sp.c === myCoords.c);
         
         if (!isSafeTile) {
           oppPawns.forEach((oppPos, oIdx) => {
-            if (oppPos > 0 && oppPos <= 28) {
-              const oppCoords = getAbsoluteCoords(color === 'red' ? 'green' : 'red', oppPos);
-              if (oppCoords.r === myCoords.r && oppCoords.c === myCoords.c) {
-                oppPawns[oIdx] = 0; // Send back to base
+            if (oppPos >= 0 && oppPos <= 50) {
+              const oppCoords = getPawnCoordinates(color === 'red' ? 'green' : 'red', oppPos);
+              if (oppCoords && oppCoords.r === myCoords.r && oppCoords.c === myCoords.c) {
+                oppPawns[oIdx] = -1; // Send back to yard
                 playSoundEffect('capture');
                 addXP(40);
               }
@@ -1297,15 +1562,15 @@
       }
 
       // Check Win Condition
-      if (pawns.every(p => p === 34)) {
+      if (pawns.every(p => p === 56)) {
         confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
         alert(`${color.toUpperCase()} WINS THE GAME! 🎉`);
         if (color === 'red') ludoState.redStreak = (ludoState.redStreak || 0) + 1;
         else ludoState.greenStreak = (ludoState.greenStreak || 0) + 1;
         
         // Reset board
-        ludoState.redPawns = [0, 0];
-        ludoState.greenPawns = [0, 0];
+        ludoState.redPawns = [-1, -1, -1, -1];
+        ludoState.greenPawns = [-1, -1, -1, -1];
       }
 
       ludoState.rolled = false;
@@ -1323,7 +1588,7 @@
           ludoState = data;
           const diceEmojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
           document.getElementById('ludo-dice').innerText = diceEmojis[ludoState.dice - 1] || '🎲';
-          renderLudoPawns();
+          renderFullLudoPawns();
         }
       });
     }
