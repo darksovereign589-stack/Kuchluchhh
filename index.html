@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title id="page-title">Eternal Connection | Dark Romance</title>
+  <title id="page-title">Eternal Connection | Private Realm</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#080306">
   
@@ -285,14 +285,60 @@
     .letter-icon { font-size: 2rem; margin-bottom: 6px; }
     .letter-title { font-size: 0.82rem; color: var(--soft-pink); font-weight: 600; }
 
-    /* MEMORIES & TROPHIES PANELS */
-    .memories-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-    .trophies-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; }
-    .trophy-card {
-      background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
-      border-radius: 16px; padding: 14px; text-align: center; opacity: 0.5;
+    /* MEMORIES PHOTO GALLERY PANEL */
+    .memories-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; height: 100%; }
+    .memory-photo-card {
+      position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border);
+      aspect-ratio: 1 / 1; background: #000; cursor: pointer;
     }
-    .trophy-card.unlocked { opacity: 1; border-color: var(--gold-accent); background: rgba(255, 215, 0, 0.08); }
+    .memory-photo-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .memory-photo-card:hover img { transform: scale(1.05); }
+    .memory-photo-meta {
+      position: absolute; bottom: 0; inset-x: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 6px 10px; font-size: 0.68rem; color: var(--soft-pink); display: flex; justify-content: space-between;
+    }
+
+    /* ADVANCED LUDO GAME PANEL */
+    .ludo-container {
+      padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; gap: 10px; overflow-y: auto;
+    }
+    .streak-banner {
+      display: flex; justify-content: space-between; width: 100%; max-width: 320px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; color: var(--soft-pink);
+    }
+    .ludo-board {
+      width: 320px; height: 320px; background: #080306; border: 3px solid var(--glass-border);
+      border-radius: 16px; display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr);
+      box-shadow: 0 0 25px var(--pink-glow); position: relative;
+    }
+    .ludo-cell { border: 0.5px solid rgba(255, 255, 255, 0.08); position: relative; display: flex; justify-content: center; align-items: center; }
+    .ludo-home-red { background: rgba(255, 42, 84, 0.3); }
+    .ludo-home-green { background: rgba(16, 185, 129, 0.3); }
+    .ludo-safe { background: rgba(255, 215, 0, 0.25); }
+
+    .ludo-pawn {
+      width: 75%; height: 75%; border-radius: 50%; border: 2px solid #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.8); cursor: pointer; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+    }
+    .ludo-pawn.movable { animation: pulsePawn 0.8s infinite alternate; }
+    @keyframes pulsePawn { from { transform: scale(1); box-shadow: 0 0 5px var(--neon-pink); } to { transform: scale(1.25); box-shadow: 0 0 15px var(--neon-pink); } }
+
+    .pawn-red { background: radial-gradient(circle at 30% 30%, #ff4d6d, #a80022); }
+    .pawn-green { background: radial-gradient(circle at 30% 30%, #34d399, #047857); }
+
+    .ludo-controls { display: flex; align-items: center; justify-content: space-around; width: 100%; max-width: 320px; }
+    .dice-btn {
+      width: 55px; height: 55px; background: linear-gradient(135deg, rgba(255,42,84,0.3), rgba(18,7,15,0.9));
+      border: 2px solid var(--neon-pink); border-radius: 14px; font-size: 1.8rem;
+      display: flex; justify-content: center; align-items: center; cursor: pointer;
+      box-shadow: 0 0 15px var(--pink-glow); transition: transform 0.1s;
+    }
+    .dice-btn:active { transform: scale(0.9); }
+    .dice-rolling { animation: rollDiceAnim 0.4s linear infinite; }
+    @keyframes rollDiceAnim { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* BOTTOM MOBILE NAVBAR */
     .bottom-nav {
@@ -348,7 +394,7 @@
   <div class="gateway-overlay" id="gateway">
     <div class="gateway-card">
       <div class="secret-flower" onclick="handleFlowerTap()">🌹</div>
-      <h1>Dark Romance</h1>
+      <h1>Eternal Connection</h1>
       <p>Who is entering the private realm?</p>
       <div class="btn-group">
         <button class="btn-primary" onclick="selectRole('Mrs. Sudip')">Mrs. Sudip 🎀</button>
@@ -384,7 +430,7 @@
         <div class="realm-scroll">
           <div class="ai-greeting-card">
             <h3 id="realm-greeting-title">Welcome Back</h3>
-            <p id="realm-greeting-body">Whispering dark romance prose into the silence...</p>
+            <p id="realm-greeting-body">Bringing your shared space together...</p>
           </div>
 
           <div class="daily-drop-card">
@@ -396,11 +442,11 @@
             <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">How are you feeling right now?</p>
             <div class="mood-selector-bar">
               <div class="mood-chip active" onclick="setMood('Soft', this)">🥺 Soft</div>
-              <div class="mood-chip" onclick="setMood('Dangerous', this)">😈 Dangerous</div>
+              <div class="mood-chip" onclick="setMood('Dangerous', this)">😈 Playful</div>
               <div class="mood-chip" onclick="setMood('Flirty', this)">💋 Flirty</div>
               <div class="mood-chip" onclick="setMood('Sad', this)">😭 Sad</div>
               <div class="mood-chip" onclick="setMood('Need a hug', this)">🫂 Need a hug</div>
-              <div class="mood-chip" onclick="setMood('Mysterious', this)">🖤 Mysterious</div>
+              <div class="mood-chip" onclick="setMood('Mysterious', this)">🖤 Happy</div>
             </div>
           </div>
 
@@ -440,7 +486,7 @@
             </div>
 
             <div class="input-text-container" id="text-input-box">
-              <input type="text" id="chat-input" placeholder="Dark romance whisper..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+              <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
               <button class="btn-primary" onclick="sendChatMessage()">Send 🚀</button>
             </div>
           </div>
@@ -457,20 +503,37 @@
         </div>
       </div>
 
-      <!-- TAB 4: MEMORIES -->
+      <!-- TAB 4: MEMORIES (AUTOMATIC PHOTO GALLERY FROM CHAT) -->
       <div class="tab-panel" id="panel-memories">
-        <div class="memories-list" id="memories-container">
-          <p style="text-align: center; color: var(--text-muted); padding-top: 20px;">No shared memories recorded yet.</p>
+        <div class="memories-grid" id="memories-container">
+          <p style="grid-column: span 2; text-align: center; color: var(--text-muted); padding-top: 40px;">No shared photo memories recorded yet.</p>
         </div>
       </div>
 
-      <!-- TAB 5: TROPHIES -->
-      <div class="tab-panel" id="panel-trophies">
-        <div class="trophies-grid">
-          <div class="trophy-card unlocked" id="achieve-first-visit"><div style="font-size: 2rem;">🌹</div><div style="font-size: 0.8rem; font-weight: 700;">First Visit</div></div>
-          <div class="trophy-card" id="achieve-first-kiss"><div style="font-size: 2rem;">💋</div><div style="font-size: 0.8rem; font-weight: 700;">First Kiss</div></div>
-          <div class="trophy-card" id="achieve-hugger"><div style="font-size: 2rem;">🫂</div><div style="font-size: 0.8rem; font-weight: 700;">Warm Hugger</div></div>
-          <div class="trophy-card" id="achieve-butterfly"><div style="font-size: 2rem;">🦋</div><div style="font-size: 0.8rem; font-weight: 700;">Butterfly Catcher</div></div>
+      <!-- TAB 5: ANIMATED 2-PLAYER LUDO GAME -->
+      <div class="tab-panel" id="panel-ludo">
+        <div class="ludo-container">
+          <div class="streak-banner">
+            <span>🔥 Red Streak: <b id="red-streak">0</b></span>
+            <span>🔥 Green Streak: <b id="green-streak">0</b></span>
+          </div>
+
+          <div style="text-align: center;">
+            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.1rem;">🎲 Realm Ludo</h3>
+            <p id="ludo-status" style="font-size: 0.78rem; color: #a7f3d0; margin-bottom: 2px;">Turn: Red (Mr. Sudip)</p>
+          </div>
+
+          <div class="ludo-board" id="ludo-board"></div>
+
+          <div class="ludo-controls">
+            <div style="text-align: center;">
+              <span style="font-size: 0.75rem; color: var(--soft-pink);">Mr. Sudip (Red)</span>
+            </div>
+            <div class="dice-btn" id="ludo-dice" onclick="rollLudoDice()">🎲</div>
+            <div style="text-align: center;">
+              <span style="font-size: 0.75rem; color: var(--soft-pink);">Mrs. Sudip (Green)</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -482,7 +545,7 @@
       <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
       <a class="nav-item" onclick="switchTab('letters', this)"><span class="nav-icon">💌</span><span>Letters</span></a>
       <a class="nav-item" onclick="switchTab('memories', this)"><span class="nav-icon">🦋</span><span>Memories</span></a>
-      <a class="nav-item" onclick="switchTab('trophies', this)"><span class="nav-icon">🏆</span><span>Badges</span></a>
+      <a class="nav-item" onclick="switchTab('ludo', this)"><span class="nav-icon">🎲</span><span>Play Ludo</span></a>
     </div>
   </div>
 
@@ -509,7 +572,7 @@
   <!-- LETTER VAULT MODAL -->
   <div class="modal" id="letter-modal">
     <div class="modal-card">
-      <h2 id="letter-modal-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Dynamic AI Letter</h2>
+      <h2 id="letter-modal-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Dynamic Letter</h2>
       <p id="letter-modal-body" style="font-style: italic; font-size: 0.95rem; line-height: 1.6; color: #cbd5e1; text-align: left; margin-bottom: 15px;">Opening letter...</p>
       <button class="btn-secondary" onclick="closeModal('letter-modal')">Close Letter</button>
     </div>
@@ -596,6 +659,45 @@
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
+    /* SYNTHESIZED SOUND EFFECTS */
+    function playSoundEffect(type) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'dice') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.15);
+        } else if (type === 'move') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.1);
+        } else if (type === 'capture') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(600, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.25);
+          gain.gain.setValueAtTime(0.4, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        }
+      } catch (e) {}
+    }
+
     window.addEventListener('load', () => {
       const savedRole = localStorage.getItem('user_role');
       if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
@@ -605,9 +707,10 @@
       initializeChatFeed();
       listenForStatusUpdates();
       fetchAIRealmProse();
+      initLudoBoard();
+      listenLudoSync();
     });
 
-    /* AI SERVERLESS GATEWAY FETCH */
     async function fetchAIRealmProse() {
       try {
         const res = await fetch('/api/ai-novelist', {
@@ -618,7 +721,7 @@
         const data = await res.json();
         if (data.text) document.getElementById('realm-greeting-body').innerText = data.text;
       } catch (e) {
-        document.getElementById('realm-greeting-body').innerText = "Morning, Mrs. Sudip. Before the world starts making noise, come here for a quiet second.";
+        document.getElementById('realm-greeting-body').innerText = "Welcome back to your private shared realm.";
       }
 
       try {
@@ -630,7 +733,7 @@
         const dataDrop = await resDrop.json();
         if (dataDrop.text) document.getElementById('daily-love-drop-text').innerText = dataDrop.text;
       } catch (e) {
-        document.getElementById('daily-love-drop-text').innerText = "Somewhere between all the noise today, you became the thought I kept returning to.";
+        document.getElementById('daily-love-drop-text').innerText = "Every moment shared builds another golden memory.";
       }
     }
 
@@ -804,7 +907,7 @@
       }
     }
 
-    /* FILE UPLOADS (PHOTOS ONLY) */
+    /* FILE UPLOADS */
     async function handleFileUpload(e, type) {
       const file = e.target.files[0];
       if (!file) return;
@@ -888,7 +991,7 @@
       closeModal('call-modal');
     }
 
-    /* CHAT FEED */
+    /* CHAT FEED & MEMORIES GALLERY SYNC */
     function initializeChatFeed() {
       const chatRef = db.ref('appState/chatFeed');
       chatRef.on('child_added', (snapshot) => { appendSingleMessage(snapshot.key, snapshot.val()); });
@@ -923,6 +1026,7 @@
         bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
       } else if (msg.mediaType === 'image') {
         bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="window.open(this.src)" />`;
+        addPhotoToMemoriesGallery(msg.media, msg.sender, msg.time);
       } else if (msg.mediaType === 'meme') {
         bodyContent += `<img src="${msg.media}" class="meme-card" />`;
       }
@@ -930,6 +1034,24 @@
       div.innerHTML = `<div class="msg-sender"><span>${msg.sender}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
       chatContainer.appendChild(div);
       chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function addPhotoToMemoriesGallery(url, sender, time) {
+      const container = document.getElementById('memories-container');
+      const emptyMsg = container.querySelector('p');
+      if (emptyMsg) emptyMsg.remove();
+
+      const card = document.createElement('div');
+      card.className = 'memory-photo-card';
+      card.onclick = () => window.open(url, '_blank');
+      card.innerHTML = `
+        <img src="${url}" loading="lazy" />
+        <div class="memory-photo-meta">
+          <span>${sender}</span>
+          <span>${time}</span>
+        </div>
+      `;
+      container.prepend(card);
     }
 
     async function sendChatMessage(text = null, mediaUrl = null, mediaType = 'image') {
@@ -1006,6 +1128,206 @@
       }
     }
 
+    /* ADVANCED ANIMATED 2-PLAYER LUDO ENGINE WITH WIN STREAKS & RULES */
+    let ludoState = {
+      turn: 'red',
+      dice: 1,
+      rolled: false,
+      redPawns: [0, 0],   // 0 = Base, 1-28 = Main Track, 29-33 = Home Path, 34 = Finished
+      greenPawns: [0, 0],
+      redStreak: 0,
+      greenStreak: 0
+    };
+
+    // Shared 52-tile circuit coordinates mapped to 15x15 board
+    const boardTrack = [
+      {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:5}, {r:9, c:4}, {r:9, c:3}, {r:9, c:2}, {r:9, c:1}, {r:9, c:0},
+      {r:8, c:0}, {r:7, c:0}, {r:6, c:0}, {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5}, {r:5, c:6}, {r:4, c:6}, {r:3, c:6},
+      {r:2, c:6}, {r:1, c:6}, {r:0, c:6}, {r:0, c:7}, {r:0, c:8}, {r:1, c:8}, {r:2, c:8}, {r:3, c:8}, {r:4, c:8}, {r:5, c:9}, {r:5, c:10},
+      {r:5, c:11}, {r:5, c:12}, {r:5, c:13}, {r:5, c:14}, {r:6, c:14}, {r:7, c:14}, {r:8, c:14}, {r:8, c:13}, {r:8, c:12}, {r:8, c:11},
+      {r:8, c:10}, {r:8, c:9}, {r:9, c:8}, {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8}, {r:14, c:7}
+    ];
+
+    const redHomePath = [{r:13, c:7}, {r:12, c:7}, {r:11, c:7}, {r:10, c:7}, {r:9, c:7}, {r:7, c:7}];
+    const greenHomePath = [{r:1, c:7}, {r:2, c:7}, {r:3, c:7}, {r:4, c:7}, {r:5, c:7}, {r:7, c:7}];
+
+    function initLudoBoard() {
+      const board = document.getElementById('ludo-board');
+      board.innerHTML = "";
+      for (let r = 0; r < 15; r++) {
+        for (let c = 0; c < 15; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'ludo-cell';
+          cell.id = `cell-${r}-${c}`;
+          if (r >= 9 && c <= 5) cell.classList.add('ludo-home-red');
+          if (r <= 5 && c >= 9) cell.classList.add('ludo-home-green');
+          if ((r === 13 && c === 6) || (r === 1 && c === 8)) cell.classList.add('ludo-safe');
+          board.appendChild(cell);
+        }
+      }
+      renderLudoPawns();
+    }
+
+    function getAbsoluteCoords(color, step) {
+      if (step === 0) return color === 'red' ? {r: 11, c: 2} : {r: 2, c: 12};
+      if (color === 'red') {
+        if (step <= 28) return boardTrack[(step - 1) % 52];
+        return redHomePath[Math.min(step - 29, 5)];
+      } else {
+        const greenStartIndex = 26; // Opposite side start
+        if (step <= 28) return boardTrack[(greenStartIndex + step - 1) % 52];
+        return greenHomePath[Math.min(step - 29, 5)];
+      }
+    }
+
+    function renderLudoPawns() {
+      document.querySelectorAll('.ludo-pawn').forEach(p => p.remove());
+
+      document.getElementById('red-streak').innerText = ludoState.redStreak || 0;
+      document.getElementById('green-streak').innerText = ludoState.greenStreak || 0;
+
+      const isMyTurn = (ludoState.turn === 'red' && currentUserRole === 'Mr. Sudip') || (ludoState.turn === 'green' && currentUserRole === 'Mrs. Sudip');
+
+      // Render Red
+      ludoState.redPawns.forEach((pos, idx) => {
+        const coords = getAbsoluteCoords('red', pos);
+        const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
+        if (cell) {
+          const p = document.createElement('div');
+          p.className = `ludo-pawn pawn-red ${isMyTurn && ludoState.rolled && canMove('red', pos) ? 'movable' : ''}`;
+          p.onclick = () => movePawn('red', idx);
+          cell.appendChild(p);
+        }
+      });
+
+      // Render Green
+      ludoState.greenPawns.forEach((pos, idx) => {
+        const coords = getAbsoluteCoords('green', pos);
+        const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
+        if (cell) {
+          const p = document.createElement('div');
+          p.className = `ludo-pawn pawn-green ${isMyTurn && ludoState.rolled && canMove('green', pos) ? 'movable' : ''}`;
+          p.onclick = () => movePawn('green', idx);
+          cell.appendChild(p);
+        }
+      });
+
+      document.getElementById('ludo-status').innerText = `Turn: ${ludoState.turn === 'red' ? 'Red Player (Mr. Sudip)' : 'Green Player (Mrs. Sudip)'}`;
+    }
+
+    function canMove(color, step) {
+      if (step === 0) return ludoState.dice === 6;
+      return step + ludoState.dice <= 34;
+    }
+
+    function rollLudoDice() {
+      const isRedTurn = ludoState.turn === 'red' && currentUserRole === 'Mr. Sudip';
+      const isGreenTurn = ludoState.turn === 'green' && currentUserRole === 'Mrs. Sudip';
+
+      if (!isRedTurn && !isGreenTurn) {
+        alert("Wait for your turn!");
+        return;
+      }
+
+      if (ludoState.rolled) return;
+
+      const diceBtn = document.getElementById('ludo-dice');
+      diceBtn.classList.add('dice-rolling');
+      playSoundEffect('dice');
+
+      setTimeout(() => {
+        diceBtn.classList.remove('dice-rolling');
+        const diceVal = Math.floor(Math.random() * 6) + 1;
+        const diceEmojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        diceBtn.innerText = diceEmojis[diceVal - 1];
+
+        ludoState.dice = diceVal;
+        ludoState.rolled = true;
+
+        const currentPawns = ludoState.turn === 'red' ? ludoState.redPawns : ludoState.greenPawns;
+        const hasValidMove = currentPawns.some(p => canMove(ludoState.turn, p));
+
+        if (!hasValidMove) {
+          ludoState.rolled = false;
+          ludoState.turn = ludoState.turn === 'red' ? 'green' : 'red';
+        }
+
+        db.ref('appState/ludo').set(ludoState);
+      }, 400);
+    }
+
+    async function movePawn(color, idx) {
+      if (ludoState.turn !== color || !ludoState.rolled) return;
+      if (color === 'red' && currentUserRole !== 'Mr. Sudip') return;
+      if (color === 'green' && currentUserRole !== 'Mrs. Sudip') return;
+
+      let pawns = color === 'red' ? ludoState.redPawns : ludoState.greenPawns;
+      let oppPawns = color === 'red' ? ludoState.greenPawns : ludoState.redPawns;
+      let startPos = pawns[idx];
+
+      if (!canMove(color, startPos)) return;
+
+      let targetPos = startPos === 0 ? 1 : startPos + ludoState.dice;
+      
+      // Step Animation
+      for (let s = startPos + 1; s <= targetPos; s++) {
+        pawns[idx] = s;
+        playSoundEffect('move');
+        renderLudoPawns();
+        await new Promise(r => setTimeout(r, 120));
+      }
+
+      // Capture Opponent Logic
+      if (targetPos <= 28) {
+        const myCoords = getAbsoluteCoords(color, targetPos);
+        const isSafeTile = (myCoords.r === 13 && myCoords.c === 6) || (myCoords.r === 1 && myCoords.c === 8);
+        
+        if (!isSafeTile) {
+          oppPawns.forEach((oppPos, oIdx) => {
+            if (oppPos > 0 && oppPos <= 28) {
+              const oppCoords = getAbsoluteCoords(color === 'red' ? 'green' : 'red', oppPos);
+              if (oppCoords.r === myCoords.r && oppCoords.c === myCoords.c) {
+                oppPawns[oIdx] = 0; // Send back to base
+                playSoundEffect('capture');
+                addXP(40);
+              }
+            }
+          });
+        }
+      }
+
+      // Check Win Condition
+      if (pawns.every(p => p === 34)) {
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        alert(`${color.toUpperCase()} WINS THE GAME! 🎉`);
+        if (color === 'red') ludoState.redStreak = (ludoState.redStreak || 0) + 1;
+        else ludoState.greenStreak = (ludoState.greenStreak || 0) + 1;
+        
+        // Reset board
+        ludoState.redPawns = [0, 0];
+        ludoState.greenPawns = [0, 0];
+      }
+
+      ludoState.rolled = false;
+      if (ludoState.dice !== 6) {
+        ludoState.turn = ludoState.turn === 'red' ? 'green' : 'red';
+      }
+
+      db.ref('appState/ludo').set(ludoState);
+    }
+
+    function listenLudoSync() {
+      db.ref('appState/ludo').on('value', (snap) => {
+        const data = snap.val();
+        if (data) {
+          ludoState = data;
+          const diceEmojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+          document.getElementById('ludo-dice').innerText = diceEmojis[ludoState.dice - 1] || '🎲';
+          renderLudoPawns();
+        }
+      });
+    }
+
     /* KISS EXPLOSION */
     function triggerKissDanawwExplosion() {
       const overlay = document.getElementById('kiss-overlay');
@@ -1029,7 +1351,7 @@
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-    /* BACKGROUND PARTICLES ENGINE & INTERACTIVE BUTTERFLIES */
+    /* BACKGROUND PARTICLES ENGINE */
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let floatingItems = [];
