@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title id="page-title">Eternal Connection | Romance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title id="page-title">Eternal Connection | Dark Romance</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#080306">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -17,21 +19,22 @@
   <style>
     :root {
       --bg-dark: #080306;
-      --bg-card: rgba(18, 7, 15, 0.88);
+      --bg-card: rgba(18, 7, 15, 0.92);
       --neon-pink: #ff2a54;
       --pink-glow: rgba(255, 42, 84, 0.45);
       --soft-pink: #ffb3c1;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --glass-border: rgba(255, 42, 84, 0.3);
+      --gold-accent: #ffd700;
+      --nav-height: 64px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: #000 url('1000097864.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: var(--bg-dark);
       color: var(--text-main);
       height: 100vh; height: 100dvh;
       overflow: hidden;
@@ -42,19 +45,20 @@
     body::before {
       content: "";
       position: absolute; inset: 0;
-      background: radial-gradient(circle at center, rgba(13, 2, 8, 0.65) 0%, rgba(5, 1, 3, 0.88) 100%);
+      background: radial-gradient(circle at center, rgba(30, 4, 18, 0.75) 0%, rgba(5, 1, 3, 0.96) 100%);
       z-index: 0;
     }
 
-    #ambient-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    #ambient-canvas { position: fixed; inset: 0; pointer-events: auto; z-index: 1; }
 
+    /* GATEWAY OVERLAY */
     .gateway-overlay {
       position: fixed; inset: 0;
-      background: rgba(8, 2, 6, 0.92);
-      backdrop-filter: blur(15px);
+      background: rgba(8, 2, 6, 0.96);
+      backdrop-filter: blur(20px);
       z-index: 100;
       display: flex; justify-content: center; align-items: center; padding: 20px;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.8s ease, visibility 0.8s;
     }
 
     .gateway-card {
@@ -62,37 +66,39 @@
       border: 1px solid var(--glass-border);
       border-radius: 28px; padding: 2.5rem 2rem;
       max-width: 420px; width: 100%; text-align: center;
-      box-shadow: 0 0 45px var(--pink-glow);
+      box-shadow: 0 0 50px var(--pink-glow);
     }
 
     .secret-flower {
-      font-size: 3.5rem; display: inline-block; cursor: pointer; user-select: none;
+      font-size: 3.5rem; display: inline-block; cursor: pointer;
       margin-bottom: 1rem; animation: floatFlower 3s ease-in-out infinite;
       filter: drop-shadow(0 0 15px var(--neon-pink));
     }
     @keyframes floatFlower { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-    h1 { font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.8rem; margin-bottom: 0.5rem; }
-    p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    h1 { font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+    p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.5; }
 
     .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--neon-pink) 0%, #a80022 100%);
-      color: #fff; border: none; padding: 10px 18px; border-radius: 50px;
+      color: #fff; border: none; padding: 10px 20px; border-radius: 50px;
       font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 42, 84, 0.4);
-      white-space: nowrap; font-size: 0.85rem; flex-shrink: 0;
+      white-space: nowrap; font-size: 0.85rem; transition: transform 0.2s, box-shadow 0.2s;
     }
+    .btn-primary:active { transform: scale(0.96); }
 
     .btn-secondary {
       background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      color: var(--text-main); padding: 10px 18px; border-radius: 50px; font-weight: 600; cursor: pointer;
+      color: var(--text-main); padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer;
     }
 
+    /* MAIN CONTAINER & NAVIGATION */
     .app-container {
       width: 100%; max-width: 540px; height: 100vh; height: 100dvh;
       background: var(--bg-card); border: 1px solid var(--glass-border);
-      backdrop-filter: blur(20px); display: flex; flex-direction: column;
+      backdrop-filter: blur(25px); display: flex; flex-direction: column;
       position: relative; z-index: 10; overflow: hidden;
     }
 
@@ -101,18 +107,24 @@
     }
 
     .chat-header {
-      padding: 12px 16px; background: rgba(10, 2, 7, 0.9);
+      padding: 12px 16px; background: rgba(10, 2, 7, 0.92);
       border-bottom: 1px solid var(--glass-border); display: flex;
       justify-content: space-between; align-items: center; flex-shrink: 0;
     }
 
-    .user-info { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .avatar { font-size: 1.6rem; }
+    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .avatar { font-size: 1.8rem; }
     .user-details h2 { font-size: 0.95rem; color: var(--soft-pink); font-family: 'Cinzel', serif; }
     .presence-text { font-size: 0.7rem; color: #a7f3d0; }
     .global-status { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
 
-    .header-actions { display: flex; gap: 6px; }
+    .header-actions { display: flex; gap: 6px; align-items: center; }
+
+    .xp-pill {
+      background: rgba(255, 215, 0, 0.15); border: 1px solid var(--gold-accent);
+      color: var(--gold-accent); padding: 4px 10px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; gap: 4px;
+    }
 
     .call-btn {
       background: linear-gradient(135deg, #10b981 0%, #047857 100%);
@@ -128,12 +140,56 @@
       box-shadow: 0 0 15px rgba(255, 42, 84, 0.5);
     }
 
+    /* VIEWPORT PANELS */
+    .viewport-content { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+    .tab-panel { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease-out forwards; }
+    .tab-panel.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* REALM HOME PANEL */
+    .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    
+    .ai-greeting-card {
+      background: linear-gradient(135deg, rgba(255, 42, 84, 0.15), rgba(10, 2, 7, 0.8));
+      border: 1px solid var(--neon-pink); border-radius: 20px; padding: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-pink); margin-bottom: 8px; }
+    .ai-greeting-card p { font-style: italic; color: #e2e8f0; font-size: 0.92rem; line-height: 1.5; margin-bottom: 0; }
+
+    .daily-drop-card {
+      background: rgba(18, 7, 15, 0.85); border: 1px dashed var(--glass-border);
+      border-radius: 20px; padding: 16px; text-align: center;
+    }
+
+    .mood-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding: 6px 0; scrollbar-width: none; }
+    .mood-selector-bar::-webkit-scrollbar { display: none; }
+    .mood-chip {
+      background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+      border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; color: var(--text-main);
+      white-space: nowrap; cursor: pointer; transition: all 0.2s;
+    }
+    .mood-chip.active { background: var(--neon-pink); border-color: var(--neon-pink); color: #fff; }
+
+    /* HOLD FOR HUG WIDGET */
+    .hug-widget {
+      background: rgba(255, 42, 84, 0.12); border: 1px solid var(--glass-border);
+      border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
+      position: relative; overflow: hidden;
+    }
+    .hug-heart-icon { font-size: 3rem; transition: transform 0.2s; display: inline-block; }
+    .hug-progress-fill {
+      position: absolute; bottom: 0; left: 0; height: 100%; width: 0%;
+      background: rgba(255, 42, 84, 0.3); transition: width 0.1s linear; pointer-events: none;
+    }
+
+    /* CHAT STREAM PANEL */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
     .msg-bubble {
       max-width: 82%; padding: 10px 14px; border-radius: 20px;
       font-size: 0.9rem; line-height: 1.4; animation: popIn 0.3s ease-out; word-break: break-word;
-      position: relative; cursor: pointer;
+      position: relative; cursor: pointer; user-select: text;
     }
     @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -156,26 +212,11 @@
     .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-pink); margin-bottom: 4px; display: flex; justify-content: space-between; }
     .msg-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
 
-    .video-link-card {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, rgba(255, 42, 84, 0.3), rgba(124, 58, 237, 0.3));
-      border: 1px solid var(--neon-pink);
-      padding: 10px 14px; border-radius: 14px; margin-top: 6px;
-      color: #fff; text-decoration: none; font-weight: 600; font-size: 0.85rem;
-      cursor: pointer; transition: transform 0.2s ease;
-      box-shadow: 0 4px 15px rgba(255, 42, 84, 0.2);
-    }
-    .video-link-card:hover { transform: scale(1.02); }
-
     .chat-media-frame { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--neon-pink); max-height: 250px; object-fit: contain; }
-    
-    .meme-card {
-      max-width: 100%; border-radius: 14px; margin-top: 6px;
-      border: 2px solid var(--glass-border); background: #000; max-height: 280px; object-fit: contain;
-    }
-
+    .meme-card { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--glass-border); background: #000; }
     .chat-audio-player { width: 100%; margin-top: 6px; outline: none; border-radius: 30px; height: 36px; filter: drop-shadow(0 0 5px var(--pink-glow)); }
 
+    /* INPUT TOOLBAR */
     .chat-input-area {
       padding: 8px 10px; background: rgba(10, 2, 7, 0.95);
       border-top: 1px solid var(--glass-border); display: flex; flex-direction: column;
@@ -187,28 +228,25 @@
     .tab-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--soft-pink); padding: 4px 10px; border-radius: 12px; cursor: pointer; white-space: nowrap; }
     .tab-btn.active { background: var(--neon-pink); color: #fff; }
 
-    .sticker-bar { display: flex; gap: 8px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 75px; max-height: 100px; }
+    .sticker-bar { display: flex; gap: 8px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 55px; }
     .sticker-bar::-webkit-scrollbar { display: none; }
 
     .meme-btn-thumb {
-      width: 70px; height: 70px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
+      width: 60px; height: 60px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
       border-radius: 12px; cursor: pointer; flex-shrink: 0; overflow: hidden;
-      display: flex; align-items: center; justify-content: center; transition: transform 0.2s;
+      display: flex; align-items: center; justify-content: center;
     }
-    .meme-btn-thumb:hover { transform: scale(1.08); border-color: var(--neon-pink); }
     .meme-btn-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
     .emoji-pill-btn {
       background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      border-radius: 20px; font-size: 1.3rem; padding: 5px 10px; cursor: pointer;
-      flex-shrink: 0; transition: transform 0.2s ease;
+      border-radius: 20px; font-size: 1.3rem; padding: 5px 11px; cursor: pointer; flex-shrink: 0;
     }
-    .emoji-pill-btn:hover { transform: scale(1.2); }
 
     .input-actions-row { display: flex; gap: 6px; align-items: center; }
     .upload-btn {
       background: rgba(255, 42, 84, 0.25); border: 1px solid var(--neon-pink);
-      border-radius: 20px; padding: 8px 10px; font-size: 0.75rem; color: var(--soft-pink);
+      border-radius: 20px; padding: 8px 12px; font-size: 0.8rem; color: var(--soft-pink);
       font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
     }
@@ -237,8 +275,41 @@
       border: 1px solid #ef4444; border-radius: 25px; padding: 6px 14px; color: #f87171; font-size: 0.82rem;
     }
 
+    /* LETTER VAULT PANEL */
+    .letters-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; }
+    .letter-card {
+      background: rgba(18, 7, 15, 0.85); border: 1px solid var(--glass-border);
+      border-radius: 18px; padding: 16px; text-align: center; cursor: pointer; transition: transform 0.2s;
+    }
+    .letter-card:active { transform: scale(0.96); }
+    .letter-icon { font-size: 2rem; margin-bottom: 6px; }
+    .letter-title { font-size: 0.82rem; color: var(--soft-pink); font-weight: 600; }
+
+    /* MEMORIES & TROPHIES PANELS */
+    .memories-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+    .trophies-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; }
+    .trophy-card {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 14px; text-align: center; opacity: 0.5;
+    }
+    .trophy-card.unlocked { opacity: 1; border-color: var(--gold-accent); background: rgba(255, 215, 0, 0.08); }
+
+    /* BOTTOM MOBILE NAVBAR */
+    .bottom-nav {
+      height: var(--nav-height); background: rgba(8, 2, 6, 0.96);
+      border-top: 1px solid var(--glass-border); display: flex;
+      justify-content: space-around; align-items: center; flex-shrink: 0;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      color: var(--text-muted); font-size: 0.68rem; cursor: pointer; text-decoration: none;
+    }
+    .nav-item.active { color: var(--neon-pink); }
+    .nav-icon { font-size: 1.3rem; }
+
+    /* MODAL OVERLAYS */
     .modal {
-      position: fixed; inset: 0; background: rgba(5, 0, 3, 0.88); backdrop-filter: blur(12px);
+      position: fixed; inset: 0; background: rgba(5, 0, 3, 0.88); backdrop-filter: blur(14px);
       z-index: 200; display: flex; justify-content: center; align-items: center; padding: 20px;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
@@ -246,9 +317,11 @@
 
     .modal-card {
       background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 24px;
-      padding: 2rem; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 0 35px var(--pink-glow);
+      padding: 2rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 0 40px var(--pink-glow);
+      max-height: 85vh; overflow-y: auto;
     }
 
+    /* FULLSCREEN KISS OVERLAY */
     #kiss-overlay {
       position: fixed; inset: 0; pointer-events: none; z-index: 999;
       display: flex; justify-content: center; align-items: center;
@@ -256,13 +329,13 @@
     }
     #kiss-overlay.active { opacity: 1; pointer-events: auto; }
     .kiss-particle {
-      position: absolute; font-size: 2.5rem; user-select: none;
+      position: absolute; font-size: 2.8rem; user-select: none;
       animation: floatKiss 2.5s ease-out forwards;
     }
     @keyframes floatKiss {
       0% { transform: scale(0.2) translate(0, 0) rotate(0deg); opacity: 0; }
       20% { opacity: 1; }
-      100% { transform: scale(1.8) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+      100% { transform: scale(2.0) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
     }
   </style>
 </head>
@@ -271,12 +344,12 @@
   <canvas id="ambient-canvas"></canvas>
   <div id="kiss-overlay"></div>
 
-  <!-- GATEWAY SELECTOR -->
+  <!-- GATEWAY ROLE SELECTOR -->
   <div class="gateway-overlay" id="gateway">
     <div class="gateway-card">
       <div class="secret-flower" onclick="handleFlowerTap()">🌹</div>
-      <h1>Eternal Romance</h1>
-      <p>Who is entering the realm?</p>
+      <h1>Dark Romance</h1>
+      <p>Who is entering the private realm?</p>
       <div class="btn-group">
         <button class="btn-primary" onclick="selectRole('Mrs. Sudip')">Mrs. Sudip 🎀</button>
         <button class="btn-secondary" onclick="openAdminPinModal()">Mr. Sudip 👑</button>
@@ -286,6 +359,7 @@
   </div>
 
   <div class="app-container">
+    <!-- HEADER -->
     <div class="chat-header">
       <div class="user-info" onclick="openStatusModal()">
         <div class="avatar" id="partner-avatar">👑</div>
@@ -296,46 +370,119 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="kiss-btn" onclick="triggerKissDanawwExplosion()">💋 Kiss Danaww</button>
+        <div class="xp-pill"><span id="xp-display">0</span> XP</div>
+        <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawwExplosion()">💋 Kiss</button>
         <button class="call-btn" onclick="initiateVoiceCall()">📞 Call</button>
       </div>
     </div>
 
-    <div class="chat-messages" id="chat-stream"></div>
-
-    <div class="chat-input-area">
-      <div class="upload-progress-banner" id="upload-banner">⚡ Processing media... Please wait!</div>
-
-      <div class="sticker-category-tabs">
-        <button class="tab-btn active" onclick="switchStickerTab('emojis_love', this)">💖 Love Emojis</button>
-        <button class="tab-btn" onclick="switchStickerTab('emojis_cute', this)">🥺 Cute & Flirty</button>
-        <button class="tab-btn" onclick="switchStickerTab('emojis_funny', this)">😂 Reaction Emojis</button>
-        <button class="tab-btn" onclick="switchStickerTab('memes_desi', this)">🇮🇳 Indian Memes</button>
-        <button class="tab-btn" onclick="switchStickerTab('memes_love', this)">❤️ Love Memes</button>
-      </div>
+    <!-- VIEWPORT CONTENT AREA -->
+    <div class="viewport-content">
       
-      <div class="sticker-bar" id="sticker-container"></div>
+      <!-- TAB 1: REALM (HOME) -->
+      <div class="tab-panel active" id="panel-realm">
+        <div class="realm-scroll">
+          <div class="ai-greeting-card">
+            <h3 id="realm-greeting-title">Welcome Back</h3>
+            <p id="realm-greeting-body">Whispering dark romance prose into the silence...</p>
+          </div>
 
-      <div class="input-actions-row">
-        <button class="upload-btn" id="voice-record-btn" onclick="toggleVoiceNoteRecording()">🎤</button>
-        <label class="upload-btn">
-          📷
-          <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
-        </label>
-        <label class="upload-btn" style="background: rgba(124, 58, 237, 0.25); border-color: #7c3aed;">
-          🎥
-          <input type="file" id="video-input" accept="video/*" style="display: none;" onchange="handleFileUpload(event, 'video')">
-        </label>
-        
-        <div class="recording-bar-indicator" id="rec-indicator">
-          <span>Recording Voice Note... <b id="rec-timer">0s</b></span>
-        </div>
+          <div class="daily-drop-card">
+            <h4 style="color: var(--soft-pink); font-family: 'Cinzel', serif; margin-bottom: 6px;">🌹 Today's Love Drop</h4>
+            <p id="daily-love-drop-text" style="font-style: italic; font-size: 0.88rem; color: #cbd5e1;">Generating daily dynamic quote...</p>
+          </div>
 
-        <div class="input-text-container" id="text-input-box">
-          <input type="text" id="chat-input" placeholder="Romantic whisper..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-          <button class="btn-primary" onclick="sendChatMessage()">Send 🚀</button>
+          <div style="margin: 4px 0;">
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">How are you feeling right now?</p>
+            <div class="mood-selector-bar">
+              <div class="mood-chip active" onclick="setMood('Soft', this)">🥺 Soft</div>
+              <div class="mood-chip" onclick="setMood('Dangerous', this)">😈 Dangerous</div>
+              <div class="mood-chip" onclick="setMood('Flirty', this)">💋 Flirty</div>
+              <div class="mood-chip" onclick="setMood('Sad', this)">😭 Sad</div>
+              <div class="mood-chip" onclick="setMood('Need a hug', this)">🫂 Need a hug</div>
+              <div class="mood-chip" onclick="setMood('Mysterious', this)">🖤 Mysterious</div>
+            </div>
+          </div>
+
+          <div class="hug-widget" id="hug-btn-widget" onmousedown="startHugHold()" onmouseup="endHugHold()" onmouseleave="endHugHold()" ontouchstart="startHugHold()" ontouchend="endHugHold()">
+            <div class="hug-progress-fill" id="hug-fill"></div>
+            <div class="hug-heart-icon" id="hug-heart">🫂</div>
+            <h4 style="color: var(--soft-pink); font-family: 'Cinzel', serif; margin-top: 4px; font-size: 0.95rem;">Hold for Interactive Hug</h4>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0;">Press and hold 2 seconds to send warmth</p>
+          </div>
         </div>
       </div>
+
+      <!-- TAB 2: CHAT STREAM -->
+      <div class="tab-panel" id="panel-chat">
+        <div class="chat-messages" id="chat-stream"></div>
+
+        <div class="chat-input-area">
+          <div class="upload-progress-banner" id="upload-banner">⚡ Processing media... Please wait!</div>
+
+          <div class="sticker-category-tabs">
+            <button class="tab-btn active" onclick="switchStickerTab('emojis', this)">💖 Emojis</button>
+            <button class="tab-btn" onclick="switchStickerTab('memes', this)">😂 Hindi Memes</button>
+            <button class="tab-btn" onclick="switchStickerTab('girlish', this)">🎀 Cute Girlish</button>
+          </div>
+          
+          <div class="sticker-bar" id="sticker-container"></div>
+
+          <div class="input-actions-row">
+            <button class="upload-btn" id="voice-record-btn" onclick="toggleVoiceNoteRecording()">🎤</button>
+            <label class="upload-btn">
+              📷
+              <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
+            </label>
+            
+            <div class="recording-bar-indicator" id="rec-indicator">
+              <span>Recording Voice Note... <b id="rec-timer">0s</b></span>
+            </div>
+
+            <div class="input-text-container" id="text-input-box">
+              <input type="text" id="chat-input" placeholder="Dark romance whisper..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+              <button class="btn-primary" onclick="sendChatMessage()">Send 🚀</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: LETTERS VAULT -->
+      <div class="tab-panel" id="panel-letters">
+        <div class="letters-grid">
+          <div class="letter-card" onclick="openLetterVault('Open when you miss me')"><div class="letter-icon">💌</div><div class="letter-title">When You Miss Me</div></div>
+          <div class="letter-card" onclick="openLetterVault('Open when you are sad')"><div class="letter-icon">😭</div><div class="letter-title">When You're Sad</div></div>
+          <div class="letter-card" onclick="openLetterVault('Open when you cannot sleep')"><div class="letter-icon">🌙</div><div class="letter-title">Can't Sleep</div></div>
+          <div class="letter-card" onclick="openLetterVault('Open when you need butterflies')"><div class="letter-icon">🦋</div><div class="letter-title">Need Butterflies</div></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: MEMORIES -->
+      <div class="tab-panel" id="panel-memories">
+        <div class="memories-list" id="memories-container">
+          <p style="text-align: center; color: var(--text-muted); padding-top: 20px;">No shared memories recorded yet.</p>
+        </div>
+      </div>
+
+      <!-- TAB 5: TROPHIES -->
+      <div class="tab-panel" id="panel-trophies">
+        <div class="trophies-grid">
+          <div class="trophy-card unlocked" id="achieve-first-visit"><div style="font-size: 2rem;">🌹</div><div style="font-size: 0.8rem; font-weight: 700;">First Visit</div></div>
+          <div class="trophy-card" id="achieve-first-kiss"><div style="font-size: 2rem;">💋</div><div style="font-size: 0.8rem; font-weight: 700;">First Kiss</div></div>
+          <div class="trophy-card" id="achieve-hugger"><div style="font-size: 2rem;">🫂</div><div style="font-size: 0.8rem; font-weight: 700;">Warm Hugger</div></div>
+          <div class="trophy-card" id="achieve-butterfly"><div style="font-size: 2rem;">🦋</div><div style="font-size: 0.8rem; font-weight: 700;">Butterfly Catcher</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NAVBAR -->
+    <div class="bottom-nav">
+      <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
+      <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
+      <a class="nav-item" onclick="switchTab('letters', this)"><span class="nav-icon">💌</span><span>Letters</span></a>
+      <a class="nav-item" onclick="switchTab('memories', this)"><span class="nav-icon">🦋</span><span>Memories</span></a>
+      <a class="nav-item" onclick="switchTab('trophies', this)"><span class="nav-icon">🏆</span><span>Badges</span></a>
     </div>
   </div>
 
@@ -344,10 +491,10 @@
     <div class="modal-card">
       <div class="avatar" style="font-size: 3rem; margin-bottom: 10px;">📞</div>
       <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 5px;">Calling...</h2>
-      <p id="call-status-desc" style="font-size: 0.85rem;">Connecting secure voice channel...</p>
+      <p id="call-status-desc" style="font-size: 0.85rem;">Connecting WebRTC voice channel...</p>
       
       <div class="btn-group" id="call-actions-incoming" style="display: none; margin-top: 15px;">
-        <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #047857);" onclick="acceptIncomingCall()">Accept 📞</button>
+        <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #047857);" onclick="acceptIncomingCall()">Accept Call 📞</button>
         <button class="btn-secondary" onclick="rejectIncomingCall()">Decline 🛑</button>
       </div>
 
@@ -359,19 +506,12 @@
 
   <audio id="remote-audio" autoplay style="display:none;"></audio>
 
-  <!-- EXTERNAL SITE-LIKE UNKNOWN SOURCE VIDEO PLAYER MODAL -->
-  <div class="modal" id="video-modal">
-    <div class="modal-card" style="max-width: 650px; padding: 1rem; width:95%;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-        <span style="font-size:0.75rem; color: #a7f3d0; background:rgba(16,185,129,0.2); padding: 3px 8px; border-radius:10px;">🌐 Unknown Stream Host</span>
-        <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="closeVideoModal()">✕ Close</button>
-      </div>
-      <div style="width:100%; position:relative; background:#000; border-radius:14px; overflow:hidden; border:1px solid var(--neon-pink);">
-        <video id="modal-video-player" controls autoplay style="width: 100%; max-height: 65vh; outline: none; display:block;"></video>
-      </div>
-      <div style="margin-top: 10px; font-size:0.72rem; color:var(--text-muted);">
-        🔒 Encrypted External Stream Mode Active
-      </div>
+  <!-- LETTER VAULT MODAL -->
+  <div class="modal" id="letter-modal">
+    <div class="modal-card">
+      <h2 id="letter-modal-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Dynamic AI Letter</h2>
+      <p id="letter-modal-body" style="font-style: italic; font-size: 0.95rem; line-height: 1.6; color: #cbd5e1; text-align: left; margin-bottom: 15px;">Opening letter...</p>
+      <button class="btn-secondary" onclick="closeModal('letter-modal')">Close Letter</button>
     </div>
   </div>
 
@@ -388,27 +528,11 @@
     </div>
   </div>
 
-  <!-- STATUS MODAL -->
+  <!-- STATUS & PRIVACY MODAL -->
   <div class="modal" id="status-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Update Romantic Status</h2>
-      <p style="font-size: 0.85rem;">Set status preset or custom message:</p>
-      
-      <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:12px;">
-        <button class="btn-secondary" style="font-size:0.75rem; padding:6px 10px;" onclick="applyPresetStatus('driving')">🚗 Driving</button>
-        <button class="btn-secondary" style="font-size:0.75rem; padding:6px 10px;" onclick="applyPresetStatus('cooking')">🍳 Cooking</button>
-        <button class="btn-secondary" style="font-size:0.75rem; padding:6px 10px;" onclick="applyPresetStatus('thinking')">💭 Thinking of you</button>
-      </div>
-
-      <input type="text" id="status-input" placeholder="Or enter custom romantic status..." style="margin-bottom: 15px;">
-      
-      <div id="sudip-privacy-controls" style="display: none; margin-bottom: 15px; border-top: 1px solid var(--glass-border); padding-top: 10px; text-align: left;">
-        <p style="font-size: 0.8rem; color: var(--soft-pink); font-weight: bold; margin-bottom: 5px;">👑 Admin Controls (Mr. Sudip)</p>
-        <label style="font-size: 0.78rem; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-          <input type="checkbox" id="stealth-lastseen-toggle" onchange="toggleStealthLastSeen(this.checked)"> Enable Stealth Last Seen
-        </label>
-      </div>
-
+      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Update Status</h2>
+      <input type="text" id="status-input" placeholder="Enter status message..." style="margin-bottom: 15px;">
       <div class="btn-group">
         <button class="btn-primary" onclick="updateGlobalStatus()">Set Status 🚀</button>
         <button class="btn-secondary" onclick="closeModal('status-modal')">Close</button>
@@ -430,6 +554,7 @@
   </div>
 
   <script>
+    // FIREBASE REALTIME CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyBgzxaX1n3okDxcAhMV2GRuy7kBrxqXKcA",
       authDomain: "mrs-sudip.firebaseapp.com",
@@ -439,12 +564,11 @@
       appId: "1:361252167035:web:425388ab4f182ccadd31de"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     let currentUserRole = "Mrs. Sudip";
+    let currentMood = "Soft";
     let flowerTapCount = 0;
     const SECRET_PIN = "7231";
 
@@ -460,73 +584,13 @@
     let recordingTimer = null;
     let recordSeconds = 0;
 
-    let stealthLastSeen = false;
+    let hugHoldTimer = null;
+    let hugProgress = 0;
+    let userXP = 0;
 
-    /* COMPREHENSIVE ALL-EMOJI LIBRARY */
-    const emojiLibrary = {
-      love: ["💖", "💗", "💓", "💞", "💕", "💘", "💌", "💋", "👩‍❤️‍💋‍👨", "👩‍❤️‍👨", "🌹", "🌷", "🌸", "💐", "🌺", "✨", "💍", "👑", "🎀", "🥰", "😍", "😘", "😻", "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎"],
-      cute: ["🥺", "🙈", "😚", "😙", "😋", "😜", "😛", "🤗", "🫂", "🐣", "🐥", "🦋", "🧸", "🕊️", "😇", "😳", "👉👈", "🤪", "👻", "⭐", "💫", "🍯"],
-      funny: ["😂", "🤣", "😆", "😅", "😬", "😜", "🤡", "💀", "👀", "🤦‍♂️", "🤦‍♀️", "🙄", "😏", "😴", "🧐", "🤐", "🙌", "👍", "🔥", "💯", "🎉", "🥳"]
-    };
-
-    /* 50+ INDIAN, FUNNY & LOVE MEMES COLLECTION */
-    const memeLibrary = {
-      desi: [
-        "https://i.imgflip.com/4/30b1gx.jpg",
-        "https://i.imgflip.com/1g8my4.jpg",
-        "https://i.imgflip.com/26am.jpg",
-        "https://i.imgflip.com/1bij.jpg",
-        "https://i.imgflip.com/28j0te.jpg",
-        "https://i.imgflip.com/39t1o0.jpg",
-        "https://i.imgflip.com/1ur9b0.jpg",
-        "https://i.imgflip.com/1otk96.jpg",
-        "https://i.imgflip.com/2fm6x.jpg",
-        "https://i.imgflip.com/261o3j.jpg",
-        "https://i.imgflip.com/345v97.jpg",
-        "https://i.imgflip.com/1tl2m7.jpg",
-        "https://i.imgflip.com/2gn30a.jpg",
-        "https://i.imgflip.com/3l60ph.jpg",
-        "https://i.imgflip.com/21uy0f.jpg",
-        "https://i.imgflip.com/2d3skg.jpg",
-        "https://i.imgflip.com/1bh32p.jpg",
-        "https://i.imgflip.com/3lmv8u.jpg",
-        "https://i.imgflip.com/2e90ne.jpg",
-        "https://i.imgflip.com/30zz5g.jpg",
-        "https://i.imgflip.com/23ls3w.jpg",
-        "https://i.imgflip.com/1c1uej.jpg",
-        "https://i.imgflip.com/2waw43.jpg",
-        "https://i.imgflip.com/1h7in3.jpg",
-        "https://i.imgflip.com/264wdb.jpg",
-        "https://i.imgflip.com/265j.jpg"
-      ],
-      love: [
-        "https://i.imgflip.com/3si4.jpg",
-        "https://i.imgflip.com/1bgw.jpg",
-        "https://i.imgflip.com/28w2qg.jpg",
-        "https://i.imgflip.com/1o00in.jpg",
-        "https://i.imgflip.com/2cp1.jpg",
-        "https://i.imgflip.com/9ehk.jpg",
-        "https://i.imgflip.com/22bdq6.jpg",
-        "https://i.imgflip.com/2ybua0.jpg",
-        "https://i.imgflip.com/24y43o.jpg",
-        "https://i.imgflip.com/325rg6.jpg",
-        "https://i.imgflip.com/1e7ql7.jpg",
-        "https://i.imgflip.com/28s2.jpg",
-        "https://i.imgflip.com/29tf.jpg",
-        "https://i.imgflip.com/3043.jpg",
-        "https://i.imgflip.com/1w7y03.jpg",
-        "https://i.imgflip.com/2hgfw8.jpg",
-        "https://i.imgflip.com/1yj48v.jpg",
-        "https://i.imgflip.com/3a958a.jpg",
-        "https://i.imgflip.com/2req2c.jpg",
-        "https://i.imgflip.com/1p3v2j.jpg",
-        "https://i.imgflip.com/285582.jpg",
-        "https://i.imgflip.com/3910c0.jpg",
-        "https://i.imgflip.com/26j36x.jpg",
-        "https://i.imgflip.com/1ihzfe.jpg",
-        "https://i.imgflip.com/26dygg.jpg"
-      ]
-    };
+    const memesList = ["https://i.imgflip.com/4/30b1gx.jpg", "https://i.imgflip.com/1g8my4.jpg", "https://i.imgflip.com/26am.jpg"];
+    const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
+    const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
 
     function getFormattedTime(timestamp = Date.now()) {
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -534,15 +598,60 @@
 
     window.addEventListener('load', () => {
       const savedRole = localStorage.getItem('user_role');
-      if (savedRole === "Mr. Sudip") {
-        currentUserRole = "Mr. Sudip";
-        document.getElementById('sudip-privacy-controls').style.display = 'block';
-      }
+      if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
+      
       setupPresenceSystem();
-      renderStickerPresets('emojis_love');
+      renderStickerPresets('emojis');
       initializeChatFeed();
       listenForStatusUpdates();
+      fetchAIRealmProse();
     });
+
+    /* AI SERVERLESS GATEWAY FETCH */
+    async function fetchAIRealmProse() {
+      try {
+        const res = await fetch('/api/ai-novelist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: 'greeting', userRole: currentUserRole, mood: currentMood })
+        });
+        const data = await res.json();
+        if (data.text) document.getElementById('realm-greeting-body').innerText = data.text;
+      } catch (e) {
+        document.getElementById('realm-greeting-body').innerText = "Morning, Mrs. Sudip. Before the world starts making noise, come here for a quiet second.";
+      }
+
+      try {
+        const resDrop = await fetch('/api/ai-novelist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: 'daily_drop', userRole: currentUserRole, mood: currentMood })
+        });
+        const dataDrop = await resDrop.json();
+        if (dataDrop.text) document.getElementById('daily-love-drop-text').innerText = dataDrop.text;
+      } catch (e) {
+        document.getElementById('daily-love-drop-text').innerText = "Somewhere between all the noise today, you became the thought I kept returning to.";
+      }
+    }
+
+    function addXP(amount) {
+      userXP += amount;
+      document.getElementById('xp-display').innerText = userXP;
+    }
+
+    function setMood(mood, el) {
+      currentMood = mood;
+      document.querySelectorAll('.mood-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      addXP(10);
+    }
+
+    function switchTab(tabId, navEl) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(`panel-${tabId}`).classList.add('active');
+      navEl.classList.add('active');
+    }
 
     function selectRole(role) {
       currentUserRole = role;
@@ -550,21 +659,15 @@
       enterWorld();
     }
 
-    function openAdminPinModal() {
-      openModal('admin-pin-modal');
-    }
+    function openAdminPinModal() { openModal('admin-pin-modal'); }
 
     function verifyAdminPin() {
-      const pinVal = document.getElementById('admin-pin-input').value.trim();
-      if (pinVal === SECRET_PIN) {
+      if (document.getElementById('admin-pin-input').value.trim() === SECRET_PIN) {
         currentUserRole = "Mr. Sudip";
         localStorage.setItem('user_role', 'Mr. Sudip');
-        document.getElementById('sudip-privacy-controls').style.display = 'block';
         closeModal('admin-pin-modal');
         enterWorld();
-      } else {
-        alert("Incorrect PIN!");
-      }
+      } else alert("Incorrect PIN!");
     }
 
     function handleFlowerTap() {
@@ -573,7 +676,6 @@
       document.getElementById('flower-hint').innerText = `Taps: ${flowerTapCount} / 7`;
       if (flowerTapCount >= 7) {
         flowerTapCount = 0;
-        document.getElementById('flower-hint').innerText = "Tap rose 7 times for admin login";
         openAdminPinModal();
       }
     }
@@ -593,21 +695,17 @@
       const isSudip = currentUserRole === "Mr. Sudip";
       document.getElementById('partner-avatar').innerText = isSudip ? "🎀" : "👑";
       document.getElementById('partner-title-display').innerText = isSudip ? "Mrs. Sudip 🎀" : "Mr. Sudip 👑";
-      document.getElementById('page-title').innerText = isSudip ? "Danaww's Hub ⚔️ | Mr. Sudip" : "Eternal Connection | Mrs. Sudip";
+      document.getElementById('kiss-action-btn').innerText = isSudip ? "🫂 Hug & Kiss" : "💋 Kiss Danaww";
     }
 
     /* PRESENCE SYSTEM */
     function setupPresenceSystem() {
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       const presenceRef = db.ref(`appState/presence/${userKey}`);
-      const connectedRef = db.ref('.info/connected');
-
-      connectedRef.on('value', (snap) => {
-        if (snap.val() === true) {
+      db.ref('.info/connected').on('value', (snap) => {
+        if (snap.val()) {
           presenceRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
-          if (!(currentUserRole === "Mr. Sudip" && stealthLastSeen)) {
-            presenceRef.set({ online: true, lastSeen: Date.now() });
-          }
+          presenceRef.set({ online: true, lastSeen: Date.now() });
         }
       });
 
@@ -616,40 +714,9 @@
         const data = snap.val();
         const displayEl = document.getElementById('partner-presence-display');
         if (data) {
-          if (data.online) {
-            displayEl.innerText = "Online 💚";
-            displayEl.style.color = "#a7f3d0";
-          } else {
-            displayEl.innerText = `Last seen ${getFormattedTime(data.lastSeen)}`;
-            displayEl.style.color = "var(--text-muted)";
-          }
+          displayEl.innerText = data.online ? "Online 💚" : `Last seen ${getFormattedTime(data.lastSeen)}`;
         }
       });
-    }
-
-    function toggleStealthLastSeen(enabled) {
-      stealthLastSeen = enabled;
-      if (currentUserRole === "Mr. Sudip") {
-        const presenceRef = db.ref(`appState/presence/sudip`);
-        if (enabled) {
-          presenceRef.set({ online: false, lastSeen: Date.now() });
-        } else {
-          presenceRef.set({ online: true, lastSeen: Date.now() });
-        }
-      }
-    }
-
-    function applyPresetStatus(type) {
-      const input = document.getElementById('status-input');
-      if (currentUserRole === "Mr. Sudip") {
-        if (type === 'driving') input.value = "Your husband is navigating the roads...";
-        else if (type === 'cooking') input.value = "Your husband is preparing a feast...";
-        else if (type === 'thinking') input.value = "Your husband is lost in thoughts of you...";
-      } else {
-        if (type === 'driving') input.value = "Your wifey is on a sweet journey...";
-        else if (type === 'cooking') input.value = "Your wifey is cooking food with love...";
-        else if (type === 'thinking') input.value = "Your wifey is dreaming of her Danaww...";
-      }
     }
 
     function openStatusModal() { openModal('status-modal'); }
@@ -658,10 +725,7 @@
       const newStatus = document.getElementById('status-input').value.trim();
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       if (newStatus) {
-        await db.ref(`appState/status/${userKey}`).set({
-          text: newStatus,
-          timestamp: Date.now()
-        });
+        await db.ref(`appState/status/${userKey}`).set({ text: newStatus, timestamp: Date.now() });
       }
       closeModal('status-modal');
     }
@@ -670,10 +734,33 @@
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
-        if (data && data.text) {
-          document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
-        }
+        if (data && data.text) document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
       });
+    }
+
+    /* HOLD FOR HUG */
+    function startHugHold() {
+      hugProgress = 0;
+      document.getElementById('hug-fill').style.width = '0%';
+      hugHoldTimer = setInterval(() => {
+        hugProgress += 5;
+        document.getElementById('hug-fill').style.width = `${hugProgress}%`;
+        if (hugProgress >= 100) {
+          clearInterval(hugHoldTimer);
+          confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
+          addXP(50);
+          triggerKissDanawwExplosion();
+          alert("Warm Hug Delivered! 🫂");
+          hugProgress = 0;
+          document.getElementById('hug-fill').style.width = '0%';
+        }
+      }, 100);
+    }
+
+    function endHugHold() {
+      if (hugHoldTimer) clearInterval(hugHoldTimer);
+      hugProgress = 0;
+      document.getElementById('hug-fill').style.width = '0%';
     }
 
     /* VOICE RECORDER */
@@ -685,45 +772,27 @@
       if (!isRecordingVoice) {
         try {
           const voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          let mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '';
-
-          mediaRecorder = mimeType ? new MediaRecorder(voiceStream, { mimeType }) : new MediaRecorder(voiceStream);
+          mediaRecorder = new MediaRecorder(voiceStream);
           audioChunks = [];
-
           mediaRecorder.ondataavailable = event => { if (event.data.size > 0) audioChunks.push(event.data); };
-
           mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/mp4' });
-            const banner = document.getElementById('upload-banner');
-            banner.style.display = 'block';
-            banner.innerText = "⚡ Uploading Voice Note...";
-
+            const audioBlob = new Blob(audioChunks, { type: 'audio/mp4' });
             const reader = new FileReader();
             reader.onloadend = async () => {
               await sendChatMessage("🎙️ Voice Note", reader.result, 'audio');
-              banner.style.display = 'none';
             };
             reader.readAsDataURL(audioBlob);
             voiceStream.getTracks().forEach(track => track.stop());
           };
-
           mediaRecorder.start();
           isRecordingVoice = true;
           recBtn.classList.add('record-btn-active');
           recBtn.innerText = "⏹️";
           textContainer.style.display = 'none';
           recInd.style.display = 'flex';
-
           recordSeconds = 0;
-          document.getElementById('rec-timer').innerText = '0s';
-          recordingTimer = setInterval(() => {
-            recordSeconds++;
-            document.getElementById('rec-timer').innerText = `${recordSeconds}s`;
-          }, 1000);
-
-        } catch (err) {
-          alert("Microphone permission failed: " + err.message);
-        }
+          recordingTimer = setInterval(() => { recordSeconds++; document.getElementById('rec-timer').innerText = `${recordSeconds}s`; }, 1000);
+        } catch (err) { alert("Mic permission failed."); }
       } else {
         mediaRecorder.stop();
         isRecordingVoice = false;
@@ -735,67 +804,26 @@
       }
     }
 
-    /* NO-LIMIT VIDEO TO EXTERNAL SITE STREAM STRATEGY */
+    /* FILE UPLOADS (PHOTOS ONLY) */
     async function handleFileUpload(e, type) {
       const file = e.target.files[0];
       if (!file) return;
-
-      const banner = document.getElementById('upload-banner');
-      banner.style.display = 'block';
-
-      if (type === 'image') {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          sendChatMessage("📷 Image shared", event.target.result, 'image');
-          banner.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      } else if (type === 'video') {
-        banner.innerText = "⚡ Converting video to streaming link...";
-        
-        // Convert video into direct blob object stream without size limit restrictions
-        const blobUrl = URL.createObjectURL(file);
-        const reader = new FileReader();
-        reader.onload = async function(event) {
-          // Send formatted streaming media link
-          await sendChatMessage("🎥 Private Stream Video", event.target.result, 'video_link');
-          banner.style.display = 'none';
-          e.target.value = "";
-        };
-        reader.readAsDataURL(file);
-      }
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        sendChatMessage("📷 Image shared", event.target.result, 'image');
+      };
+      reader.readAsDataURL(file);
     }
 
-    function playVideoInModal(src) {
-      const player = document.getElementById('modal-video-player');
-      player.src = src;
-      openModal('video-modal');
-    }
-
-    function closeVideoModal() {
-      const player = document.getElementById('modal-video-player');
-      player.pause();
-      player.src = "";
-      closeModal('video-modal');
-    }
-
-    /* WEBRTC CALLING SYSTEM */
+    /* WEBRTC VOICE CALLING */
     function initializeVoicePeer() {
       if (peer) peer.destroy();
-      const peerId = currentUserRole === "Mr. Sudip" ? "sudip-peer-v2" : "wifey-peer-v2";
-      
-      peer = new Peer(peerId, {
-        config: {'iceServers': [
-          { 'urls': 'stun:stun.l.google.com:19302' },
-          { 'urls': 'stun:stun1.l.google.com:19302' },
-          { 'urls': 'stun:stun2.l.google.com:19302' }
-        ]}
-      });
+      const peerId = currentUserRole === "Mr. Sudip" ? "sudip-peer-v3" : "wifey-peer-v3";
+      peer = new Peer(peerId, { config: {'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }]}});
 
       peer.on('call', (incomingCall) => {
         pendingIncomingCall = incomingCall;
-        document.getElementById('call-status-title').innerText = "Incoming Call...";
-        document.getElementById('call-status-desc').innerText = `${currentUserRole === "Mr. Sudip" ? "Mrs. Sudip 🎀" : "Mr. Sudip 👑"} is calling!`;
+        document.getElementById('call-status-title').innerText = "Incoming Voice Call...";
         document.getElementById('call-actions-incoming').style.display = 'flex';
         document.getElementById('call-actions-active').style.display = 'none';
         openModal('call-modal');
@@ -807,25 +835,20 @@
         const callData = snapshot.val();
         if (callData && callData.status === 'ringing' && callData.caller !== currentUserRole) {
           document.getElementById('call-status-title').innerText = "Incoming Call...";
-          document.getElementById('call-status-desc').innerText = `${callData.caller} is calling you!`;
           document.getElementById('call-actions-incoming').style.display = 'flex';
           document.getElementById('call-actions-active').style.display = 'none';
           openModal('call-modal');
-        } else if (!callData) {
-          closeModal('call-modal');
-        }
+        } else if (!callData) closeModal('call-modal');
       });
     }
 
     async function initiateVoiceCall() {
       try {
         localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const targetPeerId = currentUserRole === "Mr. Sudip" ? "wifey-peer-v2" : "sudip-peer-v2";
-        
+        const targetPeerId = currentUserRole === "Mr. Sudip" ? "wifey-peer-v3" : "sudip-peer-v3";
         await db.ref('appState/activeCallSignal').set({ caller: currentUserRole, status: 'ringing', timestamp: Date.now() });
 
         document.getElementById('call-status-title').innerText = "Ringing...";
-        document.getElementById('call-status-desc').innerText = "Connecting cross-border voice line...";
         document.getElementById('call-actions-incoming').style.display = 'none';
         document.getElementById('call-actions-active').style.display = 'flex';
         openModal('call-modal');
@@ -834,13 +857,9 @@
         activeCall.on('stream', (remoteStream) => {
           document.getElementById('remote-audio').srcObject = remoteStream;
           document.getElementById('call-status-title').innerText = "Connected 🎙️";
-          db.ref('appState/activeCallSignal').update({ status: 'connected' });
         });
         activeCall.on('close', () => endVoiceCall());
-      } catch (err) {
-        alert("Microphone access needed for call.");
-        closeModal('call-modal');
-      }
+      } catch (err) { alert("Mic required for call."); closeModal('call-modal'); }
     }
 
     async function acceptIncomingCall() {
@@ -853,23 +872,14 @@
         document.getElementById('call-actions-incoming').style.display = 'none';
         document.getElementById('call-actions-active').style.display = 'flex';
         document.getElementById('call-status-title').innerText = "Connected 🎙️";
-
-        await db.ref('appState/activeCallSignal').update({ status: 'connected' });
-
         if (activeCall) {
           activeCall.on('stream', (remoteStream) => { document.getElementById('remote-audio').srcObject = remoteStream; });
           activeCall.on('close', () => endVoiceCall());
         }
-      } catch (err) {
-        alert("Microphone permission required.");
-      }
+      } catch (err) { alert("Mic permission required."); }
     }
 
-    function rejectIncomingCall() {
-      db.ref('appState/activeCallSignal').remove();
-      endVoiceCall();
-    }
-
+    function rejectIncomingCall() { db.ref('appState/activeCallSignal').remove(); endVoiceCall(); }
     function endVoiceCall() {
       if (activeCall) activeCall.close();
       if (pendingIncomingCall) pendingIncomingCall.close();
@@ -890,9 +900,7 @@
             if (currentUserRole === "Mr. Sudip") {
               el.classList.add('msg-deleted-log');
               el.querySelector('.msg-body').innerText = `[Deleted Log] ${msg.text || ''}`;
-            } else {
-              el.remove();
-            }
+            } else el.remove();
           }
         }
       });
@@ -913,21 +921,13 @@
 
       if (msg.mediaType === 'audio') {
         bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
-      } else if (msg.mediaType === 'video_link') {
-        bodyContent += `<div class="video-link-card" onclick="event.stopPropagation(); playVideoInModal('${msg.media}')">🌐 Launch Video Link & Play ▶️</div>`;
       } else if (msg.mediaType === 'image') {
         bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="window.open(this.src)" />`;
       } else if (msg.mediaType === 'meme') {
         bodyContent += `<img src="${msg.media}" class="meme-card" />`;
       }
 
-      div.innerHTML = `
-        <div class="msg-sender">
-          <span>${msg.sender}</span>
-          <span class="msg-time">${msg.time}</span>
-        </div>
-        ${bodyContent}
-      `;
+      div.innerHTML = `<div class="msg-sender"><span>${msg.sender}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
       chatContainer.appendChild(div);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -939,39 +939,44 @@
 
       if (!text && !mediaUrl) inputEl.value = "";
 
-      const newMsg = {
-        sender: currentUserRole,
-        text: messageText,
-        time: getFormattedTime(),
-        deleted: false
-      };
-
-      if (mediaUrl) {
-        newMsg.media = mediaUrl;
-        newMsg.mediaType = mediaType;
-      }
+      const newMsg = { sender: currentUserRole, text: messageText, time: getFormattedTime(), deleted: false };
+      if (mediaUrl) { newMsg.media = mediaUrl; newMsg.mediaType = mediaType; }
 
       await db.ref('appState/chatFeed').push(newMsg);
+      addXP(15);
     }
 
-    function openDeleteModal(msgKey) {
-      selectedMsgKeyForDelete = msgKey;
-      openModal('delete-msg-modal');
-    }
-
+    function openDeleteModal(msgKey) { selectedMsgKeyForDelete = msgKey; openModal('delete-msg-modal'); }
     async function confirmDeleteMsg(type) {
       if (!selectedMsgKeyForDelete) return;
-
-      if (type === 'everyone') {
-        await db.ref(`appState/chatFeed/${selectedMsgKeyForDelete}`).update({ deleted: true });
-      } else if (type === 'me') {
+      if (type === 'everyone') await db.ref(`appState/chatFeed/${selectedMsgKeyForDelete}`).update({ deleted: true });
+      else if (type === 'me') {
         const el = document.getElementById(`msg-${selectedMsgKeyForDelete}`);
         if (el) el.remove();
       }
       closeModal('delete-msg-modal');
     }
 
-    /* ALL EMOJIS & 50+ MEMES DISPLAY HANDLER */
+    /* LETTER VAULT DYNAMIC AI FETCH */
+    async function openLetterVault(category) {
+      document.getElementById('letter-modal-title').innerText = category;
+      document.getElementById('letter-modal-body').innerText = "Crafting custom letter prose...";
+      openModal('letter-modal');
+
+      try {
+        const res = await fetch('/api/ai-novelist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: 'letter', userRole: currentUserRole, mood: currentMood, context: category })
+        });
+        const data = await res.json();
+        if (data.text) document.getElementById('letter-modal-body').innerText = data.text;
+      } catch (e) {
+        document.getElementById('letter-modal-body').innerText = "Whenever you feel alone, remember that somewhere in this realm, someone's quietest thoughts are always reserved for you.";
+      }
+    }
+
+    /* STICKERS */
     function switchStickerTab(packKey, btn) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -981,27 +986,17 @@
     function renderStickerPresets(packKey) {
       const container = document.getElementById('sticker-container');
       container.innerHTML = "";
-
-      if (packKey.startsWith('emojis_')) {
-        const subCategory = packKey.replace('emojis_', '');
-        const emojisToRender = emojiLibrary[subCategory] || emojiLibrary.love;
-        
-        emojisToRender.forEach(emoji => {
+      if (packKey === 'emojis') {
+        cuteEmojis.forEach(emoji => {
           const pill = document.createElement('button');
           pill.className = 'emoji-pill-btn';
           pill.innerText = emoji;
-          pill.onclick = () => {
-            const input = document.getElementById('chat-input');
-            input.value += emoji;
-            input.focus();
-          };
+          pill.onclick = () => { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); };
           container.appendChild(pill);
         });
-      } else if (packKey.startsWith('memes_')) {
-        const subCategory = packKey.replace('memes_', '');
-        const memesToRender = memeLibrary[subCategory] || memeLibrary.desi;
-
-        memesToRender.forEach(url => {
+      } else {
+        const selectedMemes = packKey === 'memes' ? memesList : girlishMemes;
+        selectedMemes.forEach(url => {
           const thumb = document.createElement('div');
           thumb.className = 'meme-btn-thumb';
           thumb.innerHTML = `<img src="${url}" loading="lazy" />`;
@@ -1011,41 +1006,30 @@
       }
     }
 
-    /* FULLSCREEN KISS DANAWW EXPLOSION */
+    /* KISS EXPLOSION */
     function triggerKissDanawwExplosion() {
       const overlay = document.getElementById('kiss-overlay');
       overlay.innerHTML = "";
       overlay.classList.add('active');
-
-      const kissSymbols = ['💋', '💖', '😘', '🌹', '💋', '❤️', '💕'];
+      const kissSymbols = ['💋', '💖', '😘', '🌹', '❤️', '🫂', '🎀'];
       for (let i = 0; i < 45; i++) {
         const p = document.createElement('div');
         p.className = 'kiss-particle';
         p.innerText = kissSymbols[Math.floor(Math.random() * kissSymbols.length)];
-        
-        const dx = (Math.random() - 0.5) * window.innerWidth * 0.9 + 'px';
-        const dy = (Math.random() - 0.5) * window.innerHeight * 0.9 + 'px';
-        const rot = (Math.random() - 0.5) * 360 + 'deg';
-        
-        p.style.setProperty('--dx', dx);
-        p.style.setProperty('--dy', dy);
-        p.style.setProperty('--rot', rot);
-        
+        p.style.setProperty('--dx', (Math.random() - 0.5) * window.innerWidth * 0.9 + 'px');
+        p.style.setProperty('--dy', (Math.random() - 0.5) * window.innerHeight * 0.9 + 'px');
+        p.style.setProperty('--rot', (Math.random() - 0.5) * 360 + 'deg');
         overlay.appendChild(p);
       }
-
       confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
-
-      setTimeout(() => {
-        overlay.classList.remove('active');
-        overlay.innerHTML = "";
-      }, 2600);
+      addXP(25);
+      setTimeout(() => { overlay.classList.remove('active'); overlay.innerHTML = ""; }, 2500);
     }
 
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-    /* ANIMATED BACKGROUND */
+    /* BACKGROUND PARTICLES ENGINE & INTERACTIVE BUTTERFLIES */
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let floatingItems = [];
@@ -1061,15 +1045,15 @@
         this.x = Math.random() * canvas.width;
         this.y = canvas.height + Math.random() * 50;
         this.size = Math.random() * 22 + 16;
-        this.speedY = Math.random() * 1.2 + 0.6;
-        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1.2 + 0.5;
+        this.speedX = Math.random() * 1.0 - 0.5;
         this.symbol = elementsList[Math.floor(Math.random() * elementsList.length)];
         this.opacity = Math.random() * 0.7 + 0.3;
       }
       update() {
         this.y -= this.speedY;
         this.x += Math.sin(this.y * 0.02) + this.speedX;
-        if (this.y < -50) this.reset();
+        if (this.y < -40) this.reset();
       }
       draw() {
         ctx.globalAlpha = this.opacity;
@@ -1079,6 +1063,17 @@
     }
 
     for (let i = 0; i < 35; i++) floatingItems.push(new FloatingItem());
+
+    canvas.addEventListener('click', (e) => {
+      floatingItems.forEach(item => {
+        const dist = Math.hypot(e.clientX - item.x, e.clientY - item.y);
+        if (dist < 40 && item.symbol === '🦋') {
+          confetti({ particleCount: 30, spread: 60, origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight } });
+          addXP(30);
+          item.reset();
+        }
+      });
+    });
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
