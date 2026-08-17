@@ -626,7 +626,7 @@
 
   <!-- FULLSCREEN LIGHTBOX MODAL -->
   <div class="lightbox-modal" id="lightbox-modal" onclick="closeModal('lightbox-modal')">
-    <img id="lightbox-img" class="lightbox-img" src="" />
+    <img id="lightbox-img" class="lightbox-img" src="" alt="Expanded Memory" />
     <div class="lightbox-meta">
       <span id="lightbox-sender">Sender</span>
       <span id="lightbox-time">Time</span>
@@ -711,7 +711,7 @@
     const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
     const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
 
-    /* DYNAMIC EXPANDED LETTERS POOL (10+ UNIQUE WRITINGS PER CATEGORY) */
+    /* DYNAMIC EXPANDED LETTERS POOL */
     const letterVaultDatabase = {
       "When You Miss Me": [
         "Even when miles stretch between us, close your eyes and feel my heartbeat. You are never truly alone—I carry your name in every breath.",
@@ -721,7 +721,7 @@
         "Distance is just a physical test for how far love can travel. My love reaches you instantly, no matter where you are right now.",
         "I miss you too—more than words can write down. Wrap your arms around yourself, squeeze tight, and consider that my warm hug.",
         "You are my favorite thought every morning and my last peace every night. Missing you is proof of how magical we are.",
-        "If I had a single flower for every time I thought of you while we were apart, I'd be walking through a endless garden forever.",
+        "If I had a single flower for every time I thought of you while we were apart, I'd be walking through an endless garden forever.",
         "Hold onto this truth: every moment apart is just leading up to an even sweeter reunion. I love you endlessly.",
         "Close your eyes, breathe gently, and know that right at this second, I am thinking of you with all my heart."
       ],
@@ -899,7 +899,6 @@
         `;
         container.appendChild(bf);
 
-        // Continuous smooth curved trajectory
         setInterval(() => {
           const newX = Math.random() * 85 + 5;
           const newY = Math.random() * 80 + 10;
@@ -1200,7 +1199,8 @@
           if (msg.deleted) {
             if (currentUserRole === "Mr. Sudip") {
               el.classList.add('msg-deleted-log');
-              el.querySelector('.msg-body').innerText = `[Deleted Log] ${msg.text || ''}`;
+              const bodyEl = el.querySelector('.msg-body');
+              if (bodyEl) bodyEl.innerText = `[Deleted Log] ${msg.text || ''}`;
             } else el.remove();
           }
         }
@@ -1342,7 +1342,6 @@
       greenStreak: 0
     };
 
-    // Full 52-step outer perimeter track coordinates (15x15 grid)
     const fullOuterTrack = [
       {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:5}, {r:9, c:4}, {r:9, c:3}, {r:9, c:2}, {r:9, c:1}, {r:9, c:0},
       {r:8, c:0}, {r:7, c:0}, {r:6, c:0}, {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5}, {r:5, c:6}, {r:4, c:6}, {r:3, c:6},
@@ -1362,10 +1361,8 @@
       const board = document.getElementById('ludo-board');
       board.innerHTML = "";
 
-      // 1. Render standard cell grid
       for (let r = 0; r < 15; r++) {
         for (let c = 0; c < 15; c++) {
-          // Skip Yard and Center areas (handled separately)
           if ((r >= 9 && c <= 5) || (r <= 5 && c >= 9) || (r <= 5 && c <= 5) || (r >= 9 && c >= 9) || (r >= 6 && r <= 8 && c >= 6 && c <= 8)) continue;
           
           const cell = document.createElement('div');
@@ -1381,7 +1378,6 @@
         }
       }
 
-      // 2. Render Red Yard (Bottom-Left)
       const redYard = document.createElement('div');
       redYard.className = 'yard-red';
       for (let i = 0; i < 4; i++) {
@@ -1392,7 +1388,6 @@
       }
       board.appendChild(redYard);
 
-      // 3. Render Green Yard (Top-Right)
       const greenYard = document.createElement('div');
       greenYard.className = 'yard-green';
       for (let i = 0; i < 4; i++) {
@@ -1403,7 +1398,6 @@
       }
       board.appendChild(greenYard);
 
-      // 4. Render Decorative Inactive Yards
       const yellowYard = document.createElement('div');
       yellowYard.className = 'yard-yellow';
       yellowYard.style.gridColumn = "1 / span 6"; yellowYard.style.gridRow = "1 / span 6";
@@ -1414,7 +1408,6 @@
       blueYard.style.gridColumn = "10 / span 6"; blueYard.style.gridRow = "10 / span 6";
       board.appendChild(blueYard);
 
-      // 5. Render Center Home Zone
       const centerZone = document.createElement('div');
       centerZone.className = 'center-home-zone';
       centerZone.id = 'cell-7-7';
@@ -1425,7 +1418,7 @@
     }
 
     function getPawnCoordinates(color, step) {
-      if (step === -1) return null; // In yard
+      if (step === -1) return null;
       if (color === 'red') {
         if (step <= 50) return fullOuterTrack[step % 52];
         return redHomeStretchCoords[Math.min(step - 51, 5)];
@@ -1448,7 +1441,6 @@
       if (isMyTurn && !ludoState.rolled) diceBtn.classList.remove('disabled');
       else diceBtn.classList.add('disabled');
 
-      // Render Red Pawns
       ludoState.redPawns.forEach((pos, idx) => {
         const p = document.createElement('div');
         p.className = `ludo-token token-red ${isMyTurn && ludoState.rolled && canMovePawn('red', pos) ? 'token-movable' : ''}`;
@@ -1459,12 +1451,13 @@
           if (yardCircle) yardCircle.appendChild(p);
         } else {
           const coords = getPawnCoordinates('red', pos);
-          const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
-          if (cell) cell.appendChild(p);
+          if (coords) {
+            const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
+            if (cell) cell.appendChild(p);
+          }
         }
       });
 
-      // Render Green Pawns
       ludoState.greenPawns.forEach((pos, idx) => {
         const p = document.createElement('div');
         p.className = `ludo-token token-green ${isMyTurn && ludoState.rolled && canMovePawn('green', pos) ? 'token-movable' : ''}`;
@@ -1475,8 +1468,10 @@
           if (yardCircle) yardCircle.appendChild(p);
         } else {
           const coords = getPawnCoordinates('green', pos);
-          const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
-          if (cell) cell.appendChild(p);
+          if (coords) {
+            const cell = document.getElementById(`cell-${coords.r}-${coords.c}`);
+            if (cell) cell.appendChild(p);
+          }
         }
       });
 
@@ -1533,7 +1528,6 @@
 
       let targetPos = startPos === -1 ? 0 : startPos + ludoState.dice;
       
-      // Step Animation
       const animateStart = startPos === -1 ? 0 : startPos + 1;
       for (let s = animateStart; s <= targetPos; s++) {
         pawns[idx] = s;
@@ -1542,7 +1536,6 @@
         await new Promise(r => setTimeout(r, 120));
       }
 
-      // Capture Opponent Token Logic
       if (targetPos <= 50) {
         const myCoords = getPawnCoordinates(color, targetPos);
         const isSafeTile = safeStarPositions.some(sp => sp.r === myCoords.r && sp.c === myCoords.c);
@@ -1552,7 +1545,7 @@
             if (oppPos >= 0 && oppPos <= 50) {
               const oppCoords = getPawnCoordinates(color === 'red' ? 'green' : 'red', oppPos);
               if (oppCoords && oppCoords.r === myCoords.r && oppCoords.c === myCoords.c) {
-                oppPawns[oIdx] = -1; // Send back to yard
+                oppPawns[oIdx] = -1;
                 playSoundEffect('capture');
                 addXP(40);
               }
@@ -1561,14 +1554,12 @@
         }
       }
 
-      // Check Win Condition
       if (pawns.every(p => p === 56)) {
         confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
         alert(`${color.toUpperCase()} WINS THE GAME! 🎉`);
         if (color === 'red') ludoState.redStreak = (ludoState.redStreak || 0) + 1;
         else ludoState.greenStreak = (ludoState.greenStreak || 0) + 1;
         
-        // Reset board
         ludoState.redPawns = [-1, -1, -1, -1];
         ludoState.greenPawns = [-1, -1, -1, -1];
       }
@@ -1671,3 +1662,4 @@
   </script>
 </body>
 </html>
+
