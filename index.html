@@ -40,6 +40,11 @@
       overflow: hidden;
       display: flex; justify-content: center; align-items: center;
       position: relative;
+      transition: background 1.2s ease;
+    }
+
+    body.shutdown {
+      background: #000 !important;
     }
 
     body::before {
@@ -47,9 +52,13 @@
       position: absolute; inset: 0;
       background: radial-gradient(circle at center, rgba(30, 4, 18, 0.75) 0%, rgba(5, 1, 3, 0.96) 100%);
       z-index: 0;
+      transition: opacity 1s ease;
     }
 
-    #ambient-canvas { position: fixed; inset: 0; pointer-events: auto; z-index: 1; }
+    body.shutdown::before { opacity: 0; }
+
+    #ambient-canvas { position: fixed; inset: 0; pointer-events: auto; z-index: 1; transition: opacity 1s ease; }
+    body.shutdown #ambient-canvas { opacity: 0; }
 
     /* GATEWAY OVERLAY */
     .gateway-overlay {
@@ -102,7 +111,10 @@
       background: var(--bg-card); border: 1px solid var(--glass-border);
       backdrop-filter: blur(25px); display: flex; flex-direction: column;
       position: relative; z-index: 10; overflow: hidden;
+      transition: opacity 1s ease, transform 1s ease;
     }
+
+    body.shutdown .app-container { opacity: 0; transform: scale(0.95); pointer-events: none; }
 
     @media (min-width: 550px) {
       .app-container { height: 94vh; border-radius: 28px; box-shadow: 0 0 50px var(--pink-glow); }
@@ -128,20 +140,6 @@
       font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; gap: 4px;
     }
 
-    .call-btn {
-      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-      border: none; color: #fff; padding: 8px 12px; border-radius: 20px;
-      font-weight: 600; font-size: 0.78rem; cursor: pointer;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
-    }
-
-    .kiss-btn {
-      background: linear-gradient(135deg, #ff2a54, #e11d48);
-      border: none; color: #fff; padding: 8px 12px; border-radius: 20px;
-      font-weight: 600; font-size: 0.78rem; cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 42, 84, 0.5);
-    }
-
     /* VIEWPORT PANELS */
     .viewport-content { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
     .tab-panel { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease-out forwards; }
@@ -164,31 +162,21 @@
     .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-pink); margin-bottom: 8px; }
     .ai-greeting-card p { font-style: italic; color: #e2e8f0; font-size: 0.92rem; line-height: 1.5; margin-bottom: 0; }
 
-    .daily-drop-card {
-      background: rgba(18, 7, 15, 0.85); border: 1px dashed var(--glass-border);
-      border-radius: 20px; padding: 16px; text-align: center;
+    .farewell-memorial-card {
+      background: rgba(18, 7, 15, 0.95); border: 1px solid var(--neon-pink);
+      border-radius: 20px; padding: 20px; text-align: left;
+      box-shadow: 0 0 30px rgba(255, 42, 84, 0.3);
     }
+    .farewell-memorial-card h4 { font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px; font-size: 1.05rem; }
+    .farewell-memorial-card p { font-size: 0.88rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 12px; }
 
-    .mood-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding: 6px 0; scrollbar-width: none; }
-    .mood-selector-bar::-webkit-scrollbar { display: none; }
-    .mood-chip {
-      background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; color: var(--text-main);
-      white-space: nowrap; cursor: pointer; transition: all 0.2s;
+    .final-goodbye-section {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(10, 2, 7, 0.9));
+      border: 1px solid #ef4444; border-radius: 20px; padding: 20px; text-align: center;
+      margin-bottom: 20px;
     }
-    .mood-chip.active { background: var(--neon-pink); border-color: var(--neon-pink); color: #fff; }
-
-    /* HOLD FOR HUG WIDGET */
-    .hug-widget {
-      background: rgba(255, 42, 84, 0.12); border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
-      position: relative; overflow: hidden;
-    }
-    .hug-heart-icon { font-size: 3rem; transition: transform 0.2s; display: inline-block; }
-    .hug-progress-fill {
-      position: absolute; bottom: 0; left: 0; height: 100%; width: 0%;
-      background: rgba(255, 42, 84, 0.3); transition: width 0.1s linear; pointer-events: none;
-    }
+    .final-goodbye-section h4 { font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 8px; font-size: 1rem; }
+    .final-goodbye-section p { font-size: 0.85rem; color: #f8fafc; margin-bottom: 14px; line-height: 1.5; }
 
     /* CHAT STREAM PANEL */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
@@ -212,16 +200,10 @@
       border: 1px solid var(--glass-border); border-bottom-right-radius: 4px;
     }
 
-    .msg-deleted-log {
-      opacity: 0.6; border: 1px dashed #ef4444 !important; background: rgba(239, 68, 68, 0.15) !important;
-    }
-
     .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-pink); margin-bottom: 4px; display: flex; justify-content: space-between; }
     .msg-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
 
     .chat-media-frame { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--neon-pink); max-height: 250px; object-fit: contain; }
-    .meme-card { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--glass-border); background: #000; }
-    .chat-audio-player { width: 100%; margin-top: 6px; outline: none; border-radius: 30px; height: 36px; filter: drop-shadow(0 0 5px var(--pink-glow)); }
 
     /* INPUT TOOLBAR */
     .chat-input-area {
@@ -238,13 +220,6 @@
     .sticker-bar { display: flex; gap: 8px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 55px; }
     .sticker-bar::-webkit-scrollbar { display: none; }
 
-    .meme-btn-thumb {
-      width: 60px; height: 60px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      border-radius: 12px; cursor: pointer; flex-shrink: 0; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .meme-btn-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
     .emoji-pill-btn {
       background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
       border-radius: 20px; font-size: 1.3rem; padding: 5px 11px; cursor: pointer; flex-shrink: 0;
@@ -258,60 +233,12 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    .record-btn-active {
-      background: #ef4444 !important; border-color: #f87171 !important;
-      animation: pulseRecord 1s infinite; color: #fff !important;
-    }
-    @keyframes pulseRecord { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-
     .input-text-container { display: flex; flex: 1; gap: 6px; align-items: center; min-width: 0; }
 
-    input[type="text"], input[type="password"], input[type="url"] {
+    input[type="text"] {
       width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border);
       color: var(--text-main); padding: 10px 14px; border-radius: 25px; font-size: 0.88rem; outline: none;
     }
-
-    .upload-progress-banner {
-      display: none; background: rgba(255, 42, 84, 0.2); border: 1px solid var(--neon-pink);
-      border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; color: var(--soft-pink); text-align: center;
-      animation: pulseRecord 1.5s infinite;
-    }
-
-    .recording-bar-indicator {
-      display: none; flex: 1; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.15);
-      border: 1px solid #ef4444; border-radius: 25px; padding: 6px 14px; color: #f87171; font-size: 0.82rem;
-    }
-
-    /* LETTER VAULT PANEL */
-    .letters-grid { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; }
-    .letter-card {
-      background: rgba(18, 7, 15, 0.85); border: 1px solid var(--glass-border);
-      border-radius: 18px; padding: 16px; text-align: center; cursor: pointer; transition: transform 0.2s;
-    }
-    .letter-card:active { transform: scale(0.96); }
-    .letter-icon { font-size: 2rem; margin-bottom: 6px; }
-    .letter-title { font-size: 0.82rem; color: var(--soft-pink); font-weight: 600; }
-
-    /* FEATURE CONTAINER & CARDS (FOR WATCH2GETHER & PLAY2GETHER) */
-    .feature-container {
-      padding: 20px; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 100%; text-align: center; gap: 16px; overflow-y: auto;
-    }
-    
-    .feature-card {
-      background: rgba(18, 7, 15, 0.85); border: 1px solid var(--glass-border);
-      border-radius: 24px; padding: 24px 20px; max-width: 400px; width: 100%;
-      box-shadow: 0 0 30px var(--pink-glow); display: flex; flex-direction: column;
-      align-items: center; gap: 14px;
-    }
-
-    .notice-box {
-      background: rgba(255, 42, 84, 0.15); border: 1px dashed var(--neon-pink);
-      border-radius: 16px; padding: 12px 16px; font-size: 0.85rem; color: var(--soft-pink);
-      line-height: 1.4; text-align: left; width: 100%;
-    }
-
-    .notice-box p { margin-bottom: 0; color: #f8fafc; font-size: 0.85rem; }
 
     /* BOTTOM MOBILE NAVBAR */
     .bottom-nav {
@@ -326,82 +253,47 @@
     .nav-item.active { color: var(--neon-pink); }
     .nav-icon { font-size: 1.3rem; }
 
-    /* MODAL OVERLAYS */
-    .modal {
-      position: fixed; inset: 0; background: rgba(5, 0, 3, 0.88); backdrop-filter: blur(14px);
-      z-index: 200; display: flex; justify-content: center; align-items: center; padding: 20px;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    /* BLACKOUT SCREEN */
+    #blackout-overlay {
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      color: #71717a; font-family: 'Cinzel', serif; letter-spacing: 2px; font-size: 0.9rem;
     }
-    .modal.open { opacity: 1; pointer-events: auto; }
-
-    .modal-card {
-      background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 24px;
-      padding: 2rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 0 40px var(--pink-glow);
-      max-height: 85vh; overflow-y: auto;
-    }
-
-    /* FULLSCREEN LIGHTBOX MODAL */
-    .lightbox-modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
-      z-index: 300; display: flex; flex-direction: column; justify-content: center; align-items: center;
-      padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-    }
-    .lightbox-modal.open { opacity: 1; pointer-events: auto; }
-    .lightbox-img { max-width: 100%; max-height: 75vh; border-radius: 16px; border: 1px solid var(--glass-border); object-fit: contain; }
-    .lightbox-meta { margin-top: 15px; font-size: 0.85rem; color: var(--soft-pink); display: flex; gap: 15px; }
-
-    /* FULLSCREEN KISS OVERLAY */
-    #kiss-overlay {
-      position: fixed; inset: 0; pointer-events: none; z-index: 999;
-      display: flex; justify-content: center; align-items: center;
-      overflow: hidden; opacity: 0; transition: opacity 0.4s ease;
-    }
-    #kiss-overlay.active { opacity: 1; pointer-events: auto; }
-    .kiss-particle {
-      position: absolute; font-size: 2.8rem; user-select: none;
-      animation: floatKiss 2.5s ease-out forwards;
-    }
-    @keyframes floatKiss {
-      0% { transform: scale(0.2) translate(0, 0) rotate(0deg); opacity: 0; }
-      20% { opacity: 1; }
-      100% { transform: scale(2.0) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
-    }
+    #blackout-overlay.active { opacity: 1; pointer-events: auto; }
   </style>
 </head>
 <body>
 
   <canvas id="ambient-canvas"></canvas>
-  <div id="kiss-overlay"></div>
+  <div id="blackout-overlay">Realm Offline. Connection Terminated. 🥀</div>
 
   <!-- GATEWAY ROLE SELECTOR -->
   <div class="gateway-overlay" id="gateway">
     <div class="gateway-card">
-      <div class="secret-flower" onclick="handleFlowerTap()">🌹</div>
+      <div class="secret-flower">🌹</div>
       <h1>Eternal Connection</h1>
-      <p>Who is entering the private realm?</p>
+      <p>Entering the Private Realm...</p>
       <div class="btn-group">
-        <button class="btn-primary" onclick="selectRole('Mrs. Sudip')">Mrs. Sudip 🎀</button>
-        <button class="btn-secondary" onclick="openAdminPinModal()">Mr. Sudip 👑</button>
+        <button class="btn-primary" onclick="selectRole('Sahiba Kalsoom')">Sahiba Kalsoom 🎀</button>
+        <button class="btn-secondary" onclick="selectRole('Mr. Anonymous')">Mr. Anonymous 👑</button>
       </div>
-      <div id="flower-hint" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 15px;">Tap rose 7 times for admin login</div>
     </div>
   </div>
 
   <div class="app-container">
     <!-- HEADER -->
     <div class="chat-header">
-      <div class="user-info" onclick="openStatusModal()">
+      <div class="user-info">
         <div class="avatar" id="partner-avatar">👑</div>
         <div class="user-details">
-          <h2 id="partner-title-display">Mr. Sudip</h2>
-          <div class="presence-text" id="partner-presence-display">Online 💚</div>
-          <div class="global-status" id="partner-status-display">Status: Free 💖</div>
+          <h2 id="partner-title-display">Mr. Anonymous</h2>
+          <div class="presence-text" id="partner-presence-display">Realm Archived 🖤</div>
+          <div class="global-status" id="partner-status-display">Status: Memories Preserved 🥀</div>
         </div>
       </div>
       <div class="header-actions">
-        <div class="xp-pill"><span id="xp-display">0</span> XP</div>
-        <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawwExplosion()">💋 Kiss</button>
-        <button class="call-btn" onclick="initiateVoiceCall()">📞 Call</button>
+        <div class="xp-pill"><span id="xp-display">100</span> XP</div>
       </div>
     </div>
 
@@ -410,37 +302,28 @@
       
       <!-- TAB 1: REALM (HOME) -->
       <div class="tab-panel active" id="panel-realm">
-        <!-- SVG FLOATING BUTTERFLY ANIMATION LAYER -->
         <div class="butterfly-layer" id="bf-overlay-container"></div>
 
         <div class="realm-scroll">
           <div class="ai-greeting-card">
-            <h3 id="realm-greeting-title">Welcome Back</h3>
-            <p id="realm-greeting-body">Bringing your shared space together...</p>
+            <h3 id="realm-greeting-title">The Final Chapter</h3>
+            <p id="realm-greeting-body">A journey that began during the days of the Indo-Pak tension, blossoming through sweet memories, and concluding today as he walks away forever.</p>
           </div>
 
-          <div class="daily-drop-card">
-            <h4 style="color: var(--soft-pink); font-family: 'Cinzel', serif; margin-bottom: 6px;">🌹 Today's Love Drop</h4>
-            <p id="daily-love-drop-text" style="font-style: italic; font-size: 0.88rem; color: #cbd5e1;">Generating daily dynamic quote...</p>
+          <div class="farewell-memorial-card">
+            <h4>🥀 A Farewell to Miss Sahiba</h4>
+            <p>It started quietly amidst conflict, but it became a whole year of sweet, unforgettable memories. For once in his cold, heartless life, a wanderer felt what genuine love truly meant.</p>
+            <p>He has walked away now, and he will never enter this territory again. But the butterflies and heartbeats remain permanently etched into these walls.</p>
+            <p style="color: var(--soft-pink); font-style: italic; margin-bottom: 0;">Have a good life ahead, Miss Sahiba.</p>
           </div>
 
-          <div style="margin: 4px 0;">
-            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">How are you feeling right now?</p>
-            <div class="mood-selector-bar">
-              <div class="mood-chip active" onclick="setMood('Soft', this)">🥺 Soft</div>
-              <div class="mood-chip" onclick="setMood('Dangerous', this)">😈 Playful</div>
-              <div class="mood-chip" onclick="setMood('Flirty', this)">💋 Flirty</div>
-              <div class="mood-chip" onclick="setMood('Sad', this)">😭 Sad</div>
-              <div class="mood-chip" onclick="setMood('Need a hug', this)">🫂 Need a hug</div>
-              <div class="mood-chip" onclick="setMood('Mysterious', this)">🖤 Happy</div>
-            </div>
-          </div>
-
-          <div class="hug-widget" id="hug-btn-widget" onmousedown="startHugHold()" onmouseup="endHugHold()" onmouseleave="endHugHold()" ontouchstart="startHugHold()" ontouchend="endHugHold()">
-            <div class="hug-progress-fill" id="hug-fill"></div>
-            <div class="hug-heart-icon" id="hug-heart">🫂</div>
-            <h4 style="color: var(--soft-pink); font-family: 'Cinzel', serif; margin-top: 4px; font-size: 0.95rem;">Hold for Interactive Hug</h4>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0;">Press and hold 2 seconds to send warmth</p>
+          <!-- FINAL BYE & SHUTDOWN SECTION -->
+          <div class="final-goodbye-section">
+            <h4>Final Doorway</h4>
+            <p>Whenever you are ready to lock this realm forever, press the button below to close the connection into eternal darkness.</p>
+            <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b); width: 100%;" onclick="triggerRealmShutdown()">
+              Bye 🥀
+            </button>
           </div>
         </div>
       </div>
@@ -450,82 +333,21 @@
         <div class="chat-messages" id="chat-stream"></div>
 
         <div class="chat-input-area">
-          <div class="upload-progress-banner" id="upload-banner">⚡ Processing media... Please wait!</div>
-
           <div class="sticker-category-tabs">
             <button class="tab-btn active" onclick="switchStickerTab('emojis', this)">💖 Emojis</button>
-            <button class="tab-btn" onclick="switchStickerTab('memes', this)">😂 Hindi Memes</button>
-            <button class="tab-btn" onclick="switchStickerTab('girlish', this)">🎀 Cute Girlish</button>
           </div>
           
           <div class="sticker-bar" id="sticker-container"></div>
 
           <div class="input-actions-row">
-            <button class="upload-btn" id="voice-record-btn" onclick="toggleVoiceNoteRecording()">🎤</button>
             <label class="upload-btn">
               📷
               <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
             </label>
             
-            <div class="recording-bar-indicator" id="rec-indicator">
-              <span>Recording Voice Note... <b id="rec-timer">0s</b></span>
-            </div>
-
-            <div class="input-text-container" id="text-input-box">
-              <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <div class="input-text-container">
+              <input type="text" id="chat-input" placeholder="Type a final message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
               <button class="btn-primary" onclick="sendChatMessage()">Send 🚀</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 3: EXPANDED LETTERS VAULT (8 CATEGORIES) -->
-      <div class="tab-panel" id="panel-letters">
-        <div class="letters-grid">
-          <div class="letter-card" onclick="openLetterVault('When You Miss Me')"><div class="letter-icon">💌</div><div class="letter-title">When You Miss Me</div></div>
-          <div class="letter-card" onclick="openLetterVault('When You\'re Sad')"><div class="letter-icon">😢</div><div class="letter-title">When You're Sad</div></div>
-          <div class="letter-card" onclick="openLetterVault('Can\'t Sleep')"><div class="letter-icon">🌙</div><div class="letter-title">Can't Sleep</div></div>
-          <div class="letter-card" onclick="openLetterVault('Need Butterflies')"><div class="letter-icon">🦋</div><div class="letter-title">Need Butterflies</div></div>
-          <div class="letter-card" onclick="openLetterVault('When You\'re Stressed / Overwhelmed')"><div class="letter-icon">💆‍♀️</div><div class="letter-title">When Stressed</div></div>
-          <div class="letter-card" onclick="openLetterVault('When You\'re Mad at Me')"><div class="letter-icon">🥺</div><div class="letter-title">When Mad at Me</div></div>
-          <div class="letter-card" onclick="openLetterVault('When You Need a Hug')"><div class="letter-icon">🫂</div><div class="letter-title">Need a Hug</div></div>
-          <div class="letter-card" onclick="openLetterVault('When You\'re Proud of Us')"><div class="letter-icon">👑</div><div class="letter-title">Proud of Us</div></div>
-        </div>
-      </div>
-
-      <!-- TAB 4: WATCH2GETHER -->
-      <div class="tab-panel" id="panel-watch2gether">
-        <div class="feature-container">
-          <div class="feature-card">
-            <div style="font-size: 3.5rem;">🎬</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.3rem;">Watch2Gether</h3>
-            
-            <div class="notice-box">
-              <strong>⚠️ Important Notice:</strong>
-              <p style="margin-top: 4px;">Click this to watch2gether with Danaw, but please <b>inform him before clicking</b> so he can join the room with you!</p>
-            </div>
-
-            <a href="https://w2g.tv/en/room/mobile/?access_key=g6q89uv9n7q3dj4j8qf7nr" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width: 100%; padding: 12px; font-size: 0.95rem;" onclick="addXP(20)">
-              Open Watch Room 🍿
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 5: PLAY2GETHER -->
-      <div class="tab-panel" id="panel-play2gether">
-        <div class="feature-container">
-          <div class="feature-card">
-            <div style="font-size: 3.5rem;">🎮</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.3rem;">Play2Gether</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Paste a game/room link below to share it in the chat or launch it together instantly!</p>
-
-            <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-              <input type="url" id="play-link-input" placeholder="Paste game room link here..." />
-              <div class="btn-group" style="width: 100%;">
-                <button class="btn-primary" style="flex: 1;" onclick="sharePlayLink()">Share in Chat 💬</button>
-                <button class="btn-secondary" style="flex: 1;" onclick="launchPlayLink()">Launch 🚀</button>
-              </div>
             </div>
           </div>
         </div>
@@ -536,105 +358,11 @@
     <!-- BOTTOM NAVBAR -->
     <div class="bottom-nav">
       <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
-      <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
-      <a class="nav-item" onclick="switchTab('letters', this)"><span class="nav-icon">💌</span><span>Letters</span></a>
-      <a class="nav-item" onclick="switchTab('watch2gether', this)"><span class="nav-icon">🎬</span><span>Watch2Gether</span></a>
-      <a class="nav-item" onclick="switchTab('play2gether', this)"><span class="nav-icon">🎮</span><span>Play2Gether</span></a>
-    </div>
-  </div>
-
-  <!-- VOICE CALL MODAL -->
-  <div class="modal" id="call-modal">
-    <div class="modal-card">
-      <div class="avatar" style="font-size: 3rem; margin-bottom: 10px;">📞</div>
-      <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 5px;">Calling...</h2>
-      <p id="call-status-desc" style="font-size: 0.85rem;">Connecting WebRTC voice channel...</p>
-      
-      <div class="btn-group" id="call-actions-incoming" style="display: none; margin-top: 15px;">
-        <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #047857);" onclick="acceptIncomingCall()">Accept Call 📞</button>
-        <button class="btn-secondary" onclick="rejectIncomingCall()">Decline 🛑</button>
-      </div>
-
-      <div class="btn-group" id="call-actions-active" style="margin-top: 15px;">
-        <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b);" onclick="endVoiceCall()">Hang Up 🛑</button>
-      </div>
-    </div>
-  </div>
-
-  <audio id="remote-audio" autoplay style="display:none;"></audio>
-
-  <!-- DYNAMIC LETTER VAULT MODAL WITH SHUFFLE BUTTON -->
-  <div class="modal" id="letter-modal">
-    <div class="modal-card">
-      <h2 id="letter-modal-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Dynamic Letter</h2>
-      <p id="letter-modal-body" style="font-style: italic; font-size: 0.92rem; line-height: 1.6; color: #cbd5e1; text-align: left; margin-bottom: 20px; white-space: pre-wrap;"></p>
-      <div class="btn-group">
-        <button class="btn-primary" onclick="shuffleCurrentLetter()">Generate Another Letter 🔀</button>
-        <button class="btn-secondary" onclick="closeModal('letter-modal')">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FULLSCREEN LIGHTBOX MODAL -->
-  <div class="lightbox-modal" id="lightbox-modal" onclick="closeModal('lightbox-modal')">
-    <img id="lightbox-img" class="lightbox-img" src="" alt="Expanded Memory" />
-    <div class="lightbox-meta">
-      <span id="lightbox-sender">Sender</span>
-      <span id="lightbox-time">Time</span>
-    </div>
-  </div>
-
-  <!-- ADMIN PIN MODAL -->
-  <div class="modal" id="admin-pin-modal">
-    <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Mr. Sudip Access</h2>
-      <p style="font-size: 0.85rem;">Enter secret PIN to log in as Mr. Sudip:</p>
-      <input type="password" id="admin-pin-input" placeholder="••••" style="text-align: center; font-size: 1.2rem; margin-bottom: 15px;">
-      <div class="btn-group">
-        <button class="btn-primary" onclick="verifyAdminPin()">Login as Mr. Sudip</button>
-        <button class="btn-secondary" onclick="closeModal('admin-pin-modal')">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STATUS & PRIVACY MODAL -->
-  <div class="modal" id="status-modal">
-    <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Update Status</h2>
-      <input type="text" id="status-input" placeholder="Enter status message..." style="margin-bottom: 15px;">
-      <div class="btn-group">
-        <button class="btn-primary" onclick="updateGlobalStatus()">Set Status 🚀</button>
-        <button class="btn-secondary" onclick="closeModal('status-modal')">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DELETE MESSAGE MODAL -->
-  <div class="modal" id="delete-msg-modal">
-    <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Delete Message</h2>
-      <p style="font-size: 0.85rem;">Choose how you want to delete this message:</p>
-      <div class="btn-group" style="flex-direction: column; gap: 8px;">
-        <button class="btn-primary" style="background: #ef4444;" onclick="confirmDeleteMsg('everyone')">Delete for Everyone 🗑️</button>
-        <button class="btn-secondary" onclick="confirmDeleteMsg('me')">Delete for Me 🙈</button>
-        <button class="btn-secondary" style="border:none;" onclick="closeModal('delete-msg-modal')">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PLAY2GETHER FRAME MODAL -->
-  <div class="modal" id="game-frame-modal">
-    <div class="modal-card" style="max-width: 90vw; width: 600px; height: 80vh; display: flex; flex-direction: column; padding: 1rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1rem;">🎮 Play2Gether</h3>
-        <button class="btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="closeModal('game-frame-modal')">Close ✖</button>
-      </div>
-      <iframe id="game-iframe" style="width: 100%; flex: 1; border: 1px solid var(--glass-border); border-radius: 12px; background: #000;" src="about:blank"></iframe>
+      <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat Archive</span></a>
     </div>
   </div>
 
   <script>
-    // FIREBASE REALTIME CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyBgzxaX1n3okDxcAhMV2GRuy7kBrxqXKcA",
       authDomain: "mrs-sudip.firebaseapp.com",
@@ -647,153 +375,19 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let currentUserRole = "Mrs. Sudip";
-    let currentMood = "Soft";
-    let flowerTapCount = 0;
-    const SECRET_PIN = "7231";
-
-    let peer = null;
-    let localStream = null;
-    let activeCall = null;
-    let pendingIncomingCall = null;
-    let selectedMsgKeyForDelete = null;
-    let currentActiveLetterCategory = "";
-
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let isRecordingVoice = false;
-    let recordingTimer = null;
-    let recordSeconds = 0;
-
-    let hugHoldTimer = null;
-    let hugProgress = 0;
-    let userXP = 0;
-
-    const memesList = ["https://i.imgflip.com/4/30b1gx.jpg", "https://i.imgflip.com/1g8my4.jpg", "https://i.imgflip.com/26am.jpg"];
-    const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
-    const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
-
-    /* DYNAMIC EXPANDED LETTERS POOL */
-    const letterVaultDatabase = {
-      "When You Miss Me": [
-        "Even when miles stretch between us, close your eyes and feel my heartbeat. You are never truly alone—I carry your name in every breath.",
-        "Missing me is just your heart's way of reminding you how deeply we are attached. I am counting every second until I hold you again.",
-        "Look up at the night sky. The same moon that watches over you is shining on me. We are beneath the very same sky, forever connected.",
-        "Whenever the room feels too quiet, remember the sound of my whisper promising you that I am yours, always and without end.",
-        "Distance is just a physical test for how far love can travel. My love reaches you instantly, no matter where you are right now.",
-        "I miss you too—more than words can write down. Wrap your arms around yourself, squeeze tight, and consider that my warm hug.",
-        "You are my favorite thought every morning and my last peace every night. Missing you is proof of how magical we are.",
-        "If I had a single flower for every time I thought of you while we were apart, I'd be walking through an endless garden forever.",
-        "Hold onto this truth: every moment apart is just leading up to an even sweeter reunion. I love you endlessly.",
-        "Close your eyes, breathe gently, and know that right at this second, I am thinking of you with all my heart."
-      ],
-      "When You're Sad": [
-        "It is okay to rest your heavy heart today. You don't have to be strong all the time. I am right here to carry the weight with you.",
-        "Let the tears fall if they need to; they are just washing away the heaviness. I am holding your hand through the dark.",
-        "Even on your gloomiest days, your spirit is precious to me. Take all the time you need—I am not going anywhere.",
-        "Remember that stormy clouds always pass, leaving behind a clear sky. We will find your sunshine together again soon.",
-        "If you feel like talking, I am here to listen. If you want silence, I will sit quietly by your side. You are loved beyond measure.",
-        "Your pain matters to me because you are my whole world. Let me wrap you in comfort and protect your heart today.",
-        "Softly reminding you: you have survived 100% of your hardest days, and you don't have to fight this one alone.",
-        "Take a deep breath in, hold it, and let it out. Step by step, we will make everything alright again.",
-        "You are allowed to feel broken sometimes. I promise to help collect the pieces and hold them gently with you.",
-        "Sending you infinite quiet warmth. You are deeply cherished, beautiful, and never forgotten."
-      ],
-      "Can't Sleep": [
-        "Rest your weary mind, my love. Let go of all the thoughts from today. Tomorrow is a brand new page we will write together.",
-        "Close your eyes and visualize us lying together under a warm blanket, listening to the soft rain outside. Sleep peacefully.",
-        "The night is gentle and safe. Let my voice in your memory guide you into sweet, effortless dreams.",
-        "Stop counting the hours on the clock. Just feel the rhythm of your chest rising and falling. You are safe and loved.",
-        "I wish I was there to stroke your hair and whisper soft stories until your eyelids grow heavy. Dream of our happy realm.",
-        "Leave all your worries at the edge of the bed. You have done enough today. It is time to let your soul rest.",
-        "Think of my arms wrapped securely around you, shielding you from the world. Sweet dreams, my heart.",
-        "Whenever insomnia creeps in, remember that my heart is keeping watch over yours all night long.",
-        "May the night sky whisper soft lullabies to you. Sleep gently, knowing you are my dream come true.",
-        "Breathe slow... count my kisses in your mind... one... two... three... fall asleep in warmth."
-      ],
-      "Need Butterflies": [
-        "Remember the very first time our eyes locked? That exact spark hasn't faded one bit—it grows brighter every single day.",
-        "You still make my heart skip a beat every time your name pops up on my phone. You are my forever crush.",
-        "If I could relive any moment in history, I would choose the moment I realized I was falling completely in love with you.",
-        "Just a reminder: you are intoxicating, gorgeous, and absolutely breathtaking. My heart belongs entirely to you.",
-        "Every single kiss we share feels like the very first one—electric, tender, and unforgettable.",
-        "You have this quiet magic that turns my ordinary days into something extraordinary just by existing.",
-        "I still get tongue-tied thinking about how lucky I am to have you as my partner in this lifetime.",
-        "Your smile is my favorite visual in the entire universe. It sets off fireworks inside my chest.",
-        "Stealing glances with you across a room will never get old. You are my forever butterfly feeling.",
-        "Hold your hand over your heart right now—that flutter you feel? That is my soul calling out to yours."
-      ],
-      "When You're Stressed / Overwhelmed": [
-        "Stop everything for ten seconds. Drop your shoulders, unclench your jaw, and take one deep, full breath. You've got this.",
-        "The world demands too much sometimes, but you don't have to conquer it all today. One small step at a time is enough.",
-        "You are so capable and resilient, but remember it's okay to take a pause. Your peace is more important than productivity.",
-        "Don't let the noise of the day overcrowd your mind. You are grounded, safe, and deeply supported by me.",
-        "Whatever is stressing you right now will pass. Let me handle the heavy thinking for a while while you rest.",
-        "You don't have to carry the whole world on your shoulders. Lean on me—that is what I am here for.",
-        "Take a break, drink some water, and remember that nothing in this world changes how brilliant you are.",
-        "Pause and reset. You are doing so much better than you think you are. I am so proud of your dedication.",
-        "Let go of what you cannot control right now. Focus only on this quiet moment with me.",
-        "Sending you grounding energy and peace. Breathe in calm, breathe out stress."
-      ],
-      "When You're Mad at Me": [
-        "I am so sorry for hurting or frustrating you. Your feelings are completely valid, and I am here to listen whenever you're ready.",
-        "My goal is always to protect your heart, never to cause you pain. Please let me know how I can make this right.",
-        "Even when we disagree or feel frustrated, my love for you does not waver for a single second.",
-        "I am taking a step back to reflect on my actions. You deserve grace, patience, and my best self always.",
-        "I value us far too much to let misunderstandings stay between us. I am ready to talk and listen whenever you are.",
-        "Please take all the space and time you need. I will be right here, ready to embrace you with open arms.",
-        "Your peace matters to me. I promise to work harder to understand and honor your heart.",
-        "No matter how angry we get, remember we are on the same team fighting the problem, not each other.",
-        "I am sending you a gentle white flag of peace. I love you more than any disagreement.",
-        "Let's get through this together. My heart belongs to you, always and unconditionally."
-      ],
-      "When You Need a Hug": [
-        "Open your arms, wrap them tight around yourself, and close your eyes. That is my heart squeezing yours with all its strength.",
-        "Imagine me wrapping you in a warm, cozy blanket, pulling you close against my chest, and holding you until you feel safe.",
-        "I am sending a big, long, uninterrupted embrace straight to your heart right now. Feel the warmth.",
-        "No matter where I am, my arms are always open for you. Consider yourself hugged tightly today.",
-        "Here is a hug that doesn't let go until all your worries drop away. Hold on tight.",
-        "Feel my warm breath, my chin resting gently on your head, and my arms keeping you secure from the world.",
-        "A virtual hug coming your way—charged with infinite affection, safety, and deep warmth.",
-        "Whenever you feel cold or distant, wrap yourself in this letter and feel my arms around you.",
-        "Holding you tight in my thoughts today and sending endless affection your way.",
-        "Consider this an unlimited coupon for a real, long, tight hug the next second I see you."
-      ],
-      "When You're Proud of Us": [
-        "Look how far we have come together! Every challenge we faced only made our foundation stronger and unbreakable.",
-        "We built this private realm step by step, with patience, love, and unwavering commitment. I am so proud of us.",
-        "Out of billions of people on Earth, we found each other and created something truly rare and beautiful.",
-        "Our journey hasn't always been easy, but every single mile has been worth it with you by my side.",
-        "Here is to our growth, our shared laughs, our quiet victories, and our endless future together.",
-        "You and me—we make the absolute best team. There is nothing in this world we cannot navigate together.",
-        "I look at what we've built and my heart swells with gratitude. We are creating a legacy of love.",
-        "Celebrating us today! Thank you for being my anchor, my partner, and my best friend.",
-        "Our story is my favorite masterpiece. I wouldn't trade a single second of our shared life.",
-        "Cheers to our past memories, our present joy, and the golden future waiting for us!"
-      ]
-    };
-
-    function getFormattedTime(timestamp = Date.now()) {
-      return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    }
+    let currentUserRole = "Sahiba Kalsoom";
+    const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "✨", "🖤", "🫂", "🥀"];
 
     window.addEventListener('load', () => {
-      const savedRole = localStorage.getItem('user_role');
-      if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
-      
-      setupPresenceSystem();
       renderStickerPresets('emojis');
       initializeChatFeed();
-      listenForStatusUpdates();
-      fetchAIRealmProse();
       initSVGButterflies();
     });
 
-    /* SVG BUTTERFLY OVERLAY ENGINE */
     function initSVGButterflies() {
       const container = document.getElementById('bf-overlay-container');
       container.innerHTML = "";
-      const bfCount = 10;
+      const bfCount = 14;
       
       for (let i = 0; i < bfCount; i++) {
         const bf = document.createElement('div');
@@ -801,10 +395,6 @@
         bf.style.left = `${Math.random() * 85 + 5}%`;
         bf.style.top = `${Math.random() * 80 + 10}%`;
         
-        const duration = Math.random() * 12 + 10;
-        const delay = Math.random() * 5;
-        
-        bf.style.transition = `all ${duration}s ease-in-out`;
         bf.innerHTML = `
           <svg viewBox="0 0 100 100" width="100%" height="100%">
             <g class="wing-left">
@@ -819,52 +409,7 @@
           </svg>
         `;
         container.appendChild(bf);
-
-        setInterval(() => {
-          const newX = Math.random() * 85 + 5;
-          const newY = Math.random() * 80 + 10;
-          const rot = (Math.random() - 0.5) * 60;
-          bf.style.transform = `translate(${newX - 40}px, ${newY - 40}px) rotate(${rot}deg)`;
-        }, duration * 1000 + delay * 1000);
       }
-    }
-
-    async function fetchAIRealmProse() {
-      try {
-        const res = await fetch('/api/ai-novelist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode: 'greeting', userRole: currentUserRole, mood: currentMood })
-        });
-        const data = await res.json();
-        if (data.text) document.getElementById('realm-greeting-body').innerText = data.text;
-      } catch (e) {
-        document.getElementById('realm-greeting-body').innerText = "Welcome back to your private shared realm.";
-      }
-
-      try {
-        const resDrop = await fetch('/api/ai-novelist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode: 'daily_drop', userRole: currentUserRole, mood: currentMood })
-        });
-        const dataDrop = await resDrop.json();
-        if (dataDrop.text) document.getElementById('daily-love-drop-text').innerText = dataDrop.text;
-      } catch (e) {
-        document.getElementById('daily-love-drop-text').innerText = "Every moment shared builds another golden memory.";
-      }
-    }
-
-    function addXP(amount) {
-      userXP += amount;
-      document.getElementById('xp-display').innerText = userXP;
-    }
-
-    function setMood(mood, el) {
-      currentMood = mood;
-      document.querySelectorAll('.mood-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      addXP(10);
     }
 
     function switchTab(tabId, navEl) {
@@ -876,300 +421,44 @@
 
     function selectRole(role) {
       currentUserRole = role;
-      localStorage.setItem('user_role', role);
-      enterWorld();
+      document.getElementById('gateway').style.opacity = '0';
+      setTimeout(() => document.getElementById('gateway').style.display = 'none', 800);
     }
 
-    function openAdminPinModal() { openModal('admin-pin-modal'); }
+    /* SCREEN BLAST & SHUTDOWN ANIMATION */
+    function triggerRealmShutdown() {
+      // Confetti burst of red/black rose petals before blackout
+      confetti({
+        particleCount: 120,
+        spread: 160,
+        origin: { y: 0.6 },
+        colors: ['#ff2a54', '#000000', '#ffb3c1', '#880015']
+      });
 
-    function verifyAdminPin() {
-      if (document.getElementById('admin-pin-input').value.trim() === SECRET_PIN) {
-        currentUserRole = "Mr. Sudip";
-        localStorage.setItem('user_role', 'Mr. Sudip');
-        closeModal('admin-pin-modal');
-        enterWorld();
-      } else alert("Incorrect PIN!");
-    }
-
-    function handleFlowerTap() {
-      flowerTapCount++;
-      confetti({ particleCount: 10, spread: 30, origin: { y: 0.4 } });
-      document.getElementById('flower-hint').innerText = `Taps: ${flowerTapCount} / 7`;
-      if (flowerTapCount >= 7) {
-        flowerTapCount = 0;
-        openAdminPinModal();
-      }
-    }
-
-    function enterWorld() {
-      const gateway = document.getElementById('gateway');
-      gateway.style.opacity = '0';
+      document.body.classList.add('shutdown');
+      
       setTimeout(() => {
-        gateway.style.display = 'none';
-        updateHeaderInfo();
-        initializeVoicePeer();
-        listenForPendingCalls();
-      }, 800);
+        document.getElementById('blackout-overlay').classList.add('active');
+      }, 600);
     }
 
-    function updateHeaderInfo() {
-      const isSudip = currentUserRole === "Mr. Sudip";
-      document.getElementById('partner-avatar').innerText = isSudip ? "🎀" : "👑";
-      document.getElementById('partner-title-display').innerText = isSudip ? "Mrs. Sudip 🎀" : "Mr. Sudip 👑";
-      document.getElementById('kiss-action-btn').innerText = isSudip ? "🫂 Hug & Kiss" : "💋 Kiss Danaww";
-    }
-
-    /* PRESENCE SYSTEM */
-    function setupPresenceSystem() {
-      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
-      const presenceRef = db.ref(`appState/presence/${userKey}`);
-      db.ref('.info/connected').on('value', (snap) => {
-        if (snap.val()) {
-          presenceRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
-          presenceRef.set({ online: true, lastSeen: Date.now() });
-        }
-      });
-
-      const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
-      db.ref(`appState/presence/${partnerKey}`).on('value', (snap) => {
-        const data = snap.val();
-        const displayEl = document.getElementById('partner-presence-display');
-        if (data) {
-          displayEl.innerText = data.online ? "Online 💚" : `Last seen ${getFormattedTime(data.lastSeen)}`;
-        }
-      });
-    }
-
-    function openStatusModal() { openModal('status-modal'); }
-
-    async function updateGlobalStatus() {
-      const newStatus = document.getElementById('status-input').value.trim();
-      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
-      if (newStatus) {
-        await db.ref(`appState/status/${userKey}`).set({ text: newStatus, timestamp: Date.now() });
-      }
-      closeModal('status-modal');
-    }
-
-    function listenForStatusUpdates() {
-      const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
-      db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
-        const data = snap.val();
-        if (data && data.text) document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
-      });
-    }
-
-    /* HOLD FOR HUG */
-    function startHugHold() {
-      hugProgress = 0;
-      document.getElementById('hug-fill').style.width = '0%';
-      hugHoldTimer = setInterval(() => {
-        hugProgress += 5;
-        document.getElementById('hug-fill').style.width = `${hugProgress}%`;
-        if (hugProgress >= 100) {
-          clearInterval(hugHoldTimer);
-          confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
-          addXP(50);
-          triggerKissDanawwExplosion();
-          alert("Warm Hug Delivered! 🫂");
-          hugProgress = 0;
-          document.getElementById('hug-fill').style.width = '0%';
-        }
-      }, 100);
-    }
-
-    function endHugHold() {
-      if (hugHoldTimer) clearInterval(hugHoldTimer);
-      hugProgress = 0;
-      document.getElementById('hug-fill').style.width = '0%';
-    }
-
-    /* PLAY2GETHER ENGINE */
-    function sharePlayLink() {
-      const linkInput = document.getElementById('play-link-input');
-      const url = linkInput.value.trim();
-      if (!url) { alert("Please paste a link first!"); return; }
-      sendChatMessage(`🎮 Join me to Play2Gether!\n${url}`);
-      linkInput.value = "";
-      alert("Game link shared to chat stream!");
-    }
-
-    function launchPlayLink() {
-      const linkInput = document.getElementById('play-link-input');
-      const url = linkInput.value.trim();
-      if (!url) { alert("Please paste a link first!"); return; }
-      document.getElementById('game-iframe').src = url;
-      openModal('game-frame-modal');
-      addXP(15);
-    }
-
-    /* VOICE RECORDER */
-    async function toggleVoiceNoteRecording() {
-      const recBtn = document.getElementById('voice-record-btn');
-      const recInd = document.getElementById('rec-indicator');
-      const textContainer = document.getElementById('text-input-box');
-
-      if (!isRecordingVoice) {
-        try {
-          const voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(voiceStream);
-          audioChunks = [];
-          mediaRecorder.ondataavailable = event => { if (event.data.size > 0) audioChunks.push(event.data); };
-          mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/mp4' });
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-              await sendChatMessage("🎙️ Voice Note", reader.result, 'audio');
-            };
-            reader.readAsDataURL(audioBlob);
-            voiceStream.getTracks().forEach(track => track.stop());
-          };
-          mediaRecorder.start();
-          isRecordingVoice = true;
-          recBtn.classList.add('record-btn-active');
-          recBtn.innerText = "⏹️";
-          textContainer.style.display = 'none';
-          recInd.style.display = 'flex';
-          recordSeconds = 0;
-          recordingTimer = setInterval(() => { recordSeconds++; document.getElementById('rec-timer').innerText = `${recordSeconds}s`; }, 1000);
-        } catch (err) { alert("Mic permission failed."); }
-      } else {
-        mediaRecorder.stop();
-        isRecordingVoice = false;
-        clearInterval(recordingTimer);
-        recBtn.classList.remove('record-btn-active');
-        recBtn.innerText = "🎤";
-        textContainer.style.display = 'flex';
-        recInd.style.display = 'none';
-      }
-    }
-
-    /* FILE UPLOADS */
-    async function handleFileUpload(e, type) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        sendChatMessage("📷 Image shared", event.target.result, 'image');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    /* WEBRTC VOICE CALLING */
-    function initializeVoicePeer() {
-      if (peer) peer.destroy();
-      const peerId = currentUserRole === "Mr. Sudip" ? "sudip-peer-v3" : "wifey-peer-v3";
-      peer = new Peer(peerId, { config: {'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }]}});
-
-      peer.on('call', (incomingCall) => {
-        pendingIncomingCall = incomingCall;
-        document.getElementById('call-status-title').innerText = "Incoming Voice Call...";
-        document.getElementById('call-actions-incoming').style.display = 'flex';
-        document.getElementById('call-actions-active').style.display = 'none';
-        openModal('call-modal');
-      });
-    }
-
-    function listenForPendingCalls() {
-      db.ref('appState/activeCallSignal').on('value', (snapshot) => {
-        const callData = snapshot.val();
-        if (callData && callData.status === 'ringing' && callData.caller !== currentUserRole) {
-          document.getElementById('call-status-title').innerText = "Incoming Call...";
-          document.getElementById('call-actions-incoming').style.display = 'flex';
-          document.getElementById('call-actions-active').style.display = 'none';
-          openModal('call-modal');
-        } else if (!callData) closeModal('call-modal');
-      });
-    }
-
-    async function initiateVoiceCall() {
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const targetPeerId = currentUserRole === "Mr. Sudip" ? "wifey-peer-v3" : "sudip-peer-v3";
-        await db.ref('appState/activeCallSignal').set({ caller: currentUserRole, status: 'ringing', timestamp: Date.now() });
-
-        document.getElementById('call-status-title').innerText = "Ringing...";
-        document.getElementById('call-actions-incoming').style.display = 'none';
-        document.getElementById('call-actions-active').style.display = 'flex';
-        openModal('call-modal');
-
-        activeCall = peer.call(targetPeerId, localStream);
-        activeCall.on('stream', (remoteStream) => {
-          document.getElementById('remote-audio').srcObject = remoteStream;
-          document.getElementById('call-status-title').innerText = "Connected 🎙️";
-        });
-        activeCall.on('close', () => endVoiceCall());
-      } catch (err) { alert("Mic required for call."); closeModal('call-modal'); }
-    }
-
-    async function acceptIncomingCall() {
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        if (pendingIncomingCall) {
-          pendingIncomingCall.answer(localStream);
-          activeCall = pendingIncomingCall;
-        }
-        document.getElementById('call-actions-incoming').style.display = 'none';
-        document.getElementById('call-actions-active').style.display = 'flex';
-        document.getElementById('call-status-title').innerText = "Connected 🎙️";
-        if (activeCall) {
-          activeCall.on('stream', (remoteStream) => { document.getElementById('remote-audio').srcObject = remoteStream; });
-          activeCall.on('close', () => endVoiceCall());
-        }
-      } catch (err) { alert("Mic permission required."); }
-    }
-
-    function rejectIncomingCall() { db.ref('appState/activeCallSignal').remove(); endVoiceCall(); }
-    function endVoiceCall() {
-      if (activeCall) activeCall.close();
-      if (pendingIncomingCall) pendingIncomingCall.close();
-      if (localStream) localStream.getTracks().forEach(track => track.stop());
-      db.ref('appState/activeCallSignal').remove();
-      closeModal('call-modal');
-    }
-
-    /* CHAT FEED SYNC */
     function initializeChatFeed() {
-      const chatRef = db.ref('appState/chatFeed');
-      chatRef.on('child_added', (snapshot) => { appendSingleMessage(snapshot.key, snapshot.val()); });
-      chatRef.on('child_changed', (snapshot) => {
-        const el = document.getElementById(`msg-${snapshot.key}`);
-        if (el) {
-          const msg = snapshot.val();
-          if (msg.deleted) {
-            if (currentUserRole === "Mr. Sudip") {
-              el.classList.add('msg-deleted-log');
-              const bodyEl = el.querySelector('.msg-body');
-              if (bodyEl) bodyEl.innerText = `[Deleted Log] ${msg.text || ''}`;
-            } else el.remove();
-          }
-        }
+      db.ref('appState/chatFeed').on('child_added', (snapshot) => {
+        appendSingleMessage(snapshot.key, snapshot.val());
       });
     }
 
     function appendSingleMessage(key, msg) {
-      if (msg.deleted && currentUserRole !== "Mr. Sudip") return;
-
       const chatContainer = document.getElementById('chat-stream');
       const div = document.createElement('div');
       div.id = `msg-${key}`;
       
-      const isSudip = msg.sender === "Mr. Sudip";
-      div.className = `msg-bubble ${isSudip ? 'msg-sudip' : 'msg-wifey'} ${msg.deleted ? 'msg-deleted-log' : ''}`;
-      div.onclick = () => openDeleteModal(key);
+      const isAnonymous = msg.sender === "Mr. Anonymous";
+      div.className = `msg-bubble ${isAnonymous ? 'msg-sudip' : 'msg-wifey'}`;
 
-      let formattedText = msg.text || '';
-      // Format URLs in chat text into clickable links
-      formattedText = formattedText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--soft-pink); text-decoration: underline;">$1</a>');
-
-      let bodyContent = msg.text ? `<div class="msg-body">${msg.deleted ? '[Deleted Log] ' : ''}${formattedText}</div>` : '';
-
-      if (msg.mediaType === 'audio') {
-        bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
-      } else if (msg.mediaType === 'image') {
-        bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="openLightbox('${msg.media}', '${msg.sender}', '${msg.time}')" />`;
-      } else if (msg.mediaType === 'meme') {
-        bodyContent += `<img src="${msg.media}" class="meme-card" />`;
+      let bodyContent = `<div class="msg-body">${msg.text || ''}</div>`;
+      if (msg.media) {
+        bodyContent += `<img src="${msg.media}" class="chat-media-frame" />`;
       }
 
       div.innerHTML = `<div class="msg-sender"><span>${msg.sender}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
@@ -1177,157 +466,70 @@
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    function openLightbox(url, sender, time) {
-      document.getElementById('lightbox-img').src = url;
-      document.getElementById('lightbox-sender').innerText = `Shared by: ${sender}`;
-      document.getElementById('lightbox-time').innerText = time;
-      openModal('lightbox-modal');
-    }
-
-    async function sendChatMessage(text = null, mediaUrl = null, mediaType = 'image') {
+    async function sendChatMessage(text = null, mediaUrl = null) {
       const inputEl = document.getElementById('chat-input');
       const messageText = text || inputEl.value.trim();
       if (!messageText && !mediaUrl) return;
+      if (!text) inputEl.value = "";
 
-      if (!text && !mediaUrl) inputEl.value = "";
-
-      const newMsg = { sender: currentUserRole, text: messageText, time: getFormattedTime(), deleted: false };
-      if (mediaUrl) { newMsg.media = mediaUrl; newMsg.mediaType = mediaType; }
+      const newMsg = {
+        sender: currentUserRole,
+        text: messageText,
+        time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+      };
+      if (mediaUrl) newMsg.media = mediaUrl;
 
       await db.ref('appState/chatFeed').push(newMsg);
-      addXP(15);
     }
 
-    function openDeleteModal(msgKey) { selectedMsgKeyForDelete = msgKey; openModal('delete-msg-modal'); }
-    async function confirmDeleteMsg(type) {
-      if (!selectedMsgKeyForDelete) return;
-      if (type === 'everyone') await db.ref(`appState/chatFeed/${selectedMsgKeyForDelete}`).update({ deleted: true });
-      else if (type === 'me') {
-        const el = document.getElementById(`msg-${selectedMsgKeyForDelete}`);
-        if (el) el.remove();
-      }
-      closeModal('delete-msg-modal');
-    }
-
-    /* DYNAMIC EXPANDED LETTERS VAULT ENGINE */
-    function openLetterVault(category) {
-      currentActiveLetterCategory = category;
-      document.getElementById('letter-modal-title').innerText = category;
-      shuffleCurrentLetter();
-      openModal('letter-modal');
-    }
-
-    function shuffleCurrentLetter() {
-      const pool = letterVaultDatabase[currentActiveLetterCategory] || [
-        "Whenever you feel alone, remember that somewhere in this realm, someone's quietest thoughts are always reserved for you."
-      ];
-      const randomText = pool[Math.floor(Math.random() * pool.length)];
-      document.getElementById('letter-modal-body').innerText = randomText;
-      addXP(10);
-    }
-
-    /* STICKERS */
-    function switchStickerTab(packKey, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderStickerPresets(packKey);
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => sendChatMessage("📷 Shared memory", event.target.result);
+      reader.readAsDataURL(file);
     }
 
     function renderStickerPresets(packKey) {
       const container = document.getElementById('sticker-container');
       container.innerHTML = "";
-      if (packKey === 'emojis') {
-        cuteEmojis.forEach(emoji => {
-          const pill = document.createElement('button');
-          pill.className = 'emoji-pill-btn';
-          pill.innerText = emoji;
-          pill.onclick = () => { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); };
-          container.appendChild(pill);
-        });
-      } else {
-        const selectedMemes = packKey === 'memes' ? memesList : girlishMemes;
-        selectedMemes.forEach(url => {
-          const thumb = document.createElement('div');
-          thumb.className = 'meme-btn-thumb';
-          thumb.innerHTML = `<img src="${url}" loading="lazy" />`;
-          thumb.onclick = () => sendChatMessage("😂 Meme", url, 'meme');
-          container.appendChild(thumb);
-        });
-      }
+      cuteEmojis.forEach(emoji => {
+        const pill = document.createElement('button');
+        pill.className = 'emoji-pill-btn';
+        pill.innerText = emoji;
+        pill.onclick = () => { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); };
+        container.appendChild(pill);
+      });
     }
 
-    /* KISS EXPLOSION */
-    function triggerKissDanawwExplosion() {
-      const overlay = document.getElementById('kiss-overlay');
-      overlay.innerHTML = "";
-      overlay.classList.add('active');
-      const kissSymbols = ['💋', '💖', '😘', '🌹', '❤️', '🫂', '🎀'];
-      for (let i = 0; i < 45; i++) {
-        const p = document.createElement('div');
-        p.className = 'kiss-particle';
-        p.innerText = kissSymbols[Math.floor(Math.random() * kissSymbols.length)];
-        p.style.setProperty('--dx', (Math.random() - 0.5) * window.innerWidth * 0.9 + 'px');
-        p.style.setProperty('--dy', (Math.random() - 0.5) * window.innerHeight * 0.9 + 'px');
-        p.style.setProperty('--rot', (Math.random() - 0.5) * 360 + 'deg');
-        overlay.appendChild(p);
-      }
-      confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
-      addXP(25);
-      setTimeout(() => { overlay.classList.remove('active'); overlay.innerHTML = ""; }, 2500);
-    }
-
-    function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-    /* BACKGROUND PARTICLES ENGINE */
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
-    let floatingItems = [];
-    const elementsList = ['🦋', '💖', '🌸', '🌹', '❤️', '✨'];
+    let items = [];
+    const symbols = ['🦋', '💖', '🥀', '✨'];
 
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    class FloatingItem {
-      constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = canvas.height + Math.random() * 50;
-        this.size = Math.random() * 22 + 16;
-        this.speedY = Math.random() * 1.2 + 0.5;
-        this.speedX = Math.random() * 1.0 - 0.5;
-        this.symbol = elementsList[Math.floor(Math.random() * elementsList.length)];
-        this.opacity = Math.random() * 0.7 + 0.3;
-      }
-      update() {
-        this.y -= this.speedY;
-        this.x += Math.sin(this.y * 0.02) + this.speedX;
-        if (this.y < -40) this.reset();
-      }
-      draw() {
-        ctx.globalAlpha = this.opacity;
-        ctx.font = `${this.size}px serif`;
-        ctx.fillText(this.symbol, this.x, this.y);
-      }
-    }
-
-    for (let i = 0; i < 35; i++) floatingItems.push(new FloatingItem());
-
-    canvas.addEventListener('click', (e) => {
-      floatingItems.forEach(item => {
-        const dist = Math.hypot(e.clientX - item.x, e.clientY - item.y);
-        if (dist < 40 && item.symbol === '🦋') {
-          confetti({ particleCount: 30, spread: 60, origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight } });
-          addXP(30);
-          item.reset();
-        }
+    for (let i = 0; i < 30; i++) {
+      items.push({
+        x: Math.random() * canvas.width,
+        y: canvas.height + Math.random() * 50,
+        size: Math.random() * 20 + 14,
+        speed: Math.random() * 1 + 0.4,
+        symbol: symbols[Math.floor(Math.random() * symbols.length)]
       });
-    });
+    }
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      floatingItems.forEach(item => { item.update(); item.draw(); });
+      items.forEach(item => {
+        item.y -= item.speed;
+        if (item.y < -30) item.y = canvas.height + 30;
+        ctx.globalAlpha = 0.4;
+        ctx.font = `${item.size}px serif`;
+        ctx.fillText(item.symbol, item.x, item.y);
+      });
       requestAnimationFrame(animate);
     }
     animate();
