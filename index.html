@@ -2,537 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title id="page-title">Eternal Connection | Private Realm</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#080306">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>404 - Site Not Found</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
   <style>
-    :root {
-      --bg-dark: #080306;
-      --bg-card: rgba(18, 7, 15, 0.92);
-      --neon-pink: #ff2a54;
-      --pink-glow: rgba(255, 42, 84, 0.45);
-      --soft-pink: #ffb3c1;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --glass-border: rgba(255, 42, 84, 0.3);
-      --gold-accent: #ffd700;
-      --nav-height: 64px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-main);
+      background: #080306;
+      color: #f8fafc;
       height: 100vh; height: 100dvh;
-      overflow: hidden;
       display: flex; justify-content: center; align-items: center;
-      position: relative;
-      transition: background 1.2s ease;
+      padding: 20px;
     }
 
-    body.shutdown {
-      background: #000 !important;
+    .error-card {
+      background: rgba(18, 7, 15, 0.92);
+      border: 1px solid rgba(255, 42, 84, 0.2);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 400px; width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
     }
 
-    body::before {
-      content: "";
-      position: absolute; inset: 0;
-      background: radial-gradient(circle at center, rgba(30, 4, 18, 0.75) 0%, rgba(5, 1, 3, 0.96) 100%);
-      z-index: 0;
-      transition: opacity 1s ease;
+    .error-code {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ff2a54;
+      margin-bottom: 0.5rem;
     }
 
-    body.shutdown::before { opacity: 0; }
-
-    #ambient-canvas { position: fixed; inset: 0; pointer-events: auto; z-index: 1; transition: opacity 1s ease; }
-    body.shutdown #ambient-canvas { opacity: 0; }
-
-    /* GATEWAY OVERLAY */
-    .gateway-overlay {
-      position: fixed; inset: 0;
-      background: rgba(8, 2, 6, 0.96);
-      backdrop-filter: blur(20px);
-      z-index: 100;
-      display: flex; justify-content: center; align-items: center; padding: 20px;
-      transition: opacity 0.8s ease, visibility 0.8s;
+    h1 {
+      font-size: 1.2rem;
+      color: #ffb3c1;
+      margin-bottom: 1rem;
+      font-weight: 600;
     }
 
-    .gateway-card {
-      background: var(--bg-card);
-      border: 1px solid var(--glass-border);
-      border-radius: 28px; padding: 2.5rem 2rem;
-      max-width: 420px; width: 100%; text-align: center;
-      box-shadow: 0 0 50px var(--pink-glow);
+    p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
-
-    .secret-flower {
-      font-size: 3.5rem; display: inline-block; cursor: pointer;
-      margin-bottom: 1rem; animation: floatFlower 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 15px var(--neon-pink));
-    }
-    @keyframes floatFlower { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-    h1 { font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
-    p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.5; }
-
-    .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--neon-pink) 0%, #a80022 100%);
-      color: #fff; border: none; padding: 10px 20px; border-radius: 50px;
-      font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 42, 84, 0.4);
-      white-space: nowrap; font-size: 0.85rem; transition: transform 0.2s, box-shadow 0.2s;
-      text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
-    }
-    .btn-primary:active { transform: scale(0.96); }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      color: var(--text-main); padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer;
-      text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
-    }
-
-    /* MAIN CONTAINER & NAVIGATION */
-    .app-container {
-      width: 100%; max-width: 540px; height: 100vh; height: 100dvh;
-      background: var(--bg-card); border: 1px solid var(--glass-border);
-      backdrop-filter: blur(25px); display: flex; flex-direction: column;
-      position: relative; z-index: 10; overflow: hidden;
-      transition: opacity 1s ease, transform 1s ease;
-    }
-
-    body.shutdown .app-container { opacity: 0; transform: scale(0.95); pointer-events: none; }
-
-    @media (min-width: 550px) {
-      .app-container { height: 94vh; border-radius: 28px; box-shadow: 0 0 50px var(--pink-glow); }
-    }
-
-    .chat-header {
-      padding: 12px 16px; background: rgba(10, 2, 7, 0.92);
-      border-bottom: 1px solid var(--glass-border); display: flex;
-      justify-content: space-between; align-items: center; flex-shrink: 0;
-    }
-
-    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .avatar { font-size: 1.8rem; }
-    .user-details h2 { font-size: 0.95rem; color: var(--soft-pink); font-family: 'Cinzel', serif; }
-    .presence-text { font-size: 0.7rem; color: #a7f3d0; }
-    .global-status { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
-
-    .header-actions { display: flex; gap: 6px; align-items: center; }
-
-    .xp-pill {
-      background: rgba(255, 215, 0, 0.15); border: 1px solid var(--gold-accent);
-      color: var(--gold-accent); padding: 4px 10px; border-radius: 20px;
-      font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; gap: 4px;
-    }
-
-    /* VIEWPORT PANELS */
-    .viewport-content { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
-    .tab-panel { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease-out forwards; }
-    .tab-panel.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* REALM HOME PANEL & BUTTERFLY OVERLAY */
-    .butterfly-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: hidden; }
-    .flutter-bf { position: absolute; width: 36px; height: 36px; filter: drop-shadow(0 0 8px var(--neon-pink)); }
-    .wing-left, .wing-right { transform-origin: center center; animation: wingFlap 0.35s ease-in-out infinite alternate; }
-    @keyframes wingFlap { 0% { transform: scaleX(1); } 100% { transform: scaleX(0.15); } }
-
-    .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; position: relative; z-index: 1; }
-    
-    .ai-greeting-card {
-      background: linear-gradient(135deg, rgba(255, 42, 84, 0.15), rgba(10, 2, 7, 0.8));
-      border: 1px solid var(--neon-pink); border-radius: 20px; padding: 18px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-    .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-pink); margin-bottom: 8px; }
-    .ai-greeting-card p { font-style: italic; color: #e2e8f0; font-size: 0.92rem; line-height: 1.5; margin-bottom: 0; }
-
-    .farewell-memorial-card {
-      background: rgba(18, 7, 15, 0.95); border: 1px solid var(--neon-pink);
-      border-radius: 20px; padding: 20px; text-align: left;
-      box-shadow: 0 0 30px rgba(255, 42, 84, 0.3);
-    }
-    .farewell-memorial-card h4 { font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px; font-size: 1.05rem; }
-    .farewell-memorial-card p { font-size: 0.88rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 12px; }
-
-    .final-goodbye-section {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(10, 2, 7, 0.9));
-      border: 1px solid #ef4444; border-radius: 20px; padding: 20px; text-align: center;
-      margin-bottom: 20px;
-    }
-    .final-goodbye-section h4 { font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 8px; font-size: 1rem; }
-    .final-goodbye-section p { font-size: 0.85rem; color: #f8fafc; margin-bottom: 14px; line-height: 1.5; }
-
-    /* CHAT STREAM PANEL */
-    .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-
-    .msg-bubble {
-      max-width: 82%; padding: 10px 14px; border-radius: 20px;
-      font-size: 0.9rem; line-height: 1.4; animation: popIn 0.3s ease-out; word-break: break-word;
-      position: relative; cursor: pointer; user-select: text;
-    }
-    @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .msg-sudip {
-      align-self: flex-start;
-      background: linear-gradient(135deg, rgba(255, 42, 84, 0.28) 0%, rgba(124, 58, 237, 0.28) 100%);
-      border: 1px solid var(--neon-pink); border-bottom-left-radius: 4px;
-    }
-
-    .msg-wifey {
-      align-self: flex-end;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid var(--glass-border); border-bottom-right-radius: 4px;
-    }
-
-    .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-pink); margin-bottom: 4px; display: flex; justify-content: space-between; }
-    .msg-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
-
-    .chat-media-frame { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--neon-pink); max-height: 250px; object-fit: contain; }
-
-    /* INPUT TOOLBAR */
-    .chat-input-area {
-      padding: 8px 10px; background: rgba(10, 2, 7, 0.95);
-      border-top: 1px solid var(--glass-border); display: flex; flex-direction: column;
-      gap: 6px; flex-shrink: 0;
-    }
-
-    .sticker-category-tabs { display: flex; gap: 6px; overflow-x: auto; font-size: 0.72rem; padding-bottom: 2px; scrollbar-width: none; }
-    .sticker-category-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--soft-pink); padding: 4px 10px; border-radius: 12px; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background: var(--neon-pink); color: #fff; }
-
-    .sticker-bar { display: flex; gap: 8px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 55px; }
-    .sticker-bar::-webkit-scrollbar { display: none; }
-
-    .emoji-pill-btn {
-      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      border-radius: 20px; font-size: 1.3rem; padding: 5px 11px; cursor: pointer; flex-shrink: 0;
-    }
-
-    .input-actions-row { display: flex; gap: 6px; align-items: center; }
-    .upload-btn {
-      background: rgba(255, 42, 84, 0.25); border: 1px solid var(--neon-pink);
-      border-radius: 20px; padding: 8px 12px; font-size: 0.8rem; color: var(--soft-pink);
-      font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .input-text-container { display: flex; flex: 1; gap: 6px; align-items: center; min-width: 0; }
-
-    input[type="text"] {
-      width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border);
-      color: var(--text-main); padding: 10px 14px; border-radius: 25px; font-size: 0.88rem; outline: none;
-    }
-
-    /* BOTTOM MOBILE NAVBAR */
-    .bottom-nav {
-      height: var(--nav-height); background: rgba(8, 2, 6, 0.96);
-      border-top: 1px solid var(--glass-border); display: flex;
-      justify-content: space-around; align-items: center; flex-shrink: 0;
-    }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      color: var(--text-muted); font-size: 0.68rem; cursor: pointer; text-decoration: none;
-    }
-    .nav-item.active { color: var(--neon-pink); }
-    .nav-icon { font-size: 1.3rem; }
-
-    /* BLACKOUT SCREEN */
-    #blackout-overlay {
-      position: fixed; inset: 0; background: #000; z-index: 9999;
-      opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      color: #71717a; font-family: 'Cinzel', serif; letter-spacing: 2px; font-size: 0.9rem;
-    }
-    #blackout-overlay.active { opacity: 1; pointer-events: auto; }
   </style>
 </head>
 <body>
 
-  <canvas id="ambient-canvas"></canvas>
-  <div id="blackout-overlay">Realm Offline. Connection Terminated. 🥀</div>
-
-  <!-- GATEWAY ROLE SELECTOR -->
-  <div class="gateway-overlay" id="gateway">
-    <div class="gateway-card">
-      <div class="secret-flower">🌹</div>
-      <h1>Eternal Connection</h1>
-      <p>Entering the Private Realm...</p>
-      <div class="btn-group">
-        <button class="btn-primary" onclick="selectRole('Sahiba Kalsoom')">Sahiba Kalsoom 🎀</button>
-        <button class="btn-secondary" onclick="selectRole('Mr. Anonymous')">Mr. Anonymous 👑</button>
-      </div>
-    </div>
+  <div class="error-card">
+    <div class="error-code">404</div>
+    <h1>This site can’t be reached</h1>
+    <p>The private realm or domain you are trying to access no longer exists and has been permanently taken offline.</p>
   </div>
 
-  <div class="app-container">
-    <!-- HEADER -->
-    <div class="chat-header">
-      <div class="user-info">
-        <div class="avatar" id="partner-avatar">👑</div>
-        <div class="user-details">
-          <h2 id="partner-title-display">Mr. Anonymous</h2>
-          <div class="presence-text" id="partner-presence-display">Realm Archived 🖤</div>
-          <div class="global-status" id="partner-status-display">Status: Memories Preserved 🥀</div>
-        </div>
-      </div>
-      <div class="header-actions">
-        <div class="xp-pill"><span id="xp-display">100</span> XP</div>
-      </div>
-    </div>
-
-    <!-- VIEWPORT CONTENT AREA -->
-    <div class="viewport-content">
-      
-      <!-- TAB 1: REALM (HOME) -->
-      <div class="tab-panel active" id="panel-realm">
-        <div class="butterfly-layer" id="bf-overlay-container"></div>
-
-        <div class="realm-scroll">
-          <div class="ai-greeting-card">
-            <h3 id="realm-greeting-title">The Final Chapter</h3>
-            <p id="realm-greeting-body">A journey that began during the days of the Indo-Pak tension, blossoming through sweet memories, and concluding today as he walks away forever.</p>
-          </div>
-
-          <div class="farewell-memorial-card">
-            <h4>🥀 A Farewell to Miss Sahiba</h4>
-            <p>It started quietly amidst conflict, but it became a whole year of sweet, unforgettable memories. For once in his cold, heartless life, a wanderer felt what genuine love truly meant.</p>
-            <p>He has walked away now, and he will never enter this territory again. But the butterflies and heartbeats remain permanently etched into these walls.</p>
-            <p style="color: var(--soft-pink); font-style: italic; margin-bottom: 0;">Have a good life ahead, Miss Sahiba.</p>
-          </div>
-
-          <!-- FINAL BYE & SHUTDOWN SECTION -->
-          <div class="final-goodbye-section">
-            <h4>Final Doorway</h4>
-            <p>Whenever you are ready to lock this realm forever, press the button below to close the connection into eternal darkness.</p>
-            <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b); width: 100%;" onclick="triggerRealmShutdown()">
-              Bye 🥀
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 2: CHAT STREAM -->
-      <div class="tab-panel" id="panel-chat">
-        <div class="chat-messages" id="chat-stream"></div>
-
-        <div class="chat-input-area">
-          <div class="sticker-category-tabs">
-            <button class="tab-btn active" onclick="switchStickerTab('emojis', this)">💖 Emojis</button>
-          </div>
-          
-          <div class="sticker-bar" id="sticker-container"></div>
-
-          <div class="input-actions-row">
-            <label class="upload-btn">
-              📷
-              <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
-            </label>
-            
-            <div class="input-text-container">
-              <input type="text" id="chat-input" placeholder="Type a final message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-              <button class="btn-primary" onclick="sendChatMessage()">Send 🚀</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- BOTTOM NAVBAR -->
-    <div class="bottom-nav">
-      <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
-      <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat Archive</span></a>
-    </div>
-  </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBgzxaX1n3okDxcAhMV2GRuy7kBrxqXKcA",
-      authDomain: "mrs-sudip.firebaseapp.com",
-      databaseURL: "https://mrs-sudip-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "mrs-sudip",
-      messagingSenderId: "361252167035",
-      appId: "1:361252167035:web:425388ab4f182ccadd31de"
-    };
-
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    let currentUserRole = "Sahiba Kalsoom";
-    const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "✨", "🖤", "🫂", "🥀"];
-
-    window.addEventListener('load', () => {
-      renderStickerPresets('emojis');
-      initializeChatFeed();
-      initSVGButterflies();
-    });
-
-    function initSVGButterflies() {
-      const container = document.getElementById('bf-overlay-container');
-      container.innerHTML = "";
-      const bfCount = 14;
-      
-      for (let i = 0; i < bfCount; i++) {
-        const bf = document.createElement('div');
-        bf.className = 'flutter-bf';
-        bf.style.left = `${Math.random() * 85 + 5}%`;
-        bf.style.top = `${Math.random() * 80 + 10}%`;
-        
-        bf.innerHTML = `
-          <svg viewBox="0 0 100 100" width="100%" height="100%">
-            <g class="wing-left">
-              <path d="M50,50 Q10,10 10,40 Q10,70 50,50 Z" fill="#ff2a54" opacity="0.8" />
-              <path d="M50,50 Q20,60 25,85 Q45,90 50,50 Z" fill="#ffb3c1" opacity="0.7" />
-            </g>
-            <g class="wing-right">
-              <path d="M50,50 Q90,10 90,40 Q90,70 50,50 Z" fill="#ff2a54" opacity="0.8" />
-              <path d="M50,50 Q80,60 75,85 Q55,90 50,50 Z" fill="#ffb3c1" opacity="0.7" />
-            </g>
-            <circle cx="50" cy="50" r="3" fill="#ffd700" />
-          </svg>
-        `;
-        container.appendChild(bf);
-      }
-    }
-
-    function switchTab(tabId, navEl) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(`panel-${tabId}`).classList.add('active');
-      navEl.classList.add('active');
-    }
-
-    function selectRole(role) {
-      currentUserRole = role;
-      document.getElementById('gateway').style.opacity = '0';
-      setTimeout(() => document.getElementById('gateway').style.display = 'none', 800);
-    }
-
-    /* SCREEN BLAST & SHUTDOWN ANIMATION */
-    function triggerRealmShutdown() {
-      // Confetti burst of red/black rose petals before blackout
-      confetti({
-        particleCount: 120,
-        spread: 160,
-        origin: { y: 0.6 },
-        colors: ['#ff2a54', '#000000', '#ffb3c1', '#880015']
-      });
-
-      document.body.classList.add('shutdown');
-      
-      setTimeout(() => {
-        document.getElementById('blackout-overlay').classList.add('active');
-      }, 600);
-    }
-
-    function initializeChatFeed() {
-      db.ref('appState/chatFeed').on('child_added', (snapshot) => {
-        appendSingleMessage(snapshot.key, snapshot.val());
-      });
-    }
-
-    function appendSingleMessage(key, msg) {
-      const chatContainer = document.getElementById('chat-stream');
-      const div = document.createElement('div');
-      div.id = `msg-${key}`;
-      
-      const isAnonymous = msg.sender === "Mr. Anonymous";
-      div.className = `msg-bubble ${isAnonymous ? 'msg-sudip' : 'msg-wifey'}`;
-
-      let bodyContent = `<div class="msg-body">${msg.text || ''}</div>`;
-      if (msg.media) {
-        bodyContent += `<img src="${msg.media}" class="chat-media-frame" />`;
-      }
-
-      div.innerHTML = `<div class="msg-sender"><span>${msg.sender}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
-      chatContainer.appendChild(div);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    async function sendChatMessage(text = null, mediaUrl = null) {
-      const inputEl = document.getElementById('chat-input');
-      const messageText = text || inputEl.value.trim();
-      if (!messageText && !mediaUrl) return;
-      if (!text) inputEl.value = "";
-
-      const newMsg = {
-        sender: currentUserRole,
-        text: messageText,
-        time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
-      };
-      if (mediaUrl) newMsg.media = mediaUrl;
-
-      await db.ref('appState/chatFeed').push(newMsg);
-    }
-
-    function handleFileUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (event) => sendChatMessage("📷 Shared memory", event.target.result);
-      reader.readAsDataURL(file);
-    }
-
-    function renderStickerPresets(packKey) {
-      const container = document.getElementById('sticker-container');
-      container.innerHTML = "";
-      cuteEmojis.forEach(emoji => {
-        const pill = document.createElement('button');
-        pill.className = 'emoji-pill-btn';
-        pill.innerText = emoji;
-        pill.onclick = () => { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); };
-        container.appendChild(pill);
-      });
-    }
-
-    const canvas = document.getElementById('ambient-canvas');
-    const ctx = canvas.getContext('2d');
-    let items = [];
-    const symbols = ['🦋', '💖', '🥀', '✨'];
-
-    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    for (let i = 0; i < 30; i++) {
-      items.push({
-        x: Math.random() * canvas.width,
-        y: canvas.height + Math.random() * 50,
-        size: Math.random() * 20 + 14,
-        speed: Math.random() * 1 + 0.4,
-        symbol: symbols[Math.floor(Math.random() * symbols.length)]
-      });
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      items.forEach(item => {
-        item.y -= item.speed;
-        if (item.y < -30) item.y = canvas.height + 30;
-        ctx.globalAlpha = 0.4;
-        ctx.font = `${item.size}px serif`;
-        ctx.fillText(item.symbol, item.x, item.y);
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
-  </script>
 </body>
 </html>
