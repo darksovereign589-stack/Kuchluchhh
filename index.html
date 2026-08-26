@@ -148,11 +148,20 @@
     .tab-panel.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* REALM HOME PANEL & BUTTERFLY OVERLAY */
+    /* REALM HOME PANEL & ANIMATED BUTTERFLIES */
     .butterfly-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: hidden; }
-    .flutter-bf { position: absolute; width: 36px; height: 36px; filter: drop-shadow(0 0 8px var(--neon-pink)); }
-    .wing-left, .wing-right { transform-origin: center center; animation: wingFlap 0.35s ease-in-out infinite alternate; }
-    @keyframes wingFlap { 0% { transform: scaleX(1); } 100% { transform: scaleX(0.15); } }
+    .flutter-bf {
+      position: absolute; font-size: 1.8rem;
+      animation: flyAround 12s linear infinite;
+      filter: drop-shadow(0 0 10px var(--neon-pink));
+    }
+    @keyframes flyAround {
+      0% { transform: translate(0px, 0px) rotate(0deg) scale(0.8); }
+      25% { transform: translate(120px, -80px) rotate(15deg) scale(1.1); }
+      50% { transform: translate(240px, 20px) rotate(-10deg) scale(0.9); }
+      75% { transform: translate(80px, 140px) rotate(20deg) scale(1); }
+      100% { transform: translate(0px, 0px) rotate(0deg) scale(0.8); }
+    }
 
     .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; position: relative; z-index: 1; }
     
@@ -388,7 +397,7 @@
       </div>
       <div class="header-actions">
         <div class="xp-pill"><span id="xp-display">0</span> XP</div>
-        <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawwExplosion()">💋 Kiss</button>
+        <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawExplosion()">💋 Kiss</button>
         <button class="call-btn" onclick="initiateVoiceCall()">📞 Call</button>
       </div>
     </div>
@@ -411,6 +420,8 @@
             <h4>🎀 Mrs. Sudip Live Status</h4>
             <div class="monitor-row"><span>Online Status:</span> <span class="monitor-val" id="mon-online">Offline</span></div>
             <div class="monitor-row"><span>Entry Time:</span> <span class="monitor-val" id="mon-entry">Never</span></div>
+            <div class="monitor-row"><span>Current Mood:</span> <span class="monitor-val" id="mon-mood">Not set</span></div>
+            <div class="monitor-row"><span>Total Kisses Sent:</span> <span class="monitor-val" id="mon-kisses">0</span></div>
             <div class="monitor-row"><span>Call Activity:</span> <span class="monitor-val" id="mon-call">No recent calls</span></div>
           </div>
 
@@ -422,12 +433,12 @@
           <div style="margin: 4px 0;">
             <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">How are you feeling right now?</p>
             <div class="mood-selector-bar">
-              <div class="mood-chip active" onclick="setMood('Soft', this)">🥺 Soft</div>
-              <div class="mood-chip" onclick="setMood('Dangerous', this)">😈 Playful</div>
-              <div class="mood-chip" onclick="setMood('Flirty', this)">💋 Flirty</div>
-              <div class="mood-chip" onclick="setMood('Sad', this)">😭 Sad</div>
-              <div class="mood-chip" onclick="setMood('Need a hug', this)">🫂 Need a hug</div>
-              <div class="mood-chip" onclick="setMood('Mysterious', this)">🖤 Happy</div>
+              <div class="mood-chip" onclick="setMood('🥺 Soft', this)">🥺 Soft</div>
+              <div class="mood-chip" onclick="setMood('😈 Playful', this)">😈 Playful</div>
+              <div class="mood-chip" onclick="setMood('💋 Flirty', this)">💋 Flirty</div>
+              <div class="mood-chip" onclick="setMood('😭 Sad', this)">😭 Sad</div>
+              <div class="mood-chip" onclick="setMood('🫂 Need a hug', this)">🫂 Need a hug</div>
+              <div class="mood-chip" onclick="setMood('🖤 Happy', this)">🖤 Happy</div>
             </div>
           </div>
 
@@ -612,7 +623,7 @@
     const db = firebase.database();
 
     let currentUserRole = "Mrs. Sudip";
-    let currentMood = "Soft";
+    let currentMood = "🥺 Soft";
     let flowerTapCount = 0;
     const SECRET_PIN = "7231";
 
@@ -637,6 +648,15 @@
     const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
     const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
 
+    const loveDrops = [
+      "Every single heartbeat of mine whispers your name, my love.",
+      "In a world full of noise, your smile is my absolute favorite peace.",
+      "No distance or time could ever diminish what we share.",
+      "You are the most beautiful dream I never want to wake up from.",
+      "Holding your hand feels like holding the whole universe.",
+      "My soul recognized you the very first moment we connected."
+    ];
+
     function getFormattedTime(timestamp = Date.now()) {
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
@@ -650,26 +670,33 @@
       initializeChatFeed();
       listenForStatusUpdates();
       fetchAIRealmProse();
-      initSVGButterflies();
+      initAnimatedButterflies();
       initAgoraClient();
+      syncGlobalState();
     });
 
-    function initSVGButterflies() {
+    function initAnimatedButterflies() {
       const container = document.getElementById('bf-overlay-container');
       container.innerHTML = "";
-      for (let i = 0; i < 8; i++) {
+      const butterfliesList = ['🦋', '✨', '💖', '🌸'];
+      for (let i = 0; i < 6; i++) {
         const bf = document.createElement('div');
         bf.className = 'flutter-bf';
-        bf.style.left = `${Math.random() * 85 + 5}%`;
+        bf.style.left = `${Math.random() * 80 + 10}%`;
         bf.style.top = `${Math.random() * 80 + 10}%`;
-        bf.innerHTML = `🦋`;
+        bf.style.animationDuration = `${Math.random() * 8 + 8}s`;
+        bf.style.animationDelay = `${Math.random() * 3}s`;
+        bf.innerHTML = butterfliesList[Math.floor(Math.random() * butterfliesList.length)];
         container.appendChild(bf);
       }
     }
 
-    async function fetchAIRealmProse() {
+    function fetchAIRealmProse() {
       document.getElementById('realm-greeting-body').innerText = currentUserRole === "Mr. Sudip" ? "Welcome back, King Sudip. Your private realm is active." : "Welcome back, Mrs. Sudip. Your sanctuary awaits.";
-      document.getElementById('daily-love-drop-text').innerText = "Every moment shared in this realm builds an eternal golden memory.";
+      
+      // Select love drop dynamically each visit
+      const randomDrop = loveDrops[Math.floor(Math.random() * loveDrops.length)];
+      document.getElementById('daily-love-drop-text').innerText = randomDrop;
     }
 
     function addXP(amount) {
@@ -682,6 +709,33 @@
       document.querySelectorAll('.mood-chip').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
       addXP(10);
+
+      // Save mood globally to Firebase
+      db.ref('appState/wifeyMood').set({
+        mood: currentMood,
+        timestamp: Date.now()
+      });
+    }
+
+    function syncGlobalState() {
+      // Listen to Wifey mood
+      db.ref('appState/wifeyMood').on('value', (snap) => {
+        const data = snap.val();
+        if (data && data.mood) {
+          document.getElementById('mon-mood').innerText = data.mood;
+          // Highlight active chip if it matches
+          document.querySelectorAll('.mood-chip').forEach(chip => {
+            if (chip.innerText === data.mood) chip.classList.add('active');
+            else if (currentUserRole === "Mr. Sudip") chip.classList.remove('active'); // only local selection applies to user unless synced
+          });
+        }
+      });
+
+      // Listen to Kiss Counters
+      db.ref('appState/kissCount').on('value', (snap) => {
+        const count = snap.val() || 0;
+        document.getElementById('mon-kisses').innerText = count;
+      });
     }
 
     function switchTab(tabId, navEl) {
@@ -851,7 +905,7 @@
       addXP(15);
     }
 
-    /* VOICE RECORDER */
+    /* VOICE RECORDER WITH EXPLICIT PERMISSION REQUEST */
     async function toggleVoiceNoteRecording() {
       const recBtn = document.getElementById('voice-record-btn');
       const recInd = document.getElementById('rec-indicator');
@@ -859,6 +913,12 @@
 
       if (!isRecordingVoice) {
         try {
+          // Explicit permission prompt wrapper
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("Audio recording is not supported on your browser.");
+            return;
+          }
+
           const voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(voiceStream);
           audioChunks = [];
@@ -880,7 +940,10 @@
           recInd.style.display = 'flex';
           recordSeconds = 0;
           recordingTimer = setInterval(() => { recordSeconds++; document.getElementById('rec-timer').innerText = `${recordSeconds}s`; }, 1000);
-        } catch (err) { alert("Mic permission failed."); }
+        } catch (err) { 
+          console.error("Microphone permission denied or error:", err);
+          alert("Microphone permission was denied or is blocked. Please allow microphone access in your browser settings to record voice notes."); 
+        }
       } else {
         mediaRecorder.stop();
         isRecordingVoice = false;
@@ -923,7 +986,6 @@
       db.ref('appState/activeCallSignal').on('value', (snapshot) => {
         const callData = snapshot.val();
         if (callData && callData.status === 'ringing' && callData.caller !== currentUserRole) {
-          // If Mrs. Sudip called, log call attempt for Mr. Sudip's panel
           if (callData.caller === "Mrs. Sudip") {
             db.ref('appState/wifeyActivity/lastCallAttempt').set({
               type: "Outgoing Call Attempt",
@@ -968,7 +1030,7 @@
         document.getElementById('call-status-title').innerText = "Ringing... Waiting for answer 🎙️";
       } catch (err) {
         console.error("Agora call error:", err);
-        alert("Call setup failed. Check mic permissions.");
+        alert("Call setup failed. Please check microphone permissions.");
         closeModal('call-modal');
       }
     }
@@ -985,7 +1047,7 @@
 
         db.ref('appState/activeCallSignal').remove();
       } catch (err) {
-        alert("Failed to accept call.");
+        alert("Failed to accept call. Check permissions.");
         closeModal('call-modal');
       }
     }
@@ -1109,8 +1171,8 @@
       }
     }
 
-    /* KISS EXPLOSION */
-    function triggerKissDanawwExplosion() {
+    /* KISS EXPLOSION & LIVE COUNTER SYNC */
+    async function triggerKissDanawwExplosion() {
       const overlay = document.getElementById('kiss-overlay');
       overlay.innerHTML = "";
       overlay.classList.add('active');
@@ -1126,6 +1188,13 @@
       }
       confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
       addXP(25);
+
+      // Atomically increment kiss count in Firebase
+      const kissRef = db.ref('appState/kissCount');
+      await kissRef.transaction((currentCount) => {
+        return (currentCount || 0) + 1;
+      });
+
       setTimeout(() => { overlay.classList.remove('active'); overlay.innerHTML = ""; }, 2500);
     }
 
@@ -1170,9 +1239,10 @@
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       floatingItems.forEach(item => { item.update(); item.draw(); });
-      requestAnimationFrame(animate);
+      requestAnimationFrame(async () => { animate(); });
     }
     animate();
   </script>
 </body>
 </html>
+
