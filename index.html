@@ -173,7 +173,6 @@
     .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-pink); margin-bottom: 8px; }
     .ai-greeting-card p { font-style: italic; color: #e2e8f0; font-size: 0.92rem; line-height: 1.5; margin-bottom: 0; }
 
-    /* ADMIN PANEL MRS SUDIP MONITOR CARD */
     .admin-monitor-card {
       background: rgba(255, 42, 84, 0.08); border: 1px solid var(--neon-pink);
       border-radius: 20px; padding: 16px; display: none; flex-direction: column; gap: 8px;
@@ -196,7 +195,6 @@
     }
     .mood-chip.active { background: var(--neon-pink); border-color: var(--neon-pink); color: #fff; }
 
-    /* HOLD FOR HUG WIDGET */
     .hug-widget {
       background: rgba(255, 42, 84, 0.12); border: 1px solid var(--glass-border);
       border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
@@ -397,6 +395,7 @@
       </div>
       <div class="header-actions">
         <div class="xp-pill"><span id="xp-display">0</span> XP</div>
+        <!-- FIXED: changed function call to match the correct function name -->
         <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawExplosion()">💋 Kiss</button>
         <button class="call-btn" onclick="initiateVoiceCall()">📞 Call</button>
       </div>
@@ -693,8 +692,6 @@
 
     function fetchAIRealmProse() {
       document.getElementById('realm-greeting-body').innerText = currentUserRole === "Mr. Sudip" ? "Welcome back, King Sudip. Your private realm is active." : "Welcome back, Mrs. Sudip. Your sanctuary awaits.";
-      
-      // Select love drop dynamically each visit
       const randomDrop = loveDrops[Math.floor(Math.random() * loveDrops.length)];
       document.getElementById('daily-love-drop-text').innerText = randomDrop;
     }
@@ -710,7 +707,6 @@
       el.classList.add('active');
       addXP(10);
 
-      // Save mood globally to Firebase
       db.ref('appState/wifeyMood').set({
         mood: currentMood,
         timestamp: Date.now()
@@ -718,20 +714,17 @@
     }
 
     function syncGlobalState() {
-      // Listen to Wifey mood
       db.ref('appState/wifeyMood').on('value', (snap) => {
         const data = snap.val();
         if (data && data.mood) {
           document.getElementById('mon-mood').innerText = data.mood;
-          // Highlight active chip if it matches
           document.querySelectorAll('.mood-chip').forEach(chip => {
             if (chip.innerText === data.mood) chip.classList.add('active');
-            else if (currentUserRole === "Mr. Sudip") chip.classList.remove('active'); // only local selection applies to user unless synced
+            else if (currentUserRole === "Mr. Sudip") chip.classList.remove('active');
           });
         }
       });
 
-      // Listen to Kiss Counters
       db.ref('appState/kissCount').on('value', (snap) => {
         const count = snap.val() || 0;
         document.getElementById('mon-kisses').innerText = count;
@@ -821,7 +814,6 @@
       });
     }
 
-    /* PRESENCE SYSTEM */
     function setupPresenceSystem() {
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       const presenceRef = db.ref(`appState/presence/${userKey}`);
@@ -861,7 +853,6 @@
       });
     }
 
-    /* HOLD FOR HUG */
     function startHugHold() {
       hugProgress = 0;
       document.getElementById('hug-fill').style.width = '0%';
@@ -872,7 +863,7 @@
           clearInterval(hugHoldTimer);
           confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
           addXP(50);
-          triggerKissDanawwExplosion();
+          triggerKissDanawExplosion();
           alert("Warm Hug Delivered! 🫂");
           hugProgress = 0;
           document.getElementById('hug-fill').style.width = '0%';
@@ -886,7 +877,6 @@
       document.getElementById('hug-fill').style.width = '0%';
     }
 
-    /* PLAY2GETHER */
     function sharePlayLink() {
       const linkInput = document.getElementById('play-link-input');
       const url = linkInput.value.trim();
@@ -905,7 +895,6 @@
       addXP(15);
     }
 
-    /* VOICE RECORDER WITH EXPLICIT PERMISSION REQUEST */
     async function toggleVoiceNoteRecording() {
       const recBtn = document.getElementById('voice-record-btn');
       const recInd = document.getElementById('rec-indicator');
@@ -913,7 +902,6 @@
 
       if (!isRecordingVoice) {
         try {
-          // Explicit permission prompt wrapper
           if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             alert("Audio recording is not supported on your browser.");
             return;
@@ -941,8 +929,8 @@
           recordSeconds = 0;
           recordingTimer = setInterval(() => { recordSeconds++; document.getElementById('rec-timer').innerText = `${recordSeconds}s`; }, 1000);
         } catch (err) { 
-          console.error("Microphone permission denied or error:", err);
-          alert("Microphone permission was denied or is blocked. Please allow microphone access in your browser settings to record voice notes."); 
+          console.error("Microphone permission denied:", err);
+          alert("Microphone permission was denied. Please allow mic access in your browser settings."); 
         }
       } else {
         mediaRecorder.stop();
@@ -965,21 +953,24 @@
       reader.readAsDataURL(file);
     }
 
-    /* AGORA VOICE CALLING & LIVE SIGNALING */
     function initAgoraClient() {
-      agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+      try {
+        agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
-      agoraClient.on("user-published", async (user, mediaType) => {
-        await agoraClient.subscribe(user, mediaType);
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-          document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
-        }
-      });
+        agoraClient.on("user-published", async (user, mediaType) => {
+          await agoraClient.subscribe(user, mediaType);
+          if (mediaType === "audio") {
+            user.audioTrack.play();
+            document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
+          }
+        });
 
-      agoraClient.on("user-unpublished", (user) => {
-        document.getElementById('call-status-title').innerText = "Partner disconnected audio.";
-      });
+        agoraClient.on("user-unpublished", (user) => {
+          document.getElementById('call-status-title').innerText = "Partner disconnected audio.";
+        });
+      } catch(e) {
+        console.warn("Agora initialization notice:", e);
+      }
     }
 
     function listenForPendingCalls() {
@@ -1024,13 +1015,15 @@
           timestamp: Date.now()
         });
 
-        await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
-        localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        await agoraClient.publish([localAudioTrack]);
-        document.getElementById('call-status-title').innerText = "Ringing... Waiting for answer 🎙️";
+        if (agoraClient) {
+          await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
+          localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+          await agoraClient.publish([localAudioTrack]);
+          document.getElementById('call-status-title').innerText = "Ringing... Waiting for answer 🎙️";
+        }
       } catch (err) {
         console.error("Agora call error:", err);
-        alert("Call setup failed. Please check microphone permissions.");
+        alert("Call setup failed. Make sure your browser has mic permissions enabled and the page is on HTTPS.");
         closeModal('call-modal');
       }
     }
@@ -1041,9 +1034,11 @@
         document.getElementById('call-actions-active').style.display = 'flex';
         document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
 
-        await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
-        localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        await agoraClient.publish([localAudioTrack]);
+        if (agoraClient) {
+          await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
+          localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+          await agoraClient.publish([localAudioTrack]);
+        }
 
         db.ref('appState/activeCallSignal').remove();
       } catch (err) {
@@ -1069,7 +1064,6 @@
       closeModal('call-modal');
     }
 
-    /* CHAT FEED SYNC */
     function initializeChatFeed() {
       const chatContainer = document.getElementById('chat-stream');
       chatContainer.innerHTML = "";
@@ -1141,7 +1135,6 @@
       closeModal('delete-msg-modal');
     }
 
-    /* STICKERS */
     function switchStickerTab(packKey, btn) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -1171,8 +1164,8 @@
       }
     }
 
-    /* KISS EXPLOSION & LIVE COUNTER SYNC */
-    async function triggerKissDanawwExplosion() {
+    // FIXED: Function name matches the button onclick attribute now
+    async function triggerKissDanawExplosion() {
       const overlay = document.getElementById('kiss-overlay');
       overlay.innerHTML = "";
       overlay.classList.add('active');
@@ -1189,7 +1182,6 @@
       confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
       addXP(25);
 
-      // Atomically increment kiss count in Firebase
       const kissRef = db.ref('appState/kissCount');
       await kissRef.transaction((currentCount) => {
         return (currentCount || 0) + 1;
@@ -1201,7 +1193,6 @@
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-    /* BACKGROUND PARTICLES */
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let floatingItems = [];
@@ -1245,4 +1236,3 @@
   </script>
 </body>
 </html>
-
