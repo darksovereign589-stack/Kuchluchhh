@@ -846,6 +846,12 @@
     let loadingTimeout = null;
     let activeChatQuery = null;
 
+    // PAGINATION AND SCROLL MANAGEMENT STATE
+    let earliestMessageKey = null;
+    let isFetchingOlder = false;
+    let allOlderLoaded = false;
+    let cachedMessageMap = {};
+
     // TYPING STATE & REALTIME PRESENCE CACHE
     let typingDebounceTimer = null;
     let isPartnerTyping = false;
@@ -883,7 +889,12 @@
           const parsed = JSON.parse(cached);
           const keys = Object.keys(parsed);
           if (keys.length > 0) {
-            keys.forEach(key => renderOrUpdateMessage(key, parsed[key]));
+            cachedMessageMap = parsed;
+            earliestMessageKey = keys[0];
+            keys.forEach(key => renderOrUpdateMessage(key, parsed[key], false));
+            
+            const chatContainer = document.getElementById('chat-stream');
+            if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
             hideLoadingScreen();
           }
         }
@@ -892,9 +903,20 @@
       }
     }
 
-    function persistMessagesCache(messages) {
+    function persistMessagesCache(key, msgData) {
       try {
-        localStorage.setItem('cached_chat_messages_v1', JSON.stringify(messages));
+        cachedMessageMap[key] = msgData;
+        
+        // Retain only latest 10 messages in local storage for fast cold boots
+        const keys = Object.keys(cachedMessageMap);
+        if (keys.length > 10) {
+          const trimmedKeys = keys.slice(keys.length - 10);
+          const trimmedMap = {};
+          trimmedKeys.forEach(k => trimmedMap[k] = cachedMessageMap[k]);
+          cachedMessageMap = trimmedMap;
+        }
+        
+        localStorage.setItem('cached_chat_messages_v1', JSON.stringify(cachedMessageMap));
       } catch(e){}
     }
 
@@ -1464,49 +1486,128 @@
       if (isRetry) {
         chatContainer.innerHTML = "";
         renderedMessageKeys.clear();
+        earliestMessageKey = null;
+        allOlderLoaded = false;
       }
 
-      // OPTIMIZATION: Query bounded to latest 25 messages for instant payload delivery
-      activeChatQuery = db.ref('appState/chatFeed').limitToLast(25);
+      // OPTIMIZATION RULE 4: Fetch strictly the 10 most recent messages first
+      activeChatQuery = db.ref('appState/chatFeed').limitToLast(10);
       
       activeChatQuery.once('value', (snapshot) => {
         const messages = snapshot.val();
         if (messages) {
-          Object.keys(messages).forEach(key => {
-            renderOrUpdateMessage(key, messages[key]);
-          });
-          persistMessagesCache(messages);
+          const keys = Object.keys(messages);
+          if (keys.length > 0) {
+            earliestMessageKey = keys[0];
+            keys.forEach(key => {
+              renderOrUpdateMessage(key, messages[key], false);
+              persistMessagesCache(key, messages[key]);
+            });
+          }
         }
+        
         chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        // OPTIMIZATION RULE 5: Immediately make usable and hide loading screen
         hideLoadingScreen();
+        
+        // OPTIMIZATION RULE 6 & 10: Trigger background history fetch without blocking
+        setTimeout(() => { fetchOlderHistoryBatch(20); }, 300);
+        
+        // OPTIMIZATION RULE 11: Attach realtime listeners for future messages
         attachRealtimeListeners();
       }, (error) => {
         console.error("Firebase chat load error:", error);
         hideLoadingScreen();
         attachRealtimeListeners();
       });
+
+      // Attach scroll listener to load history on demand when user scrolls to top
+      setupScrollToLoadOlder();
+    }
+
+    /* CURSOR-BASED BACKGROUND HISTORICAL BATCHING */
+    function fetchOlderHistoryBatch(batchSize = 20) {
+      if (isFetchingOlder || allOlderLoaded || !earliestMessageKey) return;
+      isFetchingOlder = true;
+
+      const chatContainer = document.getElementById('chat-stream');
+      const oldScrollHeight = chatContainer.scrollHeight;
+
+      // Query older messages up to current earliest message key
+      db.ref('appState/chatFeed')
+        .orderByKey()
+        .endAt(earliestMessageKey)
+        .limitToLast(batchSize + 1)
+        .once('value', (snapshot) => {
+          const messages = snapshot.val();
+          if (messages) {
+            const keys = Object.keys(messages);
+            // If we got batchSize or fewer, we reached the beginning of the chat
+            if (keys.length <= 1) {
+              allOlderLoaded = true;
+            } else {
+              // Remove current earliest duplicate key from keys
+              keys.pop(); 
+              earliestMessageKey = keys[0];
+              
+              // Insert older items above current messages
+              keys.forEach(key => {
+                renderOrUpdateMessage(key, messages[key], true);
+              });
+
+              // Maintain current scroll position when inserting items above
+              const newScrollHeight = chatContainer.scrollHeight;
+              chatContainer.scrollTop += (newScrollHeight - oldScrollHeight);
+            }
+          } else {
+            allOlderLoaded = true;
+          }
+          isFetchingOlder = false;
+        }, (err) => {
+          isFetchingOlder = false;
+        });
+    }
+
+    function setupScrollToLoadOlder() {
+      const chatContainer = document.getElementById('chat-stream');
+      if (!chatContainer) return;
+      chatContainer.onscroll = () => {
+        if (chatContainer.scrollTop < 80 && !isFetchingOlder && !allOlderLoaded) {
+          fetchOlderHistoryBatch(20);
+        }
+      };
     }
 
     function attachRealtimeListeners() {
-      const chatRef = db.ref('appState/chatFeed').limitToLast(25);
+      // Realtime listener for incoming newer messages
+      const chatRef = db.ref('appState/chatFeed').limitToLast(1);
 
       chatRef.on('child_added', (snapshot) => {
-        renderOrUpdateMessage(snapshot.key, snapshot.val());
+        const chatContainer = document.getElementById('chat-stream');
+        const isAtBottom = (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 120;
+        
+        renderOrUpdateMessage(snapshot.key, snapshot.val(), false);
+        persistMessagesCache(snapshot.key, snapshot.val());
         hideLoadingScreen();
+
+        if (isAtBottom) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
       });
 
-      chatRef.on('child_changed', (snapshot) => {
-        renderOrUpdateMessage(snapshot.key, snapshot.val());
+      db.ref('appState/chatFeed').on('child_changed', (snapshot) => {
+        renderOrUpdateMessage(snapshot.key, snapshot.val(), false);
       });
 
-      chatRef.on('child_removed', (snapshot) => {
+      db.ref('appState/chatFeed').on('child_removed', (snapshot) => {
         const el = document.getElementById(`msg-${snapshot.key}`);
         if (el) el.remove();
         renderedMessageKeys.delete(snapshot.key);
       });
     }
 
-    function renderOrUpdateMessage(key, msg) {
+    function renderOrUpdateMessage(key, msg, prependToTop = false) {
       const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       
       if (msg.deletedFor && msg.deletedFor[currentUserIdKey]) {
@@ -1521,7 +1622,12 @@
       if (!div) {
         div = document.createElement('div');
         div.id = `msg-${key}`;
-        chatContainer.appendChild(div);
+        
+        if (prependToTop && chatContainer.firstChild) {
+          chatContainer.insertBefore(div, chatContainer.firstChild);
+        } else {
+          chatContainer.appendChild(div);
+        }
       }
 
       const isSudip = msg.sender === "Mr. Sudip";
@@ -1554,7 +1660,6 @@
       }
 
       renderedMessageKeys.add(key);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     function openLightbox(url, sender, time) {
