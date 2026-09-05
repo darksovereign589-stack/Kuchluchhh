@@ -196,18 +196,32 @@
     }
 
     .chat-header {
-      padding: 12px 16px; background: rgba(13, 10, 30, 0.92);
+      padding: 10px 16px; background: rgba(13, 10, 30, 0.92);
       border-bottom: 1px solid var(--glass-border); display: flex;
       justify-content: space-between; align-items: center; flex-shrink: 0;
     }
 
-    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .avatar { font-size: 1.8rem; }
-    .user-details h2 { font-size: 0.95rem; color: var(--soft-indigo); font-family: 'Cinzel', serif; }
-    .presence-text { font-size: 0.7rem; color: #a7f3d0; }
-    .global-status { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
+    .user-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .avatar { font-size: 1.8rem; flex-shrink: 0; }
+    .user-details { overflow: hidden; display: flex; flex-direction: column; gap: 1px; }
+    .user-details h2 { font-size: 0.95rem; color: var(--soft-indigo); font-family: 'Cinzel', serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .presence-text { font-size: 0.7rem; color: #a7f3d0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .global-status { font-size: 0.72rem; color: var(--text-muted); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .set-status-action {
+      font-size: 0.68rem;
+      color: var(--soft-indigo);
+      cursor: pointer;
+      text-decoration: underline;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      margin-top: 1px;
+      opacity: 0.9;
+    }
+    .set-status-action:hover { opacity: 1; }
 
-    .header-actions { display: flex; gap: 6px; align-items: center; }
+    .header-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: 8px; }
 
     .xp-pill {
       background: rgba(255, 215, 0, 0.15); border: 1px solid var(--gold-accent);
@@ -515,6 +529,7 @@
           <h2 id="partner-title-display">Mr. Sudip</h2>
           <div class="presence-text" id="partner-presence-display">Connecting...</div>
           <div class="global-status" id="partner-status-display">Status: Free 💖</div>
+          <div class="set-status-action" onclick="event.stopPropagation(); openStatusModal();">✏️ Set your status</div>
         </div>
       </div>
       <div class="header-actions">
@@ -598,7 +613,7 @@
             </div>
 
             <div class="input-text-container" id="text-input-box">
-              <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+              <input type="text" id="chat-input" placeholder="Type a message..." oninput="handleTypingInput()" onkeypress="if(event.key==='Enter') sendChatMessage()">
               <button class="btn-primary" style="padding: 10px 18px; border-radius: 25px;" onclick="sendChatMessage()">Send 🚀</button>
             </div>
           </div>
@@ -697,8 +712,8 @@
   <!-- STATUS & PRIVACY MODAL -->
   <div class="modal" id="status-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Update Status</h2>
-      <input type="text" id="status-input" placeholder="Enter status message..." style="margin-bottom: 15px;">
+      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Update Your Personal Status</h2>
+      <input type="text" id="status-input" placeholder="Enter status message (e.g. Cooking, Cold Shower)..." style="margin-bottom: 15px;">
       <div class="btn-group">
         <button class="btn-primary" onclick="updateGlobalStatus()">Set Status 🚀</button>
         <button class="btn-secondary" onclick="closeModal('status-modal')">Close</button>
@@ -775,6 +790,11 @@
     let initialMessagesLoaded = false;
     let loadingTimeout = null;
 
+    // TYPING STATE & REALTIME PRESENCE CACHE
+    let typingDebounceTimer = null;
+    let isPartnerTyping = false;
+    let currentPartnerPresenceData = null;
+
     const memesList = ["https://i.imgflip.com/4/30b1gx.jpg", "https://i.imgflip.com/1g8my4.jpg", "https://i.imgflip.com/26am.jpg"];
     const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
     const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
@@ -806,6 +826,7 @@
       initLoadingScreenDecorations();
       startLoadingTimeoutGuard();
       setupPresenceSystem();
+      setupTypingSystem();
       renderStickerPresets('emojis');
       initializeChatFeed();
       listenForStatusUpdates();
@@ -963,6 +984,8 @@
         listenForPendingCalls();
         logUserEntry();
         setupPresenceSystem();
+        setupTypingSystem();
+        listenForStatusUpdates();
       }, 800);
     }
 
@@ -975,6 +998,8 @@
       if (isSudip) {
         document.getElementById('admin-wifey-monitor').style.display = 'flex';
         setupWifeyMonitor();
+      } else {
+        document.getElementById('admin-wifey-monitor').style.display = 'none';
       }
     }
 
@@ -1005,48 +1030,113 @@
       });
     }
 
+    /* REAL-TIME PRESENCE SYSTEM */
     function setupPresenceSystem() {
       if (heartBeatInterval) clearInterval(heartBeatInterval);
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
-      const presenceRef = db.ref(`appState/presence/${userKey}`);
+      const userPresenceRef = db.ref(`appState/presence/${userKey}`);
+      const typingRef = db.ref(`appState/typing/${userKey}`);
       
       db.ref('.info/connected').on('value', (snap) => {
         if (snap.val()) {
-          presenceRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
-          presenceRef.set({ online: true, lastSeen: Date.now() });
+          userPresenceRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
+          typingRef.onDisconnect().remove();
+          userPresenceRef.set({ online: true, lastSeen: Date.now() });
         }
       });
 
       heartBeatInterval = setInterval(() => {
-        presenceRef.update({ online: true, lastSeen: Date.now() });
+        userPresenceRef.update({ online: true, lastSeen: Date.now() });
       }, 15000);
 
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       db.ref(`appState/presence/${partnerKey}`).on('value', (snap) => {
-        const data = snap.val();
-        const displayEl = document.getElementById('partner-presence-display');
-        if (data) {
-          const isRecentlyActive = data.online && (Date.now() - (data.lastSeen || 0) < 35000);
-          if (isRecentlyActive) {
-            displayEl.innerText = "Online 🟢";
-            displayEl.style.color = "#a7f3d0";
-          } else {
-            displayEl.innerText = data.lastSeen ? `Last seen ${getFormattedTime(data.lastSeen)}` : "Offline 🔴";
-            displayEl.style.color = "#94a3b8";
-          }
-        } else {
-          displayEl.innerText = "Offline 🔴";
-        }
+        currentPartnerPresenceData = snap.val();
+        renderHeaderPresenceText();
       });
     }
 
-    function openStatusModal() { openModal('status-modal'); }
+    function renderHeaderPresenceText() {
+      const displayEl = document.getElementById('partner-presence-display');
+      const partnerName = currentUserRole === "Mr. Sudip" ? "Mrs. Sudip" : "Mr. Sudip";
+
+      if (isPartnerTyping) {
+        displayEl.innerText = `✍️ ${partnerName} is writing something...`;
+        displayEl.style.color = "#c084fc";
+        return;
+      }
+
+      if (currentPartnerPresenceData) {
+        const isRecentlyActive = currentPartnerPresenceData.online && (Date.now() - (currentPartnerPresenceData.lastSeen || 0) < 35000);
+        if (isRecentlyActive) {
+          displayEl.innerText = "🟢 Online";
+          displayEl.style.color = "#a7f3d0";
+        } else {
+          const lastTimeStr = currentPartnerPresenceData.lastSeen ? getFormattedTime(currentPartnerPresenceData.lastSeen) : "recently";
+          displayEl.innerText = `⚫ Last seen ${lastTimeStr}`;
+          displayEl.style.color = "#94a3b8";
+        }
+      } else {
+        displayEl.innerText = "⚫ Offline";
+        displayEl.style.color = "#94a3b8";
+      }
+    }
+
+    /* REAL-TIME TYPING INDICATOR SYSTEM */
+    function setupTypingSystem() {
+      const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
+      const partnerTypingRef = db.ref(`appState/typing/${partnerKey}`);
+
+      partnerTypingRef.on('value', (snap) => {
+        const typingData = snap.val();
+        if (typingData && typingData.isTyping && (Date.now() - (typingData.timestamp || 0) < 4000)) {
+          isPartnerTyping = true;
+        } else {
+          isPartnerTyping = false;
+        }
+        renderHeaderPresenceText();
+      });
+    }
+
+    function handleTypingInput() {
+      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+      const typingRef = db.ref(`appState/typing/${userKey}`);
+
+      typingRef.set({ isTyping: true, timestamp: Date.now() });
+
+      if (typingDebounceTimer) clearTimeout(typingDebounceTimer);
+      typingDebounceTimer = setTimeout(() => {
+        clearTypingStatus();
+      }, 2500);
+    }
+
+    function clearTypingStatus() {
+      if (typingDebounceTimer) clearTimeout(typingDebounceTimer);
+      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+      db.ref(`appState/typing/${userKey}`).remove();
+    }
+
+    function openStatusModal() {
+      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+      db.ref(`appState/status/${userKey}`).once('value', (snap) => {
+        const data = snap.val();
+        if (data && data.text) {
+          document.getElementById('status-input').value = data.text;
+        } else {
+          document.getElementById('status-input').value = "";
+        }
+      });
+      openModal('status-modal');
+    }
 
     async function updateGlobalStatus() {
       const newStatus = document.getElementById('status-input').value.trim();
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+      
       if (newStatus) {
         await db.ref(`appState/status/${userKey}`).set({ text: newStatus, timestamp: Date.now() });
+      } else {
+        await db.ref(`appState/status/${userKey}`).remove();
       }
       closeModal('status-modal');
     }
@@ -1055,7 +1145,11 @@
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
-        if (data && data.text) document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
+        if (data && data.text) {
+          document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
+        } else {
+          document.getElementById('partner-status-display').innerText = `Status: Free 💖`;
+        }
       });
     }
 
@@ -1373,6 +1467,8 @@
 
       if (!text && !mediaUrl) inputEl.value = "";
 
+      clearTypingStatus();
+
       const newMsg = { 
         sender: currentUserRole, 
         text: messageText, 
@@ -1465,7 +1561,12 @@
           const pill = document.createElement('button');
           pill.className = 'emoji-pill-btn';
           pill.innerText = emoji;
-          pill.onclick = () => { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); };
+          pill.onclick = () => { 
+            const input = document.getElementById('chat-input'); 
+            input.value += emoji; 
+            handleTypingInput();
+            input.focus(); 
+          };
           container.appendChild(pill);
         });
       } else {
