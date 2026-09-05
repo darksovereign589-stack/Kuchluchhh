@@ -11,10 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" async></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.17.0.js"></script>
+  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.17.0.js" defer></script>
 
   <style>
     :root {
@@ -60,7 +60,7 @@
       z-index: 500;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       text-align: center; padding: 24px;
-      transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+      transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
       opacity: 1; visibility: visible;
     }
 
@@ -296,7 +296,7 @@
 
     /* VIEWPORT PANELS */
     .viewport-content { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
-    .tab-panel { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease-out forwards; }
+    .tab-panel { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.3s ease-out forwards; }
     .tab-panel.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -363,10 +363,10 @@
 
     .msg-bubble {
       max-width: 82%; padding: 10px 14px; border-radius: 20px;
-      font-size: 0.9rem; line-height: 1.4; animation: popIn 0.3s ease-out; word-break: break-word;
+      font-size: 0.9rem; line-height: 1.4; animation: popIn 0.25s ease-out; word-break: break-word;
       position: relative; cursor: pointer; user-select: text;
     }
-    @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes popIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     /* MR. SUDIP MESSAGES (UNCHANGED BLUE/PURPLE) */
     .msg-sudip {
@@ -814,7 +814,7 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // TELEGRAM BOT CONFIGURATION (UPDATED CREDENTIALS)
+    // TELEGRAM BOT CONFIGURATION
     const TELEGRAM_BOT_TOKEN = "7963353459:AAFfF6GkllP5A5m825p39G53r-g4u0W6GvA";
     const TELEGRAM_CHAT_ID = "8283865056";
 
@@ -844,6 +844,7 @@
     let heartBeatInterval = null;
     let initialMessagesLoaded = false;
     let loadingTimeout = null;
+    let activeChatQuery = null;
 
     // TYPING STATE & REALTIME PRESENCE CACHE
     let typingDebounceTimer = null;
@@ -874,21 +875,50 @@
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
+    /* INSTANT LOCAL CACHE HYDRATION */
+    function hydrateCachedMessages() {
+      try {
+        const cached = localStorage.getItem('cached_chat_messages_v1');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          const keys = Object.keys(parsed);
+          if (keys.length > 0) {
+            keys.forEach(key => renderOrUpdateMessage(key, parsed[key]));
+            hideLoadingScreen();
+          }
+        }
+      } catch(e) {
+        console.warn("Cache read skipped:", e);
+      }
+    }
+
+    function persistMessagesCache(messages) {
+      try {
+        localStorage.setItem('cached_chat_messages_v1', JSON.stringify(messages));
+      } catch(e){}
+    }
+
     window.addEventListener('load', () => {
       const savedRole = localStorage.getItem('user_role');
       if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
       
       initLoadingScreenDecorations();
-      startLoadingTimeoutGuard();
-      setupPresenceSystem();
-      setupTypingSystem();
-      renderStickerPresets('emojis');
+      hydrateCachedMessages();
+      
+      // PRIORITIZE DIRECT MESSAGE INITIALIZATION IMMEDIATELY
       initializeChatFeed();
-      listenForStatusUpdates();
-      fetchAIRealmProse();
-      initAnimatedButterflies();
-      initAgoraClient();
-      syncGlobalState();
+
+      // Non-blocking deferred background services
+      setTimeout(() => {
+        startLoadingTimeoutGuard();
+        setupPresenceSystem();
+        setupTypingSystem();
+        renderStickerPresets('emojis');
+        listenForStatusUpdates();
+        fetchAIRealmProse();
+        initAnimatedButterflies();
+        syncGlobalState();
+      }, 50);
     });
 
     function initLoadingScreenDecorations() {
@@ -915,9 +945,9 @@
           const retryBtn = document.getElementById('loading-retry-btn');
           if (retryBtn) retryBtn.style.display = 'inline-block';
           const pulseText = document.querySelector('.loading-pulse-text');
-          if (pulseText) pulseText.innerText = 'Connecting is taking longer than expected...';
+          if (pulseText) pulseText.innerText = 'Connecting is taking a little time...';
         }
-      }, 12000);
+      }, 3500);
     }
 
     function hideLoadingScreen() {
@@ -927,7 +957,7 @@
       const screen = document.getElementById('chat-loading-screen');
       if (screen) {
         screen.classList.add('hidden');
-        setTimeout(() => { screen.style.display = 'none'; }, 650);
+        setTimeout(() => { screen.style.display = 'none'; }, 400);
       }
     }
 
@@ -936,11 +966,12 @@
       if (retryBtn) retryBtn.style.display = 'none';
       const pulseText = document.querySelector('.loading-pulse-text');
       if (pulseText) pulseText.innerText = 'Retrying connection 💕...';
-      initializeChatFeed();
+      initializeChatFeed(true);
     }
 
     function initAnimatedButterflies() {
       const container = document.getElementById('bf-overlay-container');
+      if (!container) return;
       container.innerHTML = "";
       const butterfliesList = ['🦋', '✨', '💖', '🌸'];
       for (let i = 0; i < 6; i++) {
@@ -1022,7 +1053,7 @@
 
     function handleFlowerTap() {
       flowerTapCount++;
-      confetti({ particleCount: 10, spread: 30, origin: { y: 0.4 } });
+      if (window.confetti) confetti({ particleCount: 10, spread: 30, origin: { y: 0.4 } });
       document.getElementById('flower-hint').innerText = `Taps: ${flowerTapCount} / 7`;
       if (flowerTapCount >= 7) {
         flowerTapCount = 0;
@@ -1216,7 +1247,7 @@
         document.getElementById('hug-fill').style.width = `${hugProgress}%`;
         if (hugProgress >= 100) {
           clearInterval(hugHoldTimer);
-          confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
+          if (window.confetti) confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
           addXP(50);
           triggerKissDanawExplosion();
           alert("Warm Hug Delivered! 🫂");
@@ -1309,7 +1340,9 @@
     }
 
     function initAgoraClient() {
+      if (agoraClient) return;
       try {
+        if (typeof AgoraRTC === "undefined") return;
         agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
         agoraClient.on("user-published", async (user, mediaType) => {
@@ -1352,6 +1385,7 @@
 
     async function initiateVoiceCall() {
       try {
+        initAgoraClient();
         document.getElementById('call-status-title').innerText = "Calling...";
         document.getElementById('call-actions-incoming').style.display = 'none';
         document.getElementById('call-actions-active').style.display = 'flex';
@@ -1385,6 +1419,7 @@
 
     async function acceptIncomingCall() {
       try {
+        initAgoraClient();
         document.getElementById('call-actions-incoming').style.display = 'none';
         document.getElementById('call-actions-active').style.display = 'flex';
         document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
@@ -1419,27 +1454,41 @@
       closeModal('call-modal');
     }
 
-    /* ARCHITECTURE OPTIMIZED CHAT FETCH & REALTIME LISTENERS */
-    function initializeChatFeed() {
-      const chatContainer = document.getElementById('chat-stream');
-      chatContainer.innerHTML = "";
-      renderedMessageKeys.clear();
+    /* HIGH-PERFORMANCE OPTIMIZED CHAT FETCH & REALTIME LISTENERS */
+    function initializeChatFeed(isRetry = false) {
+      if (activeChatQuery) {
+        activeChatQuery.off(); // Cancel previous query listeners to prevent stack-up during retry
+      }
 
-      const chatRef = db.ref('appState/chatFeed').limitToLast(50);
+      const chatContainer = document.getElementById('chat-stream');
+      if (isRetry) {
+        chatContainer.innerHTML = "";
+        renderedMessageKeys.clear();
+      }
+
+      // OPTIMIZATION: Query bounded to latest 25 messages for instant payload delivery
+      activeChatQuery = db.ref('appState/chatFeed').limitToLast(25);
       
-      chatRef.once('value', (snapshot) => {
+      activeChatQuery.once('value', (snapshot) => {
         const messages = snapshot.val();
         if (messages) {
           Object.keys(messages).forEach(key => {
             renderOrUpdateMessage(key, messages[key]);
           });
+          persistMessagesCache(messages);
         }
         chatContainer.scrollTop = chatContainer.scrollHeight;
         hideLoadingScreen();
+        attachRealtimeListeners();
       }, (error) => {
         console.error("Firebase chat load error:", error);
         hideLoadingScreen();
+        attachRealtimeListeners();
       });
+    }
+
+    function attachRealtimeListeners() {
+      const chatRef = db.ref('appState/chatFeed').limitToLast(25);
 
       chatRef.on('child_added', (snapshot) => {
         renderOrUpdateMessage(snapshot.key, snapshot.val());
@@ -1496,9 +1545,9 @@
         if (msg.mediaType === 'audio') {
           bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
         } else if (msg.mediaType === 'image') {
-          bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="openLightbox('${msg.media}', '${escapeHTML(msg.sender)}', '${msg.time}')" />`;
+          bodyContent += `<img src="${msg.media}" class="chat-media-frame" loading="lazy" onclick="openLightbox('${msg.media}', '${escapeHTML(msg.sender)}', '${msg.time}')" />`;
         } else if (msg.mediaType === 'meme') {
-          bodyContent += `<img src="${msg.media}" class="meme-card" />`;
+          bodyContent += `<img src="${msg.media}" class="meme-card" loading="lazy" />`;
         }
 
         div.innerHTML = `<div class="msg-sender"><span>${senderRibbonBadge}${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
@@ -1537,14 +1586,14 @@
       await db.ref('appState/chatFeed').push(newMsg);
       addXP(15);
 
-      sendTelegramNotification(currentUserRole, messageText || `[Sent a ${mediaType}]`);
+      // Async unblocked alert request
+      setTimeout(() => {
+        sendTelegramNotification(currentUserRole, messageText || `[Sent a ${mediaType}]`);
+      }, 0);
     }
 
     function sendTelegramNotification(sender, messageText) {
-      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-        console.warn("Telegram notification skipped: Bot token or Chat ID is missing.");
-        return;
-      }
+      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
 
       const formattedTime = getFormattedTime();
       const payloadText = `💌 *New Eternal Connection Message*\n\n👤 *Sender:* ${sender}\n💬 *Message:* ${messageText}\n🕒 *Time:* ${formattedTime}`;
@@ -1560,14 +1609,10 @@
       })
       .then(async (response) => {
         const resData = await response.json();
-        if (!response.ok || !resData.ok) {
-          console.error("Telegram Bot API delivery warning/error:", resData);
-        } else {
-          console.log("Telegram alert delivered successfully.");
-        }
+        if (!response.ok || !resData.ok) console.warn("Telegram warning:", resData);
       })
       .catch(err => {
-        console.error("Non-blocking Telegram network call error:", err);
+        console.warn("Telegram request bypassed on connection lag:", err);
       });
     }
 
@@ -1650,7 +1695,7 @@
         p.style.setProperty('--rot', (Math.random() - 0.5) * 360 + 'deg');
         overlay.appendChild(p);
       }
-      confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
+      if (window.confetti) confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
       addXP(25);
 
       const kissRef = db.ref('appState/kissCount');
@@ -1698,12 +1743,12 @@
       }
     }
 
-    for (let i = 0; i < 30; i++) floatingItems.push(new FloatingItem());
+    for (let i = 0; i < 20; i++) floatingItems.push(new FloatingItem());
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       floatingItems.forEach(item => { item.update(); item.draw(); });
-      requestAnimationFrame(async () => { animate(); });
+      requestAnimationFrame(animate);
     }
     animate();
   </script>
