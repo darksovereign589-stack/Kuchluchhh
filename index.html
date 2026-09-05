@@ -18,7 +18,6 @@
 
   <style>
     :root {
-      /* Theme: Deep Midnight Blue / Purple / Indigo Gradient Theme */
       --bg-dark: #0d0b1e;
       --bg-card: rgba(21, 18, 45, 0.92);
       --neon-primary: #8b5cf6;
@@ -53,7 +52,6 @@
 
     #ambient-canvas { position: fixed; inset: 0; pointer-events: auto; z-index: 1; }
 
-    /* GATEWAY OVERLAY */
     .gateway-overlay {
       position: fixed; inset: 0;
       background: rgba(10, 8, 22, 0.96);
@@ -98,7 +96,6 @@
       text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
     }
 
-    /* MAIN CONTAINER & NAVIGATION */
     .app-container {
       width: 100%; max-width: 540px; height: 100vh; height: 100dvh;
       background: var(--bg-card); border: 1px solid var(--glass-border);
@@ -144,13 +141,11 @@
       box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
     }
 
-    /* VIEWPORT PANELS */
     .viewport-content { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
     .tab-panel { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease-out forwards; }
     .tab-panel.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* REALM HOME PANEL */
     .butterfly-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: hidden; }
     .flutter-bf {
       position: absolute; font-size: 1.8rem;
@@ -211,28 +206,46 @@
     /* CHAT STREAM PANEL */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
+    .msg-wrapper { display: flex; flex-direction: column; max-width: 82%; animation: popIn 0.3s ease-out; }
+    .msg-wrapper.wifey-wrapper { align-self: flex-start; }
+    .msg-wrapper.sudip-wrapper { align-self: flex-end; }
+
+    .wifey-decor {
+      font-size: 0.8rem;
+      margin-bottom: 2px;
+      margin-left: 6px;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .msg-bubble {
-      max-width: 82%; padding: 10px 14px; border-radius: 20px;
-      font-size: 0.9rem; line-height: 1.4; animation: popIn 0.3s ease-out; word-break: break-word;
+      padding: 10px 14px; border-radius: 20px;
+      font-size: 0.9rem; line-height: 1.4; word-break: break-word;
       position: relative; cursor: pointer; user-select: text;
     }
     @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* MR SUDIP: Blue styling maintained */
     .msg-sudip {
-      align-self: flex-start;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(76, 29, 149, 0.28) 100%);
-      border: 1px solid var(--neon-primary); border-bottom-left-radius: 4px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(59, 130, 246, 0.45) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.6); border-bottom-right-radius: 4px;
+      color: #f8fafc;
     }
 
+    /* MRS SUDIP: Light pink elegant bubble */
     .msg-wifey {
-      align-self: flex-end;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid var(--glass-border); border-bottom-right-radius: 4px;
+      background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%);
+      border: 1px solid #f472b6; border-bottom-left-radius: 4px;
+      color: #831843;
+      box-shadow: 0 4px 15px rgba(244, 114, 182, 0.25);
     }
+    .msg-wifey .msg-sender span { color: #9d174d !important; }
+    .msg-wifey .msg-time { color: #9f1239 !important; }
+    .msg-wifey a { color: #831843 !important; font-weight: 700; }
 
-    .msg-deleted {
-      font-style: italic; opacity: 0.6; color: var(--text-muted);
-    }
+    .msg-deleted { font-style: italic; opacity: 0.6; }
 
     .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-indigo); margin-bottom: 4px; display: flex; justify-content: space-between; }
     .msg-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
@@ -294,7 +307,6 @@
       border: 1px solid #ef4444; border-radius: 25px; padding: 6px 14px; color: #f87171; font-size: 0.82rem;
     }
 
-    /* FEATURE CONTAINER & CARDS */
     .feature-container {
       padding: 20px; display: flex; flex-direction: column; align-items: center;
       justify-content: center; height: 100%; text-align: center; gap: 16px; overflow-y: auto;
@@ -314,11 +326,10 @@
     }
     .notice-box p { margin-bottom: 0; color: #f8fafc; font-size: 0.85rem; }
 
-    /* BOTTOM MOBILE NAVBAR */
     .bottom-nav {
       height: var(--nav-height); background: rgba(10, 8, 22, 0.96);
       border-top: 1px solid var(--glass-border); display: flex;
-      justify-content: space-around; align-items: center; flex-shrink: 0;
+      justify-space-around; align-items: center; flex-shrink: 0;
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 3px;
@@ -327,7 +338,6 @@
     .nav-item.active { color: var(--neon-primary); }
     .nav-icon { font-size: 1.3rem; }
 
-    /* MODAL OVERLAYS */
     .modal {
       position: fixed; inset: 0; background: rgba(5, 4, 12, 0.88); backdrop-filter: blur(14px);
       z-index: 200; display: flex; justify-content: center; align-items: center; padding: 20px;
@@ -341,7 +351,35 @@
       max-height: 85vh; overflow-y: auto;
     }
 
-    /* FULLSCREEN LIGHTBOX MODAL */
+    /* ENHANCED VOICE CALL MODAL CONTROLS */
+    .call-avatar-glow {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-primary), var(--accent-pink));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; margin: 0 auto 15px auto;
+      box-shadow: 0 0 30px var(--neon-glow);
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    .call-timer-badge {
+      font-size: 1.2rem; font-weight: 700; color: #10b981;
+      margin: 10px 0; letter-spacing: 1px; font-family: monospace;
+    }
+
+    .call-controls-bar {
+      display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 20px;
+    }
+
+    .call-ctrl-btn {
+      width: 52px; height: 52px; border-radius: 50%; border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; cursor: pointer; transition: all 0.2s;
+    }
+    .ctrl-active { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid var(--glass-border); }
+    .ctrl-off { background: #ef4444; color: #fff; }
+    .ctrl-hangup { background: #dc2626; color: #fff; width: 60px; height: 60px; font-size: 1.5rem; }
+
     .lightbox-modal {
       position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
       z-index: 300; display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -351,7 +389,6 @@
     .lightbox-img { max-width: 100%; max-height: 75vh; border-radius: 16px; border: 1px solid var(--glass-border); object-fit: contain; }
     .lightbox-meta { margin-top: 15px; font-size: 0.85rem; color: var(--soft-indigo); display: flex; gap: 15px; }
 
-    /* FULLSCREEN KISS OVERLAY */
     #kiss-overlay {
       position: fixed; inset: 0; pointer-events: none; z-index: 999;
       display: flex; justify-content: center; align-items: center;
@@ -374,7 +411,6 @@
   <canvas id="ambient-canvas"></canvas>
   <div id="kiss-overlay"></div>
 
-  <!-- GATEWAY ROLE SELECTOR -->
   <div class="gateway-overlay" id="gateway">
     <div class="gateway-card">
       <div class="secret-flower" onclick="handleFlowerTap()">🌹</div>
@@ -389,7 +425,6 @@
   </div>
 
   <div class="app-container">
-    <!-- HEADER -->
     <div class="chat-header">
       <div class="user-info" onclick="openStatusModal()">
         <div class="avatar" id="partner-avatar">👑</div>
@@ -406,10 +441,7 @@
       </div>
     </div>
 
-    <!-- VIEWPORT CONTENT AREA -->
     <div class="viewport-content">
-      
-      <!-- TAB 1: REALM (HOME) -->
       <div class="tab-panel active" id="panel-realm">
         <div class="butterfly-layer" id="bf-overlay-container"></div>
 
@@ -419,7 +451,6 @@
             <p id="realm-greeting-body">Bringing your shared space together...</p>
           </div>
 
-          <!-- MR SUDIP'S WIFEY MONITOR PANEL -->
           <div class="admin-monitor-card" id="admin-wifey-monitor">
             <h4>🎀 Mrs. Sudip Live Status</h4>
             <div class="monitor-row"><span>Online Status:</span> <span class="monitor-val" id="mon-online">Offline</span></div>
@@ -455,7 +486,6 @@
         </div>
       </div>
 
-      <!-- TAB 2: CHAT STREAM -->
       <div class="tab-panel" id="panel-chat">
         <div class="chat-messages" id="chat-stream"></div>
 
@@ -487,7 +517,6 @@
         </div>
       </div>
 
-      <!-- TAB 3: WATCH2GETHER -->
       <div class="tab-panel" id="panel-watch2gether">
         <div class="feature-container">
           <div class="feature-card">
@@ -506,7 +535,6 @@
         </div>
       </div>
 
-      <!-- TAB 4: PLAY2GETHER -->
       <div class="tab-panel" id="panel-play2gether">
         <div class="feature-container">
           <div class="feature-card">
@@ -527,7 +555,6 @@
 
     </div>
 
-    <!-- BOTTOM NAVBAR -->
     <div class="bottom-nav">
       <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
       <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
@@ -536,25 +563,28 @@
     </div>
   </div>
 
-  <!-- VOICE CALL MODAL -->
+  <!-- VOICE CALL MODAL WITH TIMER, MUTE, SPEAKER & CLEAN CONTROL -->
   <div class="modal" id="call-modal">
     <div class="modal-card">
-      <div class="avatar" style="font-size: 3rem; margin-bottom: 10px;">📞</div>
+      <div class="call-avatar-glow" id="call-avatar-display">📞</div>
       <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 5px;">Calling...</h2>
-      <p id="call-status-desc" style="font-size: 0.85rem;">Connecting Agora voice channel...</p>
+      <p id="call-status-desc" style="font-size: 0.85rem; color: var(--text-muted);">Connecting Agora voice channel...</p>
       
+      <div class="call-timer-badge" id="call-timer-display" style="display: none;">00:00</div>
+
       <div class="btn-group" id="call-actions-incoming" style="display: none; margin-top: 15px;">
         <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #047857);" onclick="acceptIncomingCall()">Accept Call 📞</button>
         <button class="btn-secondary" onclick="rejectIncomingCall()">Decline 🛑</button>
       </div>
 
-      <div class="btn-group" id="call-actions-active" style="margin-top: 15px;">
-        <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b);" onclick="endVoiceCall()">Hang Up 🛑</button>
+      <div class="call-controls-bar" id="call-actions-active">
+        <button class="call-ctrl-btn ctrl-active" id="btn-toggle-mic" onclick="toggleMic()">🎙️</button>
+        <button class="call-ctrl-btn ctrl-hangup" onclick="endVoiceCall()">📞</button>
+        <button class="call-ctrl-btn ctrl-active" id="btn-toggle-speaker" onclick="toggleSpeaker()">🔊</button>
       </div>
     </div>
   </div>
 
-  <!-- FULLSCREEN LIGHTBOX MODAL -->
   <div class="lightbox-modal" id="lightbox-modal" onclick="closeModal('lightbox-modal')">
     <img id="lightbox-img" class="lightbox-img" src="" alt="Expanded Memory" />
     <div class="lightbox-meta">
@@ -563,7 +593,6 @@
     </div>
   </div>
 
-  <!-- ADMIN PIN MODAL -->
   <div class="modal" id="admin-pin-modal">
     <div class="modal-card">
       <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Mr. Sudip Access</h2>
@@ -576,7 +605,6 @@
     </div>
   </div>
 
-  <!-- STATUS & PRIVACY MODAL -->
   <div class="modal" id="status-modal">
     <div class="modal-card">
       <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Update Status</h2>
@@ -588,7 +616,6 @@
     </div>
   </div>
 
-  <!-- DELETE MESSAGE MODAL -->
   <div class="modal" id="delete-msg-modal">
     <div class="modal-card">
       <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Delete Message</h2>
@@ -601,7 +628,6 @@
     </div>
   </div>
 
-  <!-- PLAY2GETHER FRAME MODAL -->
   <div class="modal" id="game-frame-modal">
     <div class="modal-card" style="max-width: 90vw; width: 600px; height: 80vh; display: flex; flex-direction: column; padding: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -613,7 +639,6 @@
   </div>
 
   <script>
-    // FIREBASE REALTIME CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyBgzxaX1n3okDxcAhMV2GRuy7kBrxqXKcA",
       authDomain: "mrs-sudip.firebaseapp.com",
@@ -626,7 +651,7 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // TELEGRAM BOT CONFIGURATION
+    // UPDATED TELEGRAM BOT CREDENTIALS FOR @Site_AlertMrsbot
     const TELEGRAM_BOT_TOKEN = "7963353459:AAFfF6GkllP5A5m825p39G53r-g4u0W6GvA";
     const TELEGRAM_CHAT_ID = "8283865056";
 
@@ -635,11 +660,15 @@
     let flowerTapCount = 0;
     const SECRET_PIN = "7231";
 
-    // AGORA VOICE CALL CONFIG
+    // AGORA RTC CONFIGURATION
     const AGORA_APP_ID = "9017b3fdf278479296b1ca39bd6f47c5";
     const AGORA_CHANNEL_NAME = "eternal-realm-private-secure";
     let agoraClient = null;
     let localAudioTrack = null;
+    let isMicMuted = false;
+    let isSpeakerOff = false;
+    let callTimerInterval = null;
+    let callDurationSeconds = 0;
 
     let selectedMsgKeyForDelete = null;
     let mediaRecorder = null;
@@ -654,6 +683,7 @@
 
     let renderedMessageKeys = new Set();
     let heartBeatInterval = null;
+    let lastSentTelegramMsgId = null;
 
     const memesList = ["https://i.imgflip.com/4/30b1gx.jpg", "https://i.imgflip.com/1g8my4.jpg", "https://i.imgflip.com/26am.jpg"];
     const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
@@ -679,19 +709,38 @@
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
-    window.addEventListener('load', () => {
+    // INSTANT FAST BOOT INITIALIZATION
+    window.addEventListener('DOMContentLoaded', () => {
       const savedRole = localStorage.getItem('user_role');
       if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
+      
+      // Load cached chat messages immediately for instant paint (<1s)
+      loadCachedChat();
       
       setupPresenceSystem();
       renderStickerPresets('emojis');
       initializeChatFeed();
       listenForStatusUpdates();
       fetchAIRealmProse();
-      initAnimatedButterflies();
       initAgoraClient();
       syncGlobalState();
+
+      // Defer non-critical canvas particle animation
+      setTimeout(initAnimatedButterflies, 500);
     });
+
+    function loadCachedChat() {
+      try {
+        const cached = localStorage.getItem('eternal_chat_cache');
+        if (cached) {
+          const messages = JSON.parse(cached);
+          const chatContainer = document.getElementById('chat-stream');
+          chatContainer.innerHTML = "";
+          Object.keys(messages).forEach(key => renderOrUpdateMessage(key, messages[key]));
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      } catch(e){}
+    }
 
     function initAnimatedButterflies() {
       const container = document.getElementById('bf-overlay-container');
@@ -989,20 +1038,31 @@
       reader.readAsDataURL(file);
     }
 
+    // REFACTORED SECURE AGORA CLIENT & WEBRTC HANDLERS
     function initAgoraClient() {
       try {
-        agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        if (!agoraClient) {
+          agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        }
 
         agoraClient.on("user-published", async (user, mediaType) => {
           await agoraClient.subscribe(user, mediaType);
           if (mediaType === "audio") {
-            user.audioTrack.play();
+            const remoteAudioTrack = user.audioTrack;
+            remoteAudioTrack.play();
             document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
+            startCallTimer();
           }
         });
 
         agoraClient.on("user-unpublished", (user) => {
-          document.getElementById('call-status-title').innerText = "Partner disconnected audio.";
+          document.getElementById('call-status-title').innerText = "Partner muted or disconnected.";
+        });
+
+        agoraClient.on("user-left", (user) => {
+          cleanUpCallState();
+          closeModal('call-modal');
+          alert("Call ended by partner.");
         });
       } catch(e) {
         console.warn("Agora initialization notice:", e);
@@ -1021,10 +1081,13 @@
           }
 
           document.getElementById('call-status-title').innerText = `${callData.caller} is calling...`;
+          document.getElementById('call-avatar-display').innerText = callData.caller === "Mrs. Sudip" ? "🎀" : "👑";
           document.getElementById('call-actions-incoming').style.display = 'flex';
           document.getElementById('call-actions-active').style.display = 'none';
+          document.getElementById('call-timer-display').style.display = 'none';
           openModal('call-modal');
         } else if (!callData) {
+          cleanUpCallState();
           const modal = document.getElementById('call-modal');
           if (modal.classList.contains('open')) closeModal('call-modal');
         }
@@ -1034,8 +1097,10 @@
     async function initiateVoiceCall() {
       try {
         document.getElementById('call-status-title').innerText = "Calling...";
+        document.getElementById('call-avatar-display').innerText = currentUserRole === "Mr. Sudip" ? "🎀" : "👑";
         document.getElementById('call-actions-incoming').style.display = 'none';
         document.getElementById('call-actions-active').style.display = 'flex';
+        document.getElementById('call-timer-display').style.display = 'none';
         openModal('call-modal');
 
         if (currentUserRole === "Mrs. Sudip") {
@@ -1051,15 +1116,17 @@
           timestamp: Date.now()
         });
 
-        if (agoraClient) {
-          await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
-          localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-          await agoraClient.publish([localAudioTrack]);
-          document.getElementById('call-status-title').innerText = "Ringing... Waiting for answer 🎙️";
-        }
+        initAgoraClient();
+        const uid = currentUserRole === "Mr. Sudip" ? 1001 : 1002;
+        await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, uid);
+        
+        localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        await agoraClient.publish([localAudioTrack]);
+        document.getElementById('call-status-title').innerText = "Ringing... Waiting for answer 🎙️";
       } catch (err) {
         console.error("Agora call error:", err);
-        alert("Call setup failed. Make sure your browser has mic permissions enabled and the page is on HTTPS.");
+        alert("Call setup failed. Make sure microphone permissions are granted.");
+        cleanUpCallState();
         closeModal('call-modal');
       }
     }
@@ -1068,58 +1135,112 @@
       try {
         document.getElementById('call-actions-incoming').style.display = 'none';
         document.getElementById('call-actions-active').style.display = 'flex';
-        document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
+        document.getElementById('call-status-title').innerText = "Connecting Voice Channel...";
 
-        if (agoraClient) {
-          await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
-          localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-          await agoraClient.publish([localAudioTrack]);
-        }
+        initAgoraClient();
+        const uid = currentUserRole === "Mr. Sudip" ? 1001 : 1002;
+        await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, uid);
+
+        localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        await agoraClient.publish([localAudioTrack]);
+        
+        document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
+        startCallTimer();
 
         db.ref('appState/activeCallSignal').remove();
       } catch (err) {
-        alert("Failed to accept call. Check permissions.");
+        console.error("Call accept failure:", err);
+        alert("Failed to accept call. Check mic permissions.");
+        cleanUpCallState();
         closeModal('call-modal');
       }
     }
 
     function rejectIncomingCall() {
       db.ref('appState/activeCallSignal').remove();
+      cleanUpCallState();
       closeModal('call-modal');
     }
 
+    function toggleMic() {
+      if (!localAudioTrack) return;
+      isMicMuted = !isMicMuted;
+      localAudioTrack.setEnabled(!isMicMuted);
+      const btn = document.getElementById('btn-toggle-mic');
+      btn.className = `call-ctrl-btn ${isMicMuted ? 'ctrl-off' : 'ctrl-active'}`;
+      btn.innerText = isMicMuted ? '🔇' : '🎙️';
+    }
+
+    function toggleSpeaker() {
+      isSpeakerOff = !isSpeakerOff;
+      if (agoraClient && agoraClient.remoteUsers) {
+        agoraClient.remoteUsers.forEach(user => {
+          if (user.audioTrack) {
+            if (isSpeakerOff) user.audioTrack.stop();
+            else user.audioTrack.play();
+          }
+        });
+      }
+      const btn = document.getElementById('btn-toggle-speaker');
+      btn.className = `call-ctrl-btn ${isSpeakerOff ? 'ctrl-off' : 'ctrl-active'}`;
+      btn.innerText = isSpeakerOff ? '🔈' : '🔊';
+    }
+
+    function startCallTimer() {
+      if (callTimerInterval) clearInterval(callTimerInterval);
+      callDurationSeconds = 0;
+      const timerDisplay = document.getElementById('call-timer-display');
+      timerDisplay.style.display = 'block';
+      timerDisplay.innerText = '00:00';
+
+      callTimerInterval = setInterval(() => {
+        callDurationSeconds++;
+        const mins = String(Math.floor(callDurationSeconds / 60)).padStart(2, '0');
+        const secs = String(callDurationSeconds % 60).padStart(2, '0');
+        timerDisplay.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
     async function endVoiceCall() {
+      await cleanUpCallState();
+      db.ref('appState/activeCallSignal').remove();
+      closeModal('call-modal');
+    }
+
+    async function cleanUpCallState() {
+      if (callTimerInterval) { clearInterval(callTimerInterval); callTimerInterval = null; }
       if (localAudioTrack) {
+        localAudioTrack.stop();
         localAudioTrack.close();
         localAudioTrack = null;
       }
       if (agoraClient) {
         try { await agoraClient.leave(); } catch(e){}
       }
-      db.ref('appState/activeCallSignal').remove();
-      closeModal('call-modal');
+      isMicMuted = false;
+      isSpeakerOff = false;
+      document.getElementById('btn-toggle-mic').className = 'call-ctrl-btn ctrl-active';
+      document.getElementById('btn-toggle-mic').innerText = '🎙️';
+      document.getElementById('btn-toggle-speaker').className = 'call-ctrl-btn ctrl-active';
+      document.getElementById('btn-toggle-speaker').innerText = '🔊';
     }
 
-    /* ARCHITECTURE OPTIMIZED CHAT FETCH & REALTIME LISTENERS */
+    /* REALTIME CHAT STREAM & LOCAL PERSISTENCE CACHE */
     function initializeChatFeed() {
       const chatContainer = document.getElementById('chat-stream');
-      chatContainer.innerHTML = "";
-      renderedMessageKeys.clear();
-
-      const chatRef = db.ref('appState/chatFeed').limitToLast(50);
+      const chatRef = db.ref('appState/chatFeed').limitToLast(60);
       
-      chatRef.once('value', (snapshot) => {
+      chatRef.on('value', (snapshot) => {
         const messages = snapshot.val();
         if (messages) {
+          // Cache messages locally for instant load on refresh
+          try { localStorage.setItem('eternal_chat_cache', JSON.stringify(messages)); } catch(e){}
+          
           Object.keys(messages).forEach(key => {
             renderOrUpdateMessage(key, messages[key]);
           });
         }
         chatContainer.scrollTop = chatContainer.scrollHeight;
-      });
-
-      chatRef.on('child_added', (snapshot) => {
-        renderOrUpdateMessage(snapshot.key, snapshot.val());
       });
 
       chatRef.on('child_changed', (snapshot) => {
@@ -1143,27 +1264,30 @@
       }
 
       const chatContainer = document.getElementById('chat-stream');
-      let div = document.getElementById(`msg-${key}`);
+      let wrapper = document.getElementById(`msg-${key}`);
       
-      if (!div) {
-        div = document.createElement('div');
-        div.id = `msg-${key}`;
-        chatContainer.appendChild(div);
+      if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.id = `msg-${key}`;
+        chatContainer.appendChild(wrapper);
       }
 
-      const isSudip = msg.sender === "Mr. Sudip";
-      div.className = `msg-bubble ${isSudip ? 'msg-sudip' : 'msg-wifey'}`;
-      div.onclick = () => openDeleteModal(key);
+      const isWifey = msg.sender === "Mrs. Sudip";
+      wrapper.className = `msg-wrapper ${isWifey ? 'wifey-wrapper' : 'sudip-wrapper'}`;
+
+      let decorHeader = isWifey ? `<div class="wifey-decor">🦋 🎀</div>` : '';
 
       if (msg.deletedForEveryone) {
-        div.innerHTML = `
-          <div class="msg-sender"><span>${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>
-          <div class="msg-body msg-deleted">🚫 Message deleted</div>
+        wrapper.innerHTML = `
+          ${decorHeader}
+          <div class="msg-bubble ${isWifey ? 'msg-wifey' : 'msg-sudip'}" onclick="openDeleteModal('${key}')">
+            <div class="msg-sender"><span>${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>
+            <div class="msg-body msg-deleted">🚫 Message deleted</div>
+          </div>
         `;
       } else {
         let safeText = escapeHTML(msg.text || '');
-        let formattedText = safeText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--soft-indigo); text-decoration: underline;">$1</a>');
-
+        let formattedText = safeText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
         let bodyContent = msg.text ? `<div class="msg-body">${formattedText}</div>` : '';
 
         if (msg.mediaType === 'audio') {
@@ -1174,7 +1298,13 @@
           bodyContent += `<img src="${msg.media}" class="meme-card" />`;
         }
 
-        div.innerHTML = `<div class="msg-sender"><span>${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
+        wrapper.innerHTML = `
+          ${decorHeader}
+          <div class="msg-bubble ${isWifey ? 'msg-wifey' : 'msg-sudip'}" onclick="openDeleteModal('${key}')">
+            <div class="msg-sender"><span>${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>
+            ${bodyContent}
+          </div>
+        `;
       }
 
       renderedMessageKeys.add(key);
@@ -1205,16 +1335,21 @@
       
       if (mediaUrl) { newMsg.media = mediaUrl; newMsg.mediaType = mediaType; }
 
-      await db.ref('appState/chatFeed').push(newMsg);
+      const ref = await db.ref('appState/chatFeed').push(newMsg);
       addXP(15);
 
-      sendTelegramNotification(currentUserRole, messageText || `[Sent a ${mediaType}]`);
+      // Trigger Telegram notification for target partner
+      sendTelegramNotification(currentUserRole, messageText || `[Sent a ${mediaType}]`, ref.key);
     }
 
-    function sendTelegramNotification(sender, messageText) {
+    // RELIABLE TELEGRAM NOTIFICATION DELIVERY SYSTEM FOR @Site_AlertMrsbot
+    function sendTelegramNotification(sender, messageText, msgKey) {
       if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+      if (lastSentTelegramMsgId === msgKey) return; // Prevent duplicates
       
-      const payloadText = `💌 *New Realm Message*\n*Sender:* ${sender}\n*Message:* ${messageText}`;
+      lastSentTelegramMsgId = msgKey;
+      const avatarIcon = sender === "Mrs. Sudip" ? "🎀 Mrs. Sudip" : "👑 Mr. Sudip";
+      const payloadText = `💌 *New Eternal Realm Message*\n*From:* ${avatarIcon}\n*Message:* ${messageText}`;
       
       fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -1224,37 +1359,25 @@
           text: payloadText,
           parse_mode: 'Markdown'
         })
-      }).catch(err => console.error("Non-blocking Telegram alert error:", err));
+      }).catch(err => console.error("Telegram alert error:", err));
     }
 
     function openDeleteModal(msgKey) { selectedMsgKeyForDelete = msgKey; openModal('delete-msg-modal'); }
 
-    /* PROPER SECURE DELETION SYSTEM */
     async function confirmDeleteMsg(type) {
       if (!selectedMsgKeyForDelete) return;
       const key = selectedMsgKeyForDelete;
       const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
 
       if (type === 'everyone') {
-        // Optimistic UI Update
-        const el = document.getElementById(`msg-${key}`);
-        if (el) {
-          const body = el.querySelector('.msg-body');
-          if (body) {
-            body.className = "msg-body msg-deleted";
-            body.innerText = "🚫 Message deleted";
-          }
-        }
         await db.ref(`appState/chatFeed/${key}`).update({ 
           deletedForEveryone: true,
           text: "",
           media: null
         });
       } else if (type === 'me') {
-        // Optimistic UI Update
         const el = document.getElementById(`msg-${key}`);
         if (el) el.remove();
-        
         await db.ref(`appState/chatFeed/${key}/deletedFor/${currentUserIdKey}`).set(true);
       }
       closeModal('delete-msg-modal');
@@ -1307,11 +1430,9 @@
       addXP(25);
 
       const kissRef = db.ref('appState/kissCount');
-      await kissRef.transaction((currentCount) => {
-        return (currentCount || 0) + 1;
-      });
+      await kissRef.transaction((currentCount) => (currentCount || 0) + 1);
 
-      sendTelegramNotification(currentUserRole, "💋 Sent a Kiss explosion in the Realm!");
+      sendTelegramNotification(currentUserRole, "💋 Sent a Kiss explosion in the Realm!", `kiss_${Date.now()}`);
 
       setTimeout(() => { overlay.classList.remove('active'); overlay.innerHTML = ""; }, 2500);
     }
@@ -1319,6 +1440,7 @@
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+    // AMBIENT PARTICLES
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let floatingItems = [];
@@ -1351,12 +1473,12 @@
       }
     }
 
-    for (let i = 0; i < 30; i++) floatingItems.push(new FloatingItem());
+    for (let i = 0; i < 20; i++) floatingItems.push(new FloatingItem());
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       floatingItems.forEach(item => { item.update(); item.draw(); });
-      requestAnimationFrame(async () => { animate(); });
+      requestAnimationFrame(animate);
     }
     animate();
   </script>
