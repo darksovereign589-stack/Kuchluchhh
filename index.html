@@ -29,7 +29,7 @@
       --text-muted: #94a3b8;
       --glass-border: rgba(139, 92, 246, 0.3);
       --gold-accent: #ffd700;
-      --nav-height: 64px;
+      --nav-height: 68px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -198,7 +198,7 @@
     .chat-header {
       padding: 12px 16px; background: rgba(13, 10, 30, 0.92);
       border-bottom: 1px solid var(--glass-border); display: flex;
-      justify-space-between; align-items: center; flex-shrink: 0;
+      justify-content: space-between; align-items: center; flex-shrink: 0;
     }
 
     .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -332,38 +332,41 @@
 
     /* INPUT TOOLBAR */
     .chat-input-area {
-      padding: 8px 10px; background: rgba(13, 10, 30, 0.95);
+      padding: 12px 14px 14px; background: rgba(13, 10, 30, 0.95);
       border-top: 1px solid var(--glass-border); display: flex; flex-direction: column;
-      gap: 6px; flex-shrink: 0;
+      gap: 10px; flex-shrink: 0;
     }
 
-    .sticker-category-tabs { display: flex; gap: 6px; overflow-x: auto; font-size: 0.72rem; padding-bottom: 2px; scrollbar-width: none; }
+    .sticker-category-tabs { display: flex; gap: 8px; overflow-x: auto; font-size: 0.75rem; padding-bottom: 4px; scrollbar-width: none; }
     .sticker-category-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--soft-indigo); padding: 4px 10px; border-radius: 12px; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background: var(--neon-primary); color: #fff; }
+    .tab-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--soft-indigo); padding: 5px 12px; border-radius: 14px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .tab-btn.active { background: var(--neon-primary); color: #fff; border-color: var(--neon-primary); }
 
-    .sticker-bar { display: flex; gap: 8px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 55px; }
+    .sticker-bar { display: flex; gap: 10px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 58px; }
     .sticker-bar::-webkit-scrollbar { display: none; }
 
     .meme-btn-thumb {
-      width: 60px; height: 60px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      border-radius: 12px; cursor: pointer; flex-shrink: 0; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+      width: 58px; height: 58px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
+      border-radius: 14px; cursor: pointer; flex-shrink: 0; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; transition: transform 0.2s;
     }
+    .meme-btn-thumb:active { transform: scale(0.92); }
     .meme-btn-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
     .emoji-pill-btn {
       background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
-      border-radius: 20px; font-size: 1.3rem; padding: 5px 11px; cursor: pointer; flex-shrink: 0;
+      border-radius: 20px; font-size: 1.3rem; padding: 6px 12px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s, background 0.2s;
     }
+    .emoji-pill-btn:active { transform: scale(0.9); background: rgba(139, 92, 246, 0.25); }
 
-    .input-actions-row { display: flex; gap: 6px; align-items: center; }
+    .input-actions-row { display: flex; gap: 8px; align-items: center; width: 100%; }
     .upload-btn {
-      background: rgba(139, 92, 246, 0.25); border: 1px solid var(--neon-primary);
-      border-radius: 20px; padding: 8px 12px; font-size: 0.8rem; color: var(--soft-indigo);
-      font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
+      background: rgba(139, 92, 246, 0.2); border: 1px solid var(--glass-border);
+      border-radius: 50%; width: 42px; height: 42px; font-size: 1.1rem; color: var(--soft-indigo);
+      font-weight: 600; cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.15s;
     }
+    .upload-btn:active { transform: scale(0.92); background: rgba(139, 92, 246, 0.4); }
 
     .record-btn-active {
       background: #ef4444 !important; border-color: #f87171 !important;
@@ -371,16 +374,19 @@
     }
     @keyframes pulseRecord { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-    .input-text-container { display: flex; flex: 1; gap: 6px; align-items: center; min-width: 0; }
+    .input-text-container { display: flex; flex: 1; gap: 8px; align-items: center; min-width: 0; }
 
     input[type="text"], input[type="password"], input[type="url"] {
-      width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border);
-      color: var(--text-main); padding: 10px 14px; border-radius: 25px; font-size: 0.88rem; outline: none;
+      width: 100%; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
+      color: var(--text-main); padding: 10px 16px; border-radius: 25px; font-size: 0.88rem; outline: none; transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, input[type="password"]:focus, input[type="url"]:focus {
+      border-color: var(--neon-primary);
     }
 
     .recording-bar-indicator {
       display: none; flex: 1; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.15);
-      border: 1px solid #ef4444; border-radius: 25px; padding: 6px 14px; color: #f87171; font-size: 0.82rem;
+      border: 1px solid #ef4444; border-radius: 25px; padding: 8px 16px; color: #f87171; font-size: 0.82rem;
     }
 
     /* FEATURE CONTAINER & CARDS */
@@ -405,16 +411,24 @@
 
     /* BOTTOM MOBILE NAVBAR */
     .bottom-nav {
-      height: var(--nav-height); background: rgba(10, 8, 22, 0.96);
+      height: var(--nav-height); background: rgba(10, 8, 22, 0.98);
       border-top: 1px solid var(--glass-border); display: flex;
-      justify-space-around; align-items: center; flex-shrink: 0;
+      justify-content: space-around; align-items: center; flex-shrink: 0;
+      padding: 0 8px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .nav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      color: var(--text-muted); font-size: 0.68rem; cursor: pointer; text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px; color: var(--text-muted); font-size: 0.72rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; padding: 6px 14px; border-radius: 16px;
+      transition: all 0.25s ease; flex: 1; text-align: center;
     }
-    .nav-item.active { color: var(--neon-primary); }
-    .nav-icon { font-size: 1.3rem; }
+    .nav-item.active {
+      color: var(--soft-indigo);
+      background: rgba(139, 92, 246, 0.15);
+    }
+    .nav-icon { font-size: 1.35rem; transition: transform 0.2s; }
+    .nav-item.active .nav-icon { transform: translateY(-2px) scale(1.1); }
 
     /* MODAL OVERLAYS */
     .modal {
@@ -573,8 +587,8 @@
           <div class="sticker-bar" id="sticker-container"></div>
 
           <div class="input-actions-row">
-            <button class="upload-btn" id="voice-record-btn" onclick="toggleVoiceNoteRecording()">🎤</button>
-            <label class="upload-btn">
+            <button class="upload-btn" id="voice-record-btn" onclick="toggleVoiceNoteRecording()" title="Record Voice Note">🎤</button>
+            <label class="upload-btn" title="Send Image">
               📷
               <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
             </label>
@@ -585,7 +599,7 @@
 
             <div class="input-text-container" id="text-input-box">
               <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-              <button class="btn-primary" onclick="sendChatMessage()">Send 🚀</button>
+              <button class="btn-primary" style="padding: 10px 18px; border-radius: 25px;" onclick="sendChatMessage()">Send 🚀</button>
             </div>
           </div>
         </div>
@@ -635,8 +649,8 @@
     <div class="bottom-nav">
       <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
       <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
-      <a class="nav-item" onclick="switchTab('watch2gether', this)"><span class="nav-icon">🎬</span><span>Watch2Gether</span></a>
-      <a class="nav-item" onclick="switchTab('play2gether', this)"><span class="nav-icon">🎮</span><span>Play2Gether</span></a>
+      <a class="nav-item" onclick="switchTab('watch2gether', this)"><span class="nav-icon">🎬</span><span>Watch</span></a>
+      <a class="nav-item" onclick="switchTab('play2gether', this)"><span class="nav-icon">🎮</span><span>Play</span></a>
     </div>
   </div>
 
@@ -1381,8 +1395,6 @@
         return;
       }
 
-      // Do not send notifications for user's own actions if sender matches currently active session persona
-      // The notification is intended to alert the recipient in Telegram
       const formattedTime = getFormattedTime();
       const payloadText = `💌 *New Eternal Connection Message*\n\n👤 *Sender:* ${sender}\n💬 *Message:* ${messageText}\n🕒 *Time:* ${formattedTime}`;
       
@@ -1417,7 +1429,6 @@
       const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
 
       if (type === 'everyone') {
-        // Optimistic UI Update
         const el = document.getElementById(`msg-${key}`);
         if (el) {
           const body = el.querySelector('.msg-body');
@@ -1432,7 +1443,6 @@
           media: null
         });
       } else if (type === 'me') {
-        // Optimistic UI Update
         const el = document.getElementById(`msg-${key}`);
         if (el) el.remove();
         
