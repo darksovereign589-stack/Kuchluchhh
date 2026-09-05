@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title id="page-title">Eternal Connection | Private Realm</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#080306">
+  <meta name="theme-color" content="#0d0b1e">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,14 +18,16 @@
 
   <style>
     :root {
-      --bg-dark: #080306;
-      --bg-card: rgba(18, 7, 15, 0.92);
-      --neon-pink: #ff2a54;
-      --pink-glow: rgba(255, 42, 84, 0.45);
-      --soft-pink: #ffb3c1;
+      /* Theme: Deep Midnight Blue / Purple / Indigo Gradient Theme */
+      --bg-dark: #0d0b1e;
+      --bg-card: rgba(21, 18, 45, 0.92);
+      --neon-primary: #8b5cf6;
+      --neon-glow: rgba(139, 92, 246, 0.45);
+      --soft-indigo: #c084fc;
+      --accent-pink: #ec4899;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --glass-border: rgba(255, 42, 84, 0.3);
+      --glass-border: rgba(139, 92, 246, 0.3);
       --gold-accent: #ffd700;
       --nav-height: 64px;
     }
@@ -45,7 +47,7 @@
     body::before {
       content: "";
       position: absolute; inset: 0;
-      background: radial-gradient(circle at center, rgba(30, 4, 18, 0.75) 0%, rgba(5, 1, 3, 0.96) 100%);
+      background: radial-gradient(circle at center, rgba(30, 24, 68, 0.8) 0%, rgba(8, 6, 18, 0.98) 100%);
       z-index: 0;
     }
 
@@ -54,7 +56,7 @@
     /* GATEWAY OVERLAY */
     .gateway-overlay {
       position: fixed; inset: 0;
-      background: rgba(8, 2, 6, 0.96);
+      background: rgba(10, 8, 22, 0.96);
       backdrop-filter: blur(20px);
       z-index: 100;
       display: flex; justify-content: center; align-items: center; padding: 20px;
@@ -66,25 +68,25 @@
       border: 1px solid var(--glass-border);
       border-radius: 28px; padding: 2.5rem 2rem;
       max-width: 420px; width: 100%; text-align: center;
-      box-shadow: 0 0 50px var(--pink-glow);
+      box-shadow: 0 0 50px var(--neon-glow);
     }
 
     .secret-flower {
       font-size: 3.5rem; display: inline-block; cursor: pointer;
       margin-bottom: 1rem; animation: floatFlower 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 15px var(--neon-pink));
+      filter: drop-shadow(0 0 15px var(--neon-primary));
     }
     @keyframes floatFlower { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-    h1 { font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+    h1 { font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
     p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.5; }
 
     .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--neon-pink) 0%, #a80022 100%);
+      background: linear-gradient(135deg, var(--neon-primary) 0%, #4c1d95 100%);
       color: #fff; border: none; padding: 10px 20px; border-radius: 50px;
-      font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 42, 84, 0.4);
+      font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
       white-space: nowrap; font-size: 0.85rem; transition: transform 0.2s, box-shadow 0.2s;
       text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
     }
@@ -105,18 +107,18 @@
     }
 
     @media (min-width: 550px) {
-      .app-container { height: 94vh; border-radius: 28px; box-shadow: 0 0 50px var(--pink-glow); }
+      .app-container { height: 94vh; border-radius: 28px; box-shadow: 0 0 50px var(--neon-glow); }
     }
 
     .chat-header {
-      padding: 12px 16px; background: rgba(10, 2, 7, 0.92);
+      padding: 12px 16px; background: rgba(13, 10, 30, 0.92);
       border-bottom: 1px solid var(--glass-border); display: flex;
       justify-content: space-between; align-items: center; flex-shrink: 0;
     }
 
     .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .avatar { font-size: 1.8rem; }
-    .user-details h2 { font-size: 0.95rem; color: var(--soft-pink); font-family: 'Cinzel', serif; }
+    .user-details h2 { font-size: 0.95rem; color: var(--soft-indigo); font-family: 'Cinzel', serif; }
     .presence-text { font-size: 0.7rem; color: #a7f3d0; }
     .global-status { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
 
@@ -136,10 +138,10 @@
     }
 
     .kiss-btn {
-      background: linear-gradient(135deg, #ff2a54, #e11d48);
+      background: linear-gradient(135deg, var(--accent-pink), #be185d);
       border: none; color: #fff; padding: 8px 12px; border-radius: 20px;
       font-weight: 600; font-size: 0.78rem; cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 42, 84, 0.5);
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
     }
 
     /* VIEWPORT PANELS */
@@ -148,12 +150,12 @@
     .tab-panel.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* REALM HOME PANEL & ANIMATED BUTTERFLIES */
+    /* REALM HOME PANEL */
     .butterfly-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: hidden; }
     .flutter-bf {
       position: absolute; font-size: 1.8rem;
       animation: flyAround 12s linear infinite;
-      filter: drop-shadow(0 0 10px var(--neon-pink));
+      filter: drop-shadow(0 0 10px var(--neon-primary));
     }
     @keyframes flyAround {
       0% { transform: translate(0px, 0px) rotate(0deg) scale(0.8); }
@@ -166,23 +168,23 @@
     .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; position: relative; z-index: 1; }
     
     .ai-greeting-card {
-      background: linear-gradient(135deg, rgba(255, 42, 84, 0.15), rgba(10, 2, 7, 0.8));
-      border: 1px solid var(--neon-pink); border-radius: 20px; padding: 18px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(13, 10, 30, 0.8));
+      border: 1px solid var(--neon-primary); border-radius: 20px; padding: 18px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-pink); margin-bottom: 8px; }
+    .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-indigo); margin-bottom: 8px; }
     .ai-greeting-card p { font-style: italic; color: #e2e8f0; font-size: 0.92rem; line-height: 1.5; margin-bottom: 0; }
 
     .admin-monitor-card {
-      background: rgba(255, 42, 84, 0.08); border: 1px solid var(--neon-pink);
+      background: rgba(139, 92, 246, 0.08); border: 1px solid var(--neon-primary);
       border-radius: 20px; padding: 16px; display: none; flex-direction: column; gap: 8px;
     }
-    .admin-monitor-card h4 { font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1rem; }
+    .admin-monitor-card h4 { font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1rem; }
     .monitor-row { font-size: 0.82rem; display: flex; justify-content: space-between; color: var(--text-muted); }
     .monitor-val { color: var(--text-main); font-weight: 600; }
 
     .daily-drop-card {
-      background: rgba(18, 7, 15, 0.85); border: 1px dashed var(--glass-border);
+      background: rgba(21, 18, 45, 0.85); border: 1px dashed var(--glass-border);
       border-radius: 20px; padding: 16px; text-align: center;
     }
 
@@ -193,17 +195,17 @@
       border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; color: var(--text-main);
       white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
-    .mood-chip.active { background: var(--neon-pink); border-color: var(--neon-pink); color: #fff; }
+    .mood-chip.active { background: var(--neon-primary); border-color: var(--neon-primary); color: #fff; }
 
     .hug-widget {
-      background: rgba(255, 42, 84, 0.12); border: 1px solid var(--glass-border);
+      background: rgba(139, 92, 246, 0.12); border: 1px solid var(--glass-border);
       border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
       position: relative; overflow: hidden;
     }
     .hug-heart-icon { font-size: 3rem; transition: transform 0.2s; display: inline-block; }
     .hug-progress-fill {
       position: absolute; bottom: 0; left: 0; height: 100%; width: 0%;
-      background: rgba(255, 42, 84, 0.3); transition: width 0.1s linear; pointer-events: none;
+      background: rgba(139, 92, 246, 0.3); transition: width 0.1s linear; pointer-events: none;
     }
 
     /* CHAT STREAM PANEL */
@@ -218,8 +220,8 @@
 
     .msg-sudip {
       align-self: flex-start;
-      background: linear-gradient(135deg, rgba(255, 42, 84, 0.28) 0%, rgba(124, 58, 237, 0.28) 100%);
-      border: 1px solid var(--neon-pink); border-bottom-left-radius: 4px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(76, 29, 149, 0.28) 100%);
+      border: 1px solid var(--neon-primary); border-bottom-left-radius: 4px;
     }
 
     .msg-wifey {
@@ -228,24 +230,28 @@
       border: 1px solid var(--glass-border); border-bottom-right-radius: 4px;
     }
 
-    .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-pink); margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .msg-deleted {
+      font-style: italic; opacity: 0.6; color: var(--text-muted);
+    }
+
+    .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-indigo); margin-bottom: 4px; display: flex; justify-content: space-between; }
     .msg-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
 
-    .chat-media-frame { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--neon-pink); max-height: 250px; object-fit: contain; }
+    .chat-media-frame { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--neon-primary); max-height: 250px; object-fit: contain; }
     .meme-card { max-width: 100%; border-radius: 14px; margin-top: 6px; border: 2px solid var(--glass-border); background: #000; }
-    .chat-audio-player { width: 100%; margin-top: 6px; outline: none; border-radius: 30px; height: 36px; filter: drop-shadow(0 0 5px var(--pink-glow)); }
+    .chat-audio-player { width: 100%; margin-top: 6px; outline: none; border-radius: 30px; height: 36px; filter: drop-shadow(0 0 5px var(--neon-glow)); }
 
     /* INPUT TOOLBAR */
     .chat-input-area {
-      padding: 8px 10px; background: rgba(10, 2, 7, 0.95);
+      padding: 8px 10px; background: rgba(13, 10, 30, 0.95);
       border-top: 1px solid var(--glass-border); display: flex; flex-direction: column;
       gap: 6px; flex-shrink: 0;
     }
 
     .sticker-category-tabs { display: flex; gap: 6px; overflow-x: auto; font-size: 0.72rem; padding-bottom: 2px; scrollbar-width: none; }
     .sticker-category-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--soft-pink); padding: 4px 10px; border-radius: 12px; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background: var(--neon-pink); color: #fff; }
+    .tab-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--soft-indigo); padding: 4px 10px; border-radius: 12px; cursor: pointer; white-space: nowrap; }
+    .tab-btn.active { background: var(--neon-primary); color: #fff; }
 
     .sticker-bar { display: flex; gap: 8px; overflow-x: auto; align-items: center; scrollbar-width: none; padding: 4px 0; min-height: 55px; }
     .sticker-bar::-webkit-scrollbar { display: none; }
@@ -264,8 +270,8 @@
 
     .input-actions-row { display: flex; gap: 6px; align-items: center; }
     .upload-btn {
-      background: rgba(255, 42, 84, 0.25); border: 1px solid var(--neon-pink);
-      border-radius: 20px; padding: 8px 12px; font-size: 0.8rem; color: var(--soft-pink);
+      background: rgba(139, 92, 246, 0.25); border: 1px solid var(--neon-primary);
+      border-radius: 20px; padding: 8px 12px; font-size: 0.8rem; color: var(--soft-indigo);
       font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
     }
@@ -295,22 +301,22 @@
     }
     
     .feature-card {
-      background: rgba(18, 7, 15, 0.85); border: 1px solid var(--glass-border);
+      background: rgba(21, 18, 45, 0.85); border: 1px solid var(--glass-border);
       border-radius: 24px; padding: 24px 20px; max-width: 400px; width: 100%;
-      box-shadow: 0 0 30px var(--pink-glow); display: flex; flex-direction: column;
+      box-shadow: 0 0 30px var(--neon-glow); display: flex; flex-direction: column;
       align-items: center; gap: 14px;
     }
 
     .notice-box {
-      background: rgba(255, 42, 84, 0.15); border: 1px dashed var(--neon-pink);
-      border-radius: 16px; padding: 12px 16px; font-size: 0.85rem; color: var(--soft-pink);
+      background: rgba(139, 92, 246, 0.15); border: 1px dashed var(--neon-primary);
+      border-radius: 16px; padding: 12px 16px; font-size: 0.85rem; color: var(--soft-indigo);
       line-height: 1.4; text-align: left; width: 100%;
     }
     .notice-box p { margin-bottom: 0; color: #f8fafc; font-size: 0.85rem; }
 
     /* BOTTOM MOBILE NAVBAR */
     .bottom-nav {
-      height: var(--nav-height); background: rgba(8, 2, 6, 0.96);
+      height: var(--nav-height); background: rgba(10, 8, 22, 0.96);
       border-top: 1px solid var(--glass-border); display: flex;
       justify-content: space-around; align-items: center; flex-shrink: 0;
     }
@@ -318,12 +324,12 @@
       display: flex; flex-direction: column; align-items: center; gap: 3px;
       color: var(--text-muted); font-size: 0.68rem; cursor: pointer; text-decoration: none;
     }
-    .nav-item.active { color: var(--neon-pink); }
+    .nav-item.active { color: var(--neon-primary); }
     .nav-icon { font-size: 1.3rem; }
 
     /* MODAL OVERLAYS */
     .modal {
-      position: fixed; inset: 0; background: rgba(5, 0, 3, 0.88); backdrop-filter: blur(14px);
+      position: fixed; inset: 0; background: rgba(5, 4, 12, 0.88); backdrop-filter: blur(14px);
       z-index: 200; display: flex; justify-content: center; align-items: center; padding: 20px;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
@@ -331,7 +337,7 @@
 
     .modal-card {
       background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 24px;
-      padding: 2rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 0 40px var(--pink-glow);
+      padding: 2rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 0 40px var(--neon-glow);
       max-height: 85vh; overflow-y: auto;
     }
 
@@ -343,7 +349,7 @@
     }
     .lightbox-modal.open { opacity: 1; pointer-events: auto; }
     .lightbox-img { max-width: 100%; max-height: 75vh; border-radius: 16px; border: 1px solid var(--glass-border); object-fit: contain; }
-    .lightbox-meta { margin-top: 15px; font-size: 0.85rem; color: var(--soft-pink); display: flex; gap: 15px; }
+    .lightbox-meta { margin-top: 15px; font-size: 0.85rem; color: var(--soft-indigo); display: flex; gap: 15px; }
 
     /* FULLSCREEN KISS OVERLAY */
     #kiss-overlay {
@@ -389,13 +395,12 @@
         <div class="avatar" id="partner-avatar">👑</div>
         <div class="user-details">
           <h2 id="partner-title-display">Mr. Sudip</h2>
-          <div class="presence-text" id="partner-presence-display">Online 💚</div>
+          <div class="presence-text" id="partner-presence-display">Connecting...</div>
           <div class="global-status" id="partner-status-display">Status: Free 💖</div>
         </div>
       </div>
       <div class="header-actions">
         <div class="xp-pill"><span id="xp-display">0</span> XP</div>
-        <!-- FIXED: changed function call to match the correct function name -->
         <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawExplosion()">💋 Kiss</button>
         <button class="call-btn" onclick="initiateVoiceCall()">📞 Call</button>
       </div>
@@ -425,7 +430,7 @@
           </div>
 
           <div class="daily-drop-card">
-            <h4 style="color: var(--soft-pink); font-family: 'Cinzel', serif; margin-bottom: 6px;">🌹 Today's Love Drop</h4>
+            <h4 style="color: var(--soft-indigo); font-family: 'Cinzel', serif; margin-bottom: 6px;">🌹 Today's Love Drop</h4>
             <p id="daily-love-drop-text" style="font-style: italic; font-size: 0.88rem; color: #cbd5e1;">Generating daily dynamic quote...</p>
           </div>
 
@@ -444,7 +449,7 @@
           <div class="hug-widget" id="hug-btn-widget" onmousedown="startHugHold()" onmouseup="endHugHold()" onmouseleave="endHugHold()" ontouchstart="startHugHold()" ontouchend="endHugHold()">
             <div class="hug-progress-fill" id="hug-fill"></div>
             <div class="hug-heart-icon" id="hug-heart">🫂</div>
-            <h4 style="color: var(--soft-pink); font-family: 'Cinzel', serif; margin-top: 4px; font-size: 0.95rem;">Hold for Interactive Hug</h4>
+            <h4 style="color: var(--soft-indigo); font-family: 'Cinzel', serif; margin-top: 4px; font-size: 0.95rem;">Hold for Interactive Hug</h4>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0;">Press and hold 2 seconds to send warmth</p>
           </div>
         </div>
@@ -487,7 +492,7 @@
         <div class="feature-container">
           <div class="feature-card">
             <div style="font-size: 3.5rem;">🎬</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.3rem;">Watch2Gether</h3>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.3rem;">Watch2Gether</h3>
             
             <div class="notice-box">
               <strong>⚠️ Important Notice:</strong>
@@ -506,7 +511,7 @@
         <div class="feature-container">
           <div class="feature-card">
             <div style="font-size: 3.5rem;">🎮</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1.3rem;">Play2Gether</h3>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.3rem;">Play2Gether</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Paste a game/room link below to share it in the chat or launch it together instantly!</p>
 
             <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
@@ -535,7 +540,7 @@
   <div class="modal" id="call-modal">
     <div class="modal-card">
       <div class="avatar" style="font-size: 3rem; margin-bottom: 10px;">📞</div>
-      <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 5px;">Calling...</h2>
+      <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 5px;">Calling...</h2>
       <p id="call-status-desc" style="font-size: 0.85rem;">Connecting Agora voice channel...</p>
       
       <div class="btn-group" id="call-actions-incoming" style="display: none; margin-top: 15px;">
@@ -561,7 +566,7 @@
   <!-- ADMIN PIN MODAL -->
   <div class="modal" id="admin-pin-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Mr. Sudip Access</h2>
+      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Mr. Sudip Access</h2>
       <p style="font-size: 0.85rem;">Enter secret PIN to log in as Mr. Sudip:</p>
       <input type="password" id="admin-pin-input" placeholder="••••" style="text-align: center; font-size: 1.2rem; margin-bottom: 15px;">
       <div class="btn-group">
@@ -574,7 +579,7 @@
   <!-- STATUS & PRIVACY MODAL -->
   <div class="modal" id="status-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Update Status</h2>
+      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Update Status</h2>
       <input type="text" id="status-input" placeholder="Enter status message..." style="margin-bottom: 15px;">
       <div class="btn-group">
         <button class="btn-primary" onclick="updateGlobalStatus()">Set Status 🚀</button>
@@ -586,7 +591,7 @@
   <!-- DELETE MESSAGE MODAL -->
   <div class="modal" id="delete-msg-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-pink); margin-bottom: 10px;">Delete Message</h2>
+      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Delete Message</h2>
       <p style="font-size: 0.85rem;">Choose how you want to delete this message:</p>
       <div class="btn-group" style="flex-direction: column; gap: 8px;">
         <button class="btn-primary" style="background: #ef4444;" onclick="confirmDeleteMsg('everyone')">Delete for Everyone 🗑️</button>
@@ -600,7 +605,7 @@
   <div class="modal" id="game-frame-modal">
     <div class="modal-card" style="max-width: 90vw; width: 600px; height: 80vh; display: flex; flex-direction: column; padding: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-family: 'Cinzel', serif; color: var(--soft-pink); font-size: 1rem;">🎮 Play2Gether</h3>
+        <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1rem;">🎮 Play2Gether</h3>
         <button class="btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="closeModal('game-frame-modal')">Close ✖</button>
       </div>
       <iframe id="game-iframe" style="width: 100%; flex: 1; border: 1px solid var(--glass-border); border-radius: 12px; background: #000;" src="about:blank"></iframe>
@@ -620,6 +625,10 @@
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+
+    // TELEGRAM BOT CONFIGURATION
+    const TELEGRAM_BOT_TOKEN = "7963353459:AAFfF6GkllP5A5m825p39G53r-g4u0W6GvA";
+    const TELEGRAM_CHAT_ID = "8283865056";
 
     let currentUserRole = "Mrs. Sudip";
     let currentMood = "🥺 Soft";
@@ -643,6 +652,9 @@
     let hugProgress = 0;
     let userXP = 0;
 
+    let renderedMessageKeys = new Set();
+    let heartBeatInterval = null;
+
     const memesList = ["https://i.imgflip.com/4/30b1gx.jpg", "https://i.imgflip.com/1g8my4.jpg", "https://i.imgflip.com/26am.jpg"];
     const girlishMemes = ["https://i.imgflip.com/1otk96.jpg", "https://i.imgflip.com/2fm6x.jpg"];
     const cuteEmojis = ["💖", "🎀", "🌹", "🦋", "💋", "👑", "🥺", "🥰", "🌸", "✨", "🖤", "🍷", "🫂"];
@@ -655,6 +667,13 @@
       "Holding your hand feels like holding the whole universe.",
       "My soul recognized you the very first moment we connected."
     ];
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
 
     function getFormattedTime(timestamp = Date.now()) {
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -773,6 +792,7 @@
         updateHeaderInfo();
         listenForPendingCalls();
         logUserEntry();
+        setupPresenceSystem();
       }, 800);
     }
 
@@ -800,7 +820,8 @@
     function setupWifeyMonitor() {
       db.ref('appState/presence/wifey').on('value', (snap) => {
         const data = snap.val();
-        document.getElementById('mon-online').innerText = data && data.online ? "Online 🟢" : "Offline 🔴";
+        const isOnline = data && data.online && (Date.now() - (data.lastSeen || 0) < 35000);
+        document.getElementById('mon-online').innerText = isOnline ? "Online 🟢" : "Offline 🔴";
       });
 
       db.ref('appState/wifeyActivity/lastEntry').on('value', (snap) => {
@@ -815,8 +836,10 @@
     }
 
     function setupPresenceSystem() {
+      if (heartBeatInterval) clearInterval(heartBeatInterval);
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       const presenceRef = db.ref(`appState/presence/${userKey}`);
+      
       db.ref('.info/connected').on('value', (snap) => {
         if (snap.val()) {
           presenceRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
@@ -824,12 +847,25 @@
         }
       });
 
+      heartBeatInterval = setInterval(() => {
+        presenceRef.update({ online: true, lastSeen: Date.now() });
+      }, 15000);
+
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       db.ref(`appState/presence/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
         const displayEl = document.getElementById('partner-presence-display');
         if (data) {
-          displayEl.innerText = data.online ? "Online 💚" : `Last seen ${getFormattedTime(data.lastSeen)}`;
+          const isRecentlyActive = data.online && (Date.now() - (data.lastSeen || 0) < 35000);
+          if (isRecentlyActive) {
+            displayEl.innerText = "Online 🟢";
+            displayEl.style.color = "#a7f3d0";
+          } else {
+            displayEl.innerText = data.lastSeen ? `Last seen ${getFormattedTime(data.lastSeen)}` : "Offline 🔴";
+            displayEl.style.color = "#94a3b8";
+          }
+        } else {
+          displayEl.innerText = "Offline 🔴";
         }
       });
     }
@@ -1064,42 +1100,84 @@
       closeModal('call-modal');
     }
 
+    /* ARCHITECTURE OPTIMIZED CHAT FETCH & REALTIME LISTENERS */
     function initializeChatFeed() {
       const chatContainer = document.getElementById('chat-stream');
       chatContainer.innerHTML = "";
+      renderedMessageKeys.clear();
 
       const chatRef = db.ref('appState/chatFeed').limitToLast(50);
+      
+      chatRef.once('value', (snapshot) => {
+        const messages = snapshot.val();
+        if (messages) {
+          Object.keys(messages).forEach(key => {
+            renderOrUpdateMessage(key, messages[key]);
+          });
+        }
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      });
+
       chatRef.on('child_added', (snapshot) => {
-        appendSingleMessage(snapshot.key, snapshot.val());
+        renderOrUpdateMessage(snapshot.key, snapshot.val());
+      });
+
+      chatRef.on('child_changed', (snapshot) => {
+        renderOrUpdateMessage(snapshot.key, snapshot.val());
+      });
+
+      chatRef.on('child_removed', (snapshot) => {
+        const el = document.getElementById(`msg-${snapshot.key}`);
+        if (el) el.remove();
+        renderedMessageKeys.delete(snapshot.key);
       });
     }
 
-    function appendSingleMessage(key, msg) {
-      if (msg.deleted && currentUserRole !== "Mr. Sudip") return;
+    function renderOrUpdateMessage(key, msg) {
+      const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+      
+      if (msg.deletedFor && msg.deletedFor[currentUserIdKey]) {
+        const existingMsg = document.getElementById(`msg-${key}`);
+        if (existingMsg) existingMsg.remove();
+        return;
+      }
 
       const chatContainer = document.getElementById('chat-stream');
-      const div = document.createElement('div');
-      div.id = `msg-${key}`;
+      let div = document.getElementById(`msg-${key}`);
       
+      if (!div) {
+        div = document.createElement('div');
+        div.id = `msg-${key}`;
+        chatContainer.appendChild(div);
+      }
+
       const isSudip = msg.sender === "Mr. Sudip";
       div.className = `msg-bubble ${isSudip ? 'msg-sudip' : 'msg-wifey'}`;
       div.onclick = () => openDeleteModal(key);
 
-      let formattedText = msg.text || '';
-      formattedText = formattedText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--soft-pink); text-decoration: underline;">$1</a>');
+      if (msg.deletedForEveryone) {
+        div.innerHTML = `
+          <div class="msg-sender"><span>${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>
+          <div class="msg-body msg-deleted">🚫 Message deleted</div>
+        `;
+      } else {
+        let safeText = escapeHTML(msg.text || '');
+        let formattedText = safeText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--soft-indigo); text-decoration: underline;">$1</a>');
 
-      let bodyContent = msg.text ? `<div class="msg-body">${formattedText}</div>` : '';
+        let bodyContent = msg.text ? `<div class="msg-body">${formattedText}</div>` : '';
 
-      if (msg.mediaType === 'audio') {
-        bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
-      } else if (msg.mediaType === 'image') {
-        bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="openLightbox('${msg.media}', '${msg.sender}', '${msg.time}')" />`;
-      } else if (msg.mediaType === 'meme') {
-        bodyContent += `<img src="${msg.media}" class="meme-card" />`;
+        if (msg.mediaType === 'audio') {
+          bodyContent += `<audio src="${msg.media}" controls class="chat-audio-player"></audio>`;
+        } else if (msg.mediaType === 'image') {
+          bodyContent += `<img src="${msg.media}" class="chat-media-frame" onclick="openLightbox('${msg.media}', '${escapeHTML(msg.sender)}', '${msg.time}')" />`;
+        } else if (msg.mediaType === 'meme') {
+          bodyContent += `<img src="${msg.media}" class="meme-card" />`;
+        }
+
+        div.innerHTML = `<div class="msg-sender"><span>${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
       }
 
-      div.innerHTML = `<div class="msg-sender"><span>${msg.sender}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
-      chatContainer.appendChild(div);
+      renderedMessageKeys.add(key);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
@@ -1117,20 +1195,67 @@
 
       if (!text && !mediaUrl) inputEl.value = "";
 
-      const newMsg = { sender: currentUserRole, text: messageText, time: getFormattedTime(), deleted: false };
+      const newMsg = { 
+        sender: currentUserRole, 
+        text: messageText, 
+        time: getFormattedTime(), 
+        timestamp: Date.now(),
+        deletedForEveryone: false 
+      };
+      
       if (mediaUrl) { newMsg.media = mediaUrl; newMsg.mediaType = mediaType; }
 
       await db.ref('appState/chatFeed').push(newMsg);
       addXP(15);
+
+      sendTelegramNotification(currentUserRole, messageText || `[Sent a ${mediaType}]`);
+    }
+
+    function sendTelegramNotification(sender, messageText) {
+      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+      
+      const payloadText = `💌 *New Realm Message*\n*Sender:* ${sender}\n*Message:* ${messageText}`;
+      
+      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: payloadText,
+          parse_mode: 'Markdown'
+        })
+      }).catch(err => console.error("Non-blocking Telegram alert error:", err));
     }
 
     function openDeleteModal(msgKey) { selectedMsgKeyForDelete = msgKey; openModal('delete-msg-modal'); }
+
+    /* PROPER SECURE DELETION SYSTEM */
     async function confirmDeleteMsg(type) {
       if (!selectedMsgKeyForDelete) return;
-      if (type === 'everyone') await db.ref(`appState/chatFeed/${selectedMsgKeyForDelete}`).update({ deleted: true });
-      else if (type === 'me') {
-        const el = document.getElementById(`msg-${selectedMsgKeyForDelete}`);
+      const key = selectedMsgKeyForDelete;
+      const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+
+      if (type === 'everyone') {
+        // Optimistic UI Update
+        const el = document.getElementById(`msg-${key}`);
+        if (el) {
+          const body = el.querySelector('.msg-body');
+          if (body) {
+            body.className = "msg-body msg-deleted";
+            body.innerText = "🚫 Message deleted";
+          }
+        }
+        await db.ref(`appState/chatFeed/${key}`).update({ 
+          deletedForEveryone: true,
+          text: "",
+          media: null
+        });
+      } else if (type === 'me') {
+        // Optimistic UI Update
+        const el = document.getElementById(`msg-${key}`);
         if (el) el.remove();
+        
+        await db.ref(`appState/chatFeed/${key}/deletedFor/${currentUserIdKey}`).set(true);
       }
       closeModal('delete-msg-modal');
     }
@@ -1164,7 +1289,6 @@
       }
     }
 
-    // FIXED: Function name matches the button onclick attribute now
     async function triggerKissDanawExplosion() {
       const overlay = document.getElementById('kiss-overlay');
       overlay.innerHTML = "";
@@ -1186,6 +1310,8 @@
       await kissRef.transaction((currentCount) => {
         return (currentCount || 0) + 1;
       });
+
+      sendTelegramNotification(currentUserRole, "💋 Sent a Kiss explosion in the Realm!");
 
       setTimeout(() => { overlay.classList.remove('active'); overlay.innerHTML = ""; }, 2500);
     }
