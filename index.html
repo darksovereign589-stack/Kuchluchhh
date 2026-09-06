@@ -205,6 +205,7 @@
       gap: 8px;
       flex-shrink: 0;
       min-height: 72px;
+      position: relative;
     }
 
     .user-info {
@@ -246,6 +247,14 @@
       word-break: break-word;
     }
     
+    .own-status-display {
+      font-size: 0.68rem;
+      color: #cbd5e1;
+      line-height: 1.2;
+      word-break: break-word;
+      opacity: 0.95;
+    }
+
     .set-status-action {
       font-size: 0.68rem;
       color: var(--soft-indigo);
@@ -268,6 +277,20 @@
       flex-wrap: wrap;
       justify-content: flex-end;
       max-width: 50%;
+    }
+
+    /* WEATHER & TIME CORNER WIDGET */
+    .weather-corner-widget {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      padding: 3px 8px;
+      border-radius: 14px;
+      font-size: 0.68rem;
+      color: #f1f5f9;
+      white-space: nowrap;
     }
 
     .xp-pill {
@@ -596,11 +619,18 @@
         <div class="user-details">
           <h2 id="partner-title-display">Mr. Sudip</h2>
           <div class="presence-text" id="partner-presence-display">Connecting...</div>
+          <!-- OTHER PERSON'S STATUS -->
           <div class="global-status" id="partner-status-display">Status: Free 💖</div>
           <div class="set-status-action" onclick="event.stopPropagation(); openStatusModal();">✏️ Set your status</div>
+          <!-- CURRENT LOGGED-IN USER'S OWN STATUS BELOW -->
+          <div class="own-status-display" id="own-status-display">Your status: Free 💖</div>
         </div>
       </div>
       <div class="header-actions">
+        <div class="weather-corner-widget" id="weather-corner-widget">
+          <span id="weather-icon">🌙</span>
+          <span id="time-corner-text">00:00</span>
+        </div>
         <div class="xp-pill"><span id="xp-display">0</span> XP</div>
         <button class="kiss-btn" id="kiss-action-btn" onclick="triggerKissDanawExplosion()">💋 Kiss</button>
         <button class="call-btn" onclick="initiateVoiceCall()">📞 Call</button>
@@ -894,8 +924,27 @@
         fetchAIRealmProse();
         initAnimatedButterflies();
         syncGlobalState();
+        initWeatherCornerWidget();
       }, 50);
     });
+
+    function initWeatherCornerWidget() {
+      function updateCornerClock() {
+        const now = new Date();
+        const hours = now.getHours();
+        const mins = now.getMinutes().toString().padStart(2, '0');
+        const isDay = hours >= 6 && hours < 18;
+        const weatherIcon = document.getElementById('weather-icon');
+        const timeText = document.getElementById('time-corner-text');
+        
+        if (weatherIcon && timeText) {
+          weatherIcon.innerText = isDay ? "☀️" : "🌙";
+          timeText.innerText = `${hours.toString().padStart(2, '0')}:${mins}`;
+        }
+      }
+      updateCornerClock();
+      setInterval(updateCornerClock, 30000);
+    }
 
     function initLoadingScreenDecorations() {
       const container = document.getElementById('loading-bf-container');
@@ -1206,12 +1255,27 @@
 
     function listenForStatusUpdates() {
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
+      const ownKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+
+      // Listen for partner's status updates strictly for the main header display
+      db.ref(`appState/status/${partnerKey}`).off();
       db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
         if (data && data.text) {
           document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
         } else {
           document.getElementById('partner-status-display').innerText = `Status: Free 💖`;
+        }
+      });
+
+      // Listen for current user's status updates strictly for the personal status line below
+      db.ref(`appState/status/${ownKey}`).off();
+      db.ref(`appState/status/${ownKey}`).on('value', (snap) => {
+        const data = snap.val();
+        if (data && data.text) {
+          document.getElementById('own-status-display').innerText = `Your status: ${data.text}`;
+        } else {
+          document.getElementById('own-status-display').innerText = `Your status: Free 💖`;
         }
       });
     }
