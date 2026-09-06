@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" async></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.17.0.js" defer></script>
+  <script src="https://meet.jit.si/external_api.js"></script>
 
   <style>
     :root {
@@ -361,6 +361,20 @@
     /* CHAT STREAM PANEL */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
+    .history-loading-indicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px;
+      font-size: 0.78rem;
+      color: var(--soft-indigo);
+      background: rgba(139, 92, 246, 0.1);
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+    .history-loading-indicator.visible { display: flex; }
+
     .msg-bubble {
       max-width: 82%; padding: 10px 14px; border-radius: 20px;
       font-size: 0.9rem; line-height: 1.4; animation: popIn 0.25s ease-out; word-break: break-word;
@@ -478,25 +492,49 @@
     }
     .notice-box p { margin-bottom: 0; color: #f8fafc; font-size: 0.85rem; }
 
+    /* SHORTS CONTAINER */
+    .shorts-container {
+      height: 100%;
+      width: 100%;
+      overflow-y: snap;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      background: #000;
+    }
+    .shorts-item {
+      height: 100%;
+      width: 100%;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .shorts-item iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
     /* BOTTOM MOBILE NAVBAR */
     .bottom-nav {
       height: var(--nav-height); background: rgba(10, 8, 22, 0.98);
       border-top: 1px solid var(--glass-border); display: flex;
-      justify-content: space-around; align-items: center; flex-shrink: 0;
-      padding: 0 8px;
+      justify-space: space-around; align-items: center; flex-shrink: 0;
+      padding: 0 4px;
       padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 4px; color: var(--text-muted); font-size: 0.72rem; font-weight: 500;
-      cursor: pointer; text-decoration: none; padding: 6px 14px; border-radius: 16px;
+      gap: 3px; color: var(--text-muted); font-size: 0.68rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; padding: 5px 8px; border-radius: 14px;
       transition: all 0.25s ease; flex: 1; text-align: center;
     }
     .nav-item.active {
       color: var(--soft-indigo);
       background: rgba(139, 92, 246, 0.15);
     }
-    .nav-icon { font-size: 1.35rem; transition: transform 0.2s; }
+    .nav-icon { font-size: 1.2rem; transition: transform 0.2s; }
     .nav-item.active .nav-icon { transform: translateY(-2px) scale(1.1); }
 
     /* MODAL OVERLAYS */
@@ -538,6 +576,15 @@
       0% { transform: scale(0.2) translate(0, 0) rotate(0deg); opacity: 0; }
       20% { opacity: 1; }
       100% { transform: scale(2.0) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+    }
+
+    #jitsi-container {
+      width: 100%;
+      height: 320px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 15px;
+      background: #000;
     }
   </style>
 </head>
@@ -645,7 +692,12 @@
 
       <!-- TAB 2: CHAT STREAM -->
       <div class="tab-panel" id="panel-chat">
-        <div class="chat-messages" id="chat-stream"></div>
+        <div class="chat-messages" id="chat-stream">
+          <div class="history-loading-indicator" id="history-loading-indicator">
+            <div class="romantic-spinner" style="width:16px; height:16px; border-width:2px; margin:0;"></div>
+            <span>Loading older messages...</span>
+          </div>
+        </div>
 
         <div class="chat-input-area">
           <div class="sticker-category-tabs">
@@ -675,7 +727,19 @@
         </div>
       </div>
 
-      <!-- TAB 3: WATCH2GETHER -->
+      <!-- TAB 3: SHORTS -->
+      <div class="tab-panel" id="panel-shorts">
+        <div class="shorts-container">
+          <div class="shorts-item">
+            <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=0&controls=0&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+          <div class="shorts-item">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&controls=0&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: WATCH2GETHER -->
       <div class="tab-panel" id="panel-watch2gether">
         <div class="feature-container">
           <div class="feature-card">
@@ -694,7 +758,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: PLAY2GETHER -->
+      <!-- TAB 5: PLAY2GETHER -->
       <div class="tab-panel" id="panel-play2gether">
         <div class="feature-container">
           <div class="feature-card">
@@ -719,6 +783,7 @@
     <div class="bottom-nav">
       <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
       <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
+      <a class="nav-item" onclick="switchTab('shorts', this)"><span class="nav-icon">📱</span><span>Shorts</span></a>
       <a class="nav-item" onclick="switchTab('watch2gether', this)"><span class="nav-icon">🎬</span><span>Watch</span></a>
       <a class="nav-item" onclick="switchTab('play2gether', this)"><span class="nav-icon">🎮</span><span>Play</span></a>
     </div>
@@ -728,16 +793,13 @@
   <div class="modal" id="call-modal">
     <div class="modal-card">
       <div class="avatar" style="font-size: 3rem; margin-bottom: 10px;">📞</div>
-      <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 5px;">Calling...</h2>
-      <p id="call-status-desc" style="font-size: 0.85rem;">Connecting Agora voice channel...</p>
+      <h2 id="call-status-title" style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 5px;">Jitsi Voice Call</h2>
+      <p id="call-status-desc" style="font-size: 0.85rem;">Private secure audio room...</p>
       
-      <div class="btn-group" id="call-actions-incoming" style="display: none; margin-top: 15px;">
-        <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #047857);" onclick="acceptIncomingCall()">Accept Call 📞</button>
-        <button class="btn-secondary" onclick="rejectIncomingCall()">Decline 🛑</button>
-      </div>
+      <div id="jitsi-container"></div>
 
       <div class="btn-group" id="call-actions-active" style="margin-top: 15px;">
-        <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b);" onclick="endVoiceCall()">Hang Up 🛑</button>
+        <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b);" onclick="endVoiceCall()">Leave Call 🛑</button>
       </div>
     </div>
   </div>
@@ -823,11 +885,7 @@
     let flowerTapCount = 0;
     const SECRET_PIN = "7231";
 
-    // AGORA VOICE CALL CONFIG
-    const AGORA_APP_ID = "9017b3fdf278479296b1ca39bd6f47c5";
-    const AGORA_CHANNEL_NAME = "eternal-realm-private-secure";
-    let agoraClient = null;
-    let localAudioTrack = null;
+    let jitsiApi = null;
 
     let selectedMsgKeyForDelete = null;
     let mediaRecorder = null;
@@ -844,13 +902,12 @@
     let heartBeatInterval = null;
     let initialMessagesLoaded = false;
     let loadingTimeout = null;
-    let activeChatQuery = null;
 
     // PAGINATION AND SCROLL MANAGEMENT STATE
     let earliestMessageKey = null;
     let isFetchingOlder = false;
     let allOlderLoaded = false;
-    let cachedMessageMap = {};
+    let backgroundLoadingInProgress = false;
 
     // TYPING STATE & REALTIME PRESENCE CACHE
     let typingDebounceTimer = null;
@@ -881,51 +938,11 @@
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
-    /* INSTANT LOCAL CACHE HYDRATION */
-    function hydrateCachedMessages() {
-      try {
-        const cached = localStorage.getItem('cached_chat_messages_v1');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          const keys = Object.keys(parsed);
-          if (keys.length > 0) {
-            cachedMessageMap = parsed;
-            earliestMessageKey = keys[0];
-            keys.forEach(key => renderOrUpdateMessage(key, parsed[key], false));
-            
-            const chatContainer = document.getElementById('chat-stream');
-            if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-            hideLoadingScreen();
-          }
-        }
-      } catch(e) {
-        console.warn("Cache read skipped:", e);
-      }
-    }
-
-    function persistMessagesCache(key, msgData) {
-      try {
-        cachedMessageMap[key] = msgData;
-        
-        // Retain only latest 10 messages in local storage for fast cold boots
-        const keys = Object.keys(cachedMessageMap);
-        if (keys.length > 10) {
-          const trimmedKeys = keys.slice(keys.length - 10);
-          const trimmedMap = {};
-          trimmedKeys.forEach(k => trimmedMap[k] = cachedMessageMap[k]);
-          cachedMessageMap = trimmedMap;
-        }
-        
-        localStorage.setItem('cached_chat_messages_v1', JSON.stringify(cachedMessageMap));
-      } catch(e){}
-    }
-
     window.addEventListener('load', () => {
       const savedRole = localStorage.getItem('user_role');
       if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
       
       initLoadingScreenDecorations();
-      hydrateCachedMessages();
       
       // PRIORITIZE DIRECT MESSAGE INITIALIZATION IMMEDIATELY
       initializeChatFeed();
@@ -1089,7 +1106,6 @@
       setTimeout(() => {
         gateway.style.display = 'none';
         updateHeaderInfo();
-        listenForPendingCalls();
         logUserEntry();
         setupPresenceSystem();
         setupTypingSystem();
@@ -1109,6 +1125,8 @@
       } else {
         document.getElementById('admin-wifey-monitor').style.display = 'none';
       }
+      
+      listenForStatusUpdates();
     }
 
     function logUserEntry() {
@@ -1226,7 +1244,7 @@
 
     function openStatusModal() {
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
-      db.ref(`appState/status/${userKey}`).once('value', (snap) => {
+      db.ref(`userProfiles/${userKey}/status`).once('value', (snap) => {
         const data = snap.val();
         if (data && data.text) {
           document.getElementById('status-input').value = data.text;
@@ -1242,16 +1260,16 @@
       const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       
       if (newStatus) {
-        await db.ref(`appState/status/${userKey}`).set({ text: newStatus, timestamp: Date.now() });
+        await db.ref(`userProfiles/${userKey}/status`).set({ text: newStatus, timestamp: Date.now() });
       } else {
-        await db.ref(`appState/status/${userKey}`).remove();
+        await db.ref(`userProfiles/${userKey}/status`).remove();
       }
       closeModal('status-modal');
     }
 
     function listenForStatusUpdates() {
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
-      db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
+      db.ref(`userProfiles/${partnerKey}/status`).on('value', (snap) => {
         const data = snap.val();
         if (data && data.text) {
           document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
@@ -1361,139 +1379,54 @@
       reader.readAsDataURL(file);
     }
 
-    function initAgoraClient() {
-      if (agoraClient) return;
-      try {
-        if (typeof AgoraRTC === "undefined") return;
-        agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-
-        agoraClient.on("user-published", async (user, mediaType) => {
-          await agoraClient.subscribe(user, mediaType);
-          if (mediaType === "audio") {
-            user.audioTrack.play();
-            document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
+    function initiateVoiceCall() {
+      openModal('call-modal');
+      
+      if (!jitsiApi) {
+        const domain = 'meet.jit.si';
+        const options = {
+          roomName: 'TheoreticalStadiumsFixNowhere',
+          width: '100%',
+          height: '100%',
+          parentNode: document.querySelector('#jitsi-container'),
+          configOverwrite: {
+            startWithVideoMuted: true,
+            disableDeepLinking: true
+          },
+          interfaceConfigOverwrite: {
+            TOOLBAR_BUTTONS: ['microphone', 'hangup'],
+            VIDEO_MUTE_BUTTON_ENABLE: false
           }
-        });
-
-        agoraClient.on("user-unpublished", (user) => {
-          document.getElementById('call-status-title').innerText = "Partner disconnected audio.";
-        });
-      } catch(e) {
-        console.warn("Agora initialization notice:", e);
-      }
-    }
-
-    function listenForPendingCalls() {
-      db.ref('appState/activeCallSignal').on('value', (snapshot) => {
-        const callData = snapshot.val();
-        if (callData && callData.status === 'ringing' && callData.caller !== currentUserRole) {
-          if (callData.caller === "Mrs. Sudip") {
-            db.ref('appState/wifeyActivity/lastCallAttempt').set({
-              type: "Outgoing Call Attempt",
-              formatted: getFormattedTime()
-            });
-          }
-
-          document.getElementById('call-status-title').innerText = `${callData.caller} is calling...`;
-          document.getElementById('call-actions-incoming').style.display = 'flex';
-          document.getElementById('call-actions-active').style.display = 'none';
-          openModal('call-modal');
-        } else if (!callData) {
-          const modal = document.getElementById('call-modal');
-          if (modal.classList.contains('open')) closeModal('call-modal');
+        };
+        try {
+          jitsiApi = new JitsiMeetExternalAPI(domain, options);
+          jitsiApi.executeCommand('toggleVideo');
+        } catch(e) {
+          console.error("Jitsi fail:", e);
         }
-      });
-    }
-
-    async function initiateVoiceCall() {
-      try {
-        initAgoraClient();
-        document.getElementById('call-status-title').innerText = "Calling...";
-        document.getElementById('call-actions-incoming').style.display = 'none';
-        document.getElementById('call-actions-active').style.display = 'flex';
-        openModal('call-modal');
-
-        if (currentUserRole === "Mrs. Sudip") {
-          db.ref('appState/wifeyActivity/lastCallAttempt').set({
-            type: "Tried to Call Mr. Sudip",
-            formatted: getFormattedTime()
-          });
-        }
-
-        await db.ref('appState/activeCallSignal').set({
-          caller: currentUserRole,
-          status: 'ringing',
-          timestamp: Date.now()
-        });
-
-        if (agoraClient) {
-          await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
-          localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-          await agoraClient.publish([localAudioTrack]);
-          document.getElementById('call-status-title').innerText = "Ringing... Waiting for answer 🎙️";
-        }
-      } catch (err) {
-        console.error("Agora call error:", err);
-        alert("Call setup failed. Make sure your browser has mic permissions enabled and the page is on HTTPS.");
-        closeModal('call-modal');
       }
     }
 
-    async function acceptIncomingCall() {
-      try {
-        initAgoraClient();
-        document.getElementById('call-actions-incoming').style.display = 'none';
-        document.getElementById('call-actions-active').style.display = 'flex';
-        document.getElementById('call-status-title').innerText = "Connected & Talking 🎙️";
-
-        if (agoraClient) {
-          await agoraClient.join(AGORA_APP_ID, AGORA_CHANNEL_NAME, null, null);
-          localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-          await agoraClient.publish([localAudioTrack]);
-        }
-
-        db.ref('appState/activeCallSignal').remove();
-      } catch (err) {
-        alert("Failed to accept call. Check permissions.");
-        closeModal('call-modal');
+    function endVoiceCall() {
+      if (jitsiApi) {
+        jitsiApi.dispose();
+        jitsiApi = null;
       }
-    }
-
-    function rejectIncomingCall() {
-      db.ref('appState/activeCallSignal').remove();
-      closeModal('call-modal');
-    }
-
-    async function endVoiceCall() {
-      if (localAudioTrack) {
-        localAudioTrack.close();
-        localAudioTrack = null;
-      }
-      if (agoraClient) {
-        try { await agoraClient.leave(); } catch(e){}
-      }
-      db.ref('appState/activeCallSignal').remove();
       closeModal('call-modal');
     }
 
     /* HIGH-PERFORMANCE OPTIMIZED CHAT FETCH & REALTIME LISTENERS */
     function initializeChatFeed(isRetry = false) {
-      if (activeChatQuery) {
-        activeChatQuery.off(); // Cancel previous query listeners to prevent stack-up during retry
-      }
-
       const chatContainer = document.getElementById('chat-stream');
       if (isRetry) {
-        chatContainer.innerHTML = "";
+        chatContainer.innerHTML = `<div class="history-loading-indicator" id="history-loading-indicator"><div class="romantic-spinner" style="width:16px; height:16px; border-width:2px; margin:0;"></div><span>Loading older messages...</span></div>`;
         renderedMessageKeys.clear();
         earliestMessageKey = null;
         allOlderLoaded = false;
       }
 
-      // OPTIMIZATION RULE 4: Fetch strictly the 10 most recent messages first
-      activeChatQuery = db.ref('appState/chatFeed').limitToLast(10);
-      
-      activeChatQuery.once('value', (snapshot) => {
+      // Step 1: Immediately fetch latest 15 messages
+      db.ref('appState/chatFeed').limitToLast(15).once('value', (snapshot) => {
         const messages = snapshot.val();
         if (messages) {
           const keys = Object.keys(messages);
@@ -1501,20 +1434,17 @@
             earliestMessageKey = keys[0];
             keys.forEach(key => {
               renderOrUpdateMessage(key, messages[key], false);
-              persistMessagesCache(key, messages[key]);
             });
           }
         }
         
         chatContainer.scrollTop = chatContainer.scrollHeight;
-        
-        // OPTIMIZATION RULE 5: Immediately make usable and hide loading screen
         hideLoadingScreen();
         
-        // OPTIMIZATION RULE 6 & 10: Trigger background history fetch without blocking
-        setTimeout(() => { fetchOlderHistoryBatch(20); }, 300);
+        // Step 2: Begin loading remaining history in background
+        loadRemainingHistoryInBackground();
         
-        // OPTIMIZATION RULE 11: Attach realtime listeners for future messages
+        // Step 3: Attach realtime listener for live chat
         attachRealtimeListeners();
       }, (error) => {
         console.error("Firebase chat load error:", error);
@@ -1522,41 +1452,89 @@
         attachRealtimeListeners();
       });
 
-      // Attach scroll listener to load history on demand when user scrolls to top
       setupScrollToLoadOlder();
     }
 
-    /* CURSOR-BASED BACKGROUND HISTORICAL BATCHING */
-    function fetchOlderHistoryBatch(batchSize = 20) {
+    /* BACKGROUND AUTOMATIC HISTORICAL BATCHING */
+    function loadRemainingHistoryInBackground() {
+      if (backgroundLoadingInProgress || allOlderLoaded || !earliestMessageKey) return;
+      backgroundLoadingInProgress = true;
+
+      const fetchBatch = () => {
+        if (allOlderLoaded || !earliestMessageKey) {
+          backgroundLoadingInProgress = false;
+          return;
+        }
+
+        db.ref('appState/chatFeed')
+          .orderByKey()
+          .endAt(earliestMessageKey)
+          .limitToLast(21)
+          .once('value', (snapshot) => {
+            const messages = snapshot.val();
+            if (messages) {
+              const keys = Object.keys(messages);
+              if (keys.length <= 1) {
+                allOlderLoaded = true;
+                backgroundLoadingInProgress = false;
+              } else {
+                keys.pop(); // Remove duplicate cursor key
+                earliestMessageKey = keys[0];
+
+                const chatContainer = document.getElementById('chat-stream');
+                const oldScrollHeight = chatContainer.scrollHeight;
+
+                keys.reverse().forEach(key => {
+                  renderOrUpdateMessage(key, messages[key], true);
+                });
+
+                const newScrollHeight = chatContainer.scrollHeight;
+                chatContainer.scrollTop += (newScrollHeight - oldScrollHeight);
+
+                // Continue fetching next batch automatically
+                setTimeout(fetchBatch, 400);
+              }
+            } else {
+              allOlderLoaded = true;
+              backgroundLoadingInProgress = false;
+            }
+          }, (err) => {
+            backgroundLoadingInProgress = false;
+          });
+      };
+
+      fetchBatch();
+    }
+
+    function fetchOlderHistoryBatchManual() {
       if (isFetchingOlder || allOlderLoaded || !earliestMessageKey) return;
       isFetchingOlder = true;
+
+      const indicator = document.getElementById('history-loading-indicator');
+      if (indicator) indicator.classList.add('visible');
 
       const chatContainer = document.getElementById('chat-stream');
       const oldScrollHeight = chatContainer.scrollHeight;
 
-      // Query older messages up to current earliest message key
       db.ref('appState/chatFeed')
         .orderByKey()
         .endAt(earliestMessageKey)
-        .limitToLast(batchSize + 1)
+        .limitToLast(21)
         .once('value', (snapshot) => {
+          if (indicator) indicator.classList.remove('visible');
           const messages = snapshot.val();
           if (messages) {
             const keys = Object.keys(messages);
-            // If we got batchSize or fewer, we reached the beginning of the chat
             if (keys.length <= 1) {
               allOlderLoaded = true;
             } else {
-              // Remove current earliest duplicate key from keys
-              keys.pop(); 
+              keys.pop();
               earliestMessageKey = keys[0];
               
-              // Insert older items above current messages
-              keys.forEach(key => {
+              keys.reverse().forEach(key => {
                 renderOrUpdateMessage(key, messages[key], true);
               });
 
-              // Maintain current scroll position when inserting items above
               const newScrollHeight = chatContainer.scrollHeight;
               chatContainer.scrollTop += (newScrollHeight - oldScrollHeight);
             }
@@ -1565,6 +1543,7 @@
           }
           isFetchingOlder = false;
         }, (err) => {
+          if (indicator) indicator.classList.remove('visible');
           isFetchingOlder = false;
         });
     }
@@ -1574,21 +1553,22 @@
       if (!chatContainer) return;
       chatContainer.onscroll = () => {
         if (chatContainer.scrollTop < 80 && !isFetchingOlder && !allOlderLoaded) {
-          fetchOlderHistoryBatch(20);
+          fetchOlderHistoryBatchManual();
         }
       };
     }
 
     function attachRealtimeListeners() {
-      // Realtime listener for incoming newer messages
       const chatRef = db.ref('appState/chatFeed').limitToLast(1);
 
       chatRef.on('child_added', (snapshot) => {
+        const key = snapshot.key;
+        if (renderedMessageKeys.has(key)) return;
+
         const chatContainer = document.getElementById('chat-stream');
         const isAtBottom = (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 120;
         
-        renderOrUpdateMessage(snapshot.key, snapshot.val(), false);
-        persistMessagesCache(snapshot.key, snapshot.val());
+        renderOrUpdateMessage(key, snapshot.val(), false);
         hideLoadingScreen();
 
         if (isAtBottom) {
@@ -1608,6 +1588,8 @@
     }
 
     function renderOrUpdateMessage(key, msg, prependToTop = false) {
+      if (renderedMessageKeys.has(key) && prependToTop) return;
+
       const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       
       if (msg.deletedFor && msg.deletedFor[currentUserIdKey]) {
@@ -1623,8 +1605,13 @@
         div = document.createElement('div');
         div.id = `msg-${key}`;
         
-        if (prependToTop && chatContainer.firstChild) {
-          chatContainer.insertBefore(div, chatContainer.firstChild);
+        if (prependToTop) {
+          const indicator = document.getElementById('history-loading-indicator');
+          if (indicator && indicator.nextSibling) {
+            chatContainer.insertBefore(div, indicator.nextSibling);
+          } else {
+            chatContainer.insertBefore(div, chatContainer.firstChild);
+          }
         } else {
           chatContainer.appendChild(div);
         }
@@ -1691,7 +1678,6 @@
       await db.ref('appState/chatFeed').push(newMsg);
       addXP(15);
 
-      // Async unblocked alert request
       setTimeout(() => {
         sendTelegramNotification(currentUserRole, messageText || `[Sent a ${mediaType}]`);
       }, 0);
