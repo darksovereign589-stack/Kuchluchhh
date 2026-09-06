@@ -1254,28 +1254,35 @@
     }
 
     function listenForStatusUpdates() {
+      // ALWAYS derive keys strictly based on currentUserRole to avoid any cross-role mismatch
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       const ownKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
 
-      // Listen for partner's status updates strictly for the main header display
+      // 1. Partner's status listener -> ALWAYS updates the main header display
       db.ref(`appState/status/${partnerKey}`).off();
       db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
-        if (data && data.text) {
-          document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
-        } else {
-          document.getElementById('partner-status-display').innerText = `Status: Free 💖`;
+        const headerStatusEl = document.getElementById('partner-status-display');
+        if (headerStatusEl) {
+          if (data && data.text) {
+            headerStatusEl.innerText = `Status: ${data.text}`;
+          } else {
+            headerStatusEl.innerText = `Status: Free 💖`;
+          }
         }
       });
 
-      // Listen for current user's status updates strictly for the personal status line below
+      // 2. Currently logged-in user's status listener -> ALWAYS updates the lower "Your status:" display
       db.ref(`appState/status/${ownKey}`).off();
       db.ref(`appState/status/${ownKey}`).on('value', (snap) => {
         const data = snap.val();
-        if (data && data.text) {
-          document.getElementById('own-status-display').innerText = `Your status: ${data.text}`;
-        } else {
-          document.getElementById('own-status-display').innerText = `Your status: Free 💖`;
+        const ownStatusEl = document.getElementById('own-status-display');
+        if (ownStatusEl) {
+          if (data && data.text) {
+            ownStatusEl.innerText = `Your status: ${data.text}`;
+          } else {
+            ownStatusEl.innerText = `Your status: Free 💖`;
+          }
         }
       });
     }
