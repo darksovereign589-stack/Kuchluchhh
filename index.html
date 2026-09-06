@@ -360,9 +360,19 @@
     /* CHAT STREAM PANEL */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
-    .history-loader {
-      text-align: center; padding: 8px; font-size: 0.78rem; color: var(--soft-indigo); display: none;
+    .history-loader-bar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px;
+      font-size: 0.75rem;
+      color: var(--soft-indigo);
+      background: rgba(139, 92, 246, 0.1);
+      border-radius: 12px;
+      margin-bottom: 8px;
     }
+    .history-loader-bar.active { display: flex; }
 
     .msg-bubble {
       max-width: 82%; padding: 10px 14px; border-radius: 20px;
@@ -481,25 +491,25 @@
     }
     .notice-box p { margin-bottom: 0; color: #f8fafc; font-size: 0.85rem; }
 
-    /* BOTTOM MOBILE NAVBAR */
+    /* BOTTOM MOBILE NAVBAR (EXACTLY 4 EQUAL ITEMS) */
     .bottom-nav {
       height: var(--nav-height); background: rgba(10, 8, 22, 0.98);
       border-top: 1px solid var(--glass-border); display: flex;
       justify-content: space-around; align-items: center; flex-shrink: 0;
-      padding: 0 8px;
+      padding: 0 4px;
       padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 4px; color: var(--text-muted); font-size: 0.72rem; font-weight: 500;
-      cursor: pointer; text-decoration: none; padding: 6px 14px; border-radius: 16px;
-      transition: all 0.25s ease; flex: 1; text-align: center;
+      gap: 3px; color: var(--text-muted); font-size: 0.7rem; font-weight: 500;
+      cursor: pointer; text-decoration: none; padding: 6px 8px; border-radius: 16px;
+      transition: all 0.25s ease; flex: 1 1 25%; text-align: center; max-width: 25%;
     }
     .nav-item.active {
       color: var(--soft-indigo);
       background: rgba(139, 92, 246, 0.15);
     }
-    .nav-icon { font-size: 1.35rem; transition: transform 0.2s; }
+    .nav-icon { font-size: 1.3rem; transition: transform 0.2s; }
     .nav-item.active .nav-icon { transform: translateY(-2px) scale(1.1); }
 
     /* MODAL OVERLAYS */
@@ -649,7 +659,9 @@
       <!-- TAB 2: CHAT STREAM -->
       <div class="tab-panel" id="panel-chat">
         <div class="chat-messages" id="chat-stream">
-          <div class="history-loader" id="history-loader">Loading older messages...</div>
+          <div class="history-loader-bar" id="history-loader-bar">
+            <span>✨ Fetching older memories...</span>
+          </div>
         </div>
 
         <div class="chat-input-area">
@@ -699,18 +711,20 @@
         </div>
       </div>
 
-      <!-- TAB 4: SHORTS / REELS -->
-      <div class="tab-panel" id="panel-shorts">
+      <!-- TAB 4: PLAY2GETHER -->
+      <div class="tab-panel" id="panel-play2gether">
         <div class="feature-container">
           <div class="feature-card">
-            <div style="font-size: 3.5rem;">📸</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.3rem;">Instagram Reels</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Open Instagram Reels to share cute moments and watch together!</p>
+            <div style="font-size: 3.5rem;">🎮</div>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.3rem;">Play2Gether</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Paste a game/room link below to share it in the chat or launch it together instantly!</p>
 
             <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-              <a href="https://www.instagram.com/reels/" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width: 100%; padding: 12px; font-size: 0.95rem;" onclick="addXP(15)">
-                📸 Continue with Instagram
-              </a>
+              <input type="url" id="play-link-input" placeholder="Paste game room link here..." />
+              <div class="btn-group" style="width: 100%;">
+                <button class="btn-primary" style="flex: 1;" onclick="sharePlayLink()">Share in Chat 💬</button>
+                <button class="btn-secondary" style="flex: 1;" onclick="launchPlayLink()">Launch 🚀</button>
+              </div>
             </div>
           </div>
         </div>
@@ -718,23 +732,12 @@
 
     </div>
 
-    <!-- BOTTOM NAVBAR -->
+    <!-- BOTTOM NAVBAR (EXACTLY 4 OPTIONS) -->
     <div class="bottom-nav">
       <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
       <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
       <a class="nav-item" onclick="switchTab('watch2gether', this)"><span class="nav-icon">🎬</span><span>Watch</span></a>
-      <a class="nav-item" onclick="switchTab('shorts', this)"><span class="nav-icon">📱</span><span>Shorts</span></a>
-    </div>
-  </div>
-
-  <!-- VOICE CALL MODAL (REAL JITSI INTEGRATION) -->
-  <div class="modal" id="call-modal">
-    <div class="modal-card" style="max-width: 95vw; width: 500px; height: 80vh; display: flex; flex-direction: column; padding: 1rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1rem;">📞 Audio Call Room</h3>
-        <button class="btn-secondary" style="padding: 4px 12px; font-size: 0.75rem; background: #ef4444;" onclick="endVoiceCall()">Leave Call 🛑</button>
-      </div>
-      <div id="jitsi-container" style="width: 100%; flex: 1; border-radius: 12px; overflow: hidden; background: #000;"></div>
+      <a class="nav-item" onclick="switchTab('play2gether', this)"><span class="nav-icon">🎮</span><span>Play</span></a>
     </div>
   </div>
 
@@ -785,6 +788,17 @@
     </div>
   </div>
 
+  <!-- PLAY2GETHER FRAME MODAL -->
+  <div class="modal" id="game-frame-modal">
+    <div class="modal-card" style="max-width: 90vw; width: 600px; height: 80vh; display: flex; flex-direction: column; padding: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1rem;">🎮 Play2Gether</h3>
+        <button class="btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="closeModal('game-frame-modal')">Close ✖</button>
+      </div>
+      <iframe id="game-iframe" style="width: 100%; flex: 1; border: 1px solid var(--glass-border); border-radius: 12px; background: #000;" src="about:blank"></iframe>
+    </div>
+  </div>
+
   <script>
     // FIREBASE REALTIME CONFIG
     const firebaseConfig = {
@@ -808,9 +822,6 @@
     let flowerTapCount = 0;
     const SECRET_PIN = "7231";
 
-    // JITSI API STATE
-    let jitsiApi = null;
-
     let selectedMsgKeyForDelete = null;
     let mediaRecorder = null;
     let audioChunks = [];
@@ -822,16 +833,18 @@
     let hugProgress = 0;
     let userXP = 0;
 
-    let renderedMessageKeys = new Set();
     let heartBeatInterval = null;
     let initialMessagesLoaded = false;
     let loadingTimeout = null;
 
-    // PAGINATION AND SCROLL MANAGEMENT STATE
-    let earliestMessageKey = null;
+    // HIGH PERFORMANCE CHAT & PAGINATION STATE
+    let dedupMap = new Map(); // key -> msgData
+    let oldestLoadedKey = null;
+    let newestLoadedKey = null;
     let isFetchingOlder = false;
     let allOlderLoaded = false;
-    let cachedMessageMap = {};
+    let isInitialLoadComplete = false;
+    let realtimeChildAddedAttached = false;
 
     // TYPING STATE & REALTIME PRESENCE CACHE
     let typingDebounceTimer = null;
@@ -862,53 +875,16 @@
       return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
-    /* INSTANT LOCAL CACHE HYDRATION */
-    function hydrateCachedMessages() {
-      try {
-        const cached = localStorage.getItem('cached_chat_messages_v1');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          const keys = Object.keys(parsed);
-          if (keys.length > 0) {
-            cachedMessageMap = parsed;
-            earliestMessageKey = keys[0];
-            keys.forEach(key => renderOrUpdateMessage(key, parsed[key], false));
-            
-            const chatContainer = document.getElementById('chat-stream');
-            if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-            hideLoadingScreen();
-          }
-        }
-      } catch(e) {
-        console.warn("Cache read skipped:", e);
-      }
-    }
-
-    function persistMessagesCache(key, msgData) {
-      try {
-        cachedMessageMap[key] = msgData;
-        const keys = Object.keys(cachedMessageMap);
-        if (keys.length > 15) {
-          const trimmedKeys = keys.slice(keys.length - 15);
-          const trimmedMap = {};
-          trimmedKeys.forEach(k => trimmedMap[k] = cachedMessageMap[k]);
-          cachedMessageMap = trimmedMap;
-        }
-        localStorage.setItem('cached_chat_messages_v1', JSON.stringify(cachedMessageMap));
-      } catch(e){}
-    }
-
     window.addEventListener('load', () => {
       const savedRole = localStorage.getItem('user_role');
       if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
       
       initLoadingScreenDecorations();
-      hydrateCachedMessages();
       
-      // PRIORITIZE DIRECT MESSAGE INITIALIZATION IMMEDIATELY (15 MESSAGES)
+      // Load initial latest 15 messages strictly from server/DB
       initializeChatFeed();
 
-      // Deferred background services
+      // Background non-blocking background initializations
       setTimeout(() => {
         startLoadingTimeoutGuard();
         setupPresenceSystem();
@@ -947,7 +923,7 @@
           const pulseText = document.querySelector('.loading-pulse-text');
           if (pulseText) pulseText.innerText = 'Connecting is taking a little time...';
         }
-      }, 3500);
+      }, 4000);
     }
 
     function hideLoadingScreen() {
@@ -1086,6 +1062,7 @@
       } else {
         document.getElementById('admin-wifey-monitor').style.display = 'none';
       }
+      listenForStatusUpdates();
     }
 
     function logUserEntry() {
@@ -1201,10 +1178,10 @@
       db.ref(`appState/typing/${userKey}`).remove();
     }
 
-    /* INDEPENDENT PERSONAL STATUSES FIX */
+    /* INDEPENDENT PERSONAL STATUS SYSTEM */
     function openStatusModal() {
-      const userKey = currentUserRole === "Mr. Sudip" ? "mr_sudip_status" : "mrs_sudip_status";
-      db.ref(`appState/statuses/${userKey}`).once('value', (snap) => {
+      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
+      db.ref(`appState/status/${userKey}`).once('value', (snap) => {
         const data = snap.val();
         if (data && data.text) {
           document.getElementById('status-input').value = data.text;
@@ -1217,20 +1194,19 @@
 
     async function updateGlobalStatus() {
       const newStatus = document.getElementById('status-input').value.trim();
-      const userKey = currentUserRole === "Mr. Sudip" ? "mr_sudip_status" : "mrs_sudip_status";
+      const userKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
       
       if (newStatus) {
-        await db.ref(`appState/statuses/${userKey}`).set({ text: newStatus, timestamp: Date.now() });
+        await db.ref(`appState/status/${userKey}`).set({ text: newStatus, timestamp: Date.now() });
       } else {
-        await db.ref(`appState/statuses/${userKey}`).remove();
+        await db.ref(`appState/status/${userKey}`).remove();
       }
       closeModal('status-modal');
     }
 
     function listenForStatusUpdates() {
-      // Partner key logic: display the status of the person currently viewed in the header
-      const partnerStatusKey = currentUserRole === "Mr. Sudip" ? "mrs_sudip_status" : "mr_sudip_status";
-      db.ref(`appState/statuses/${partnerStatusKey}`).on('value', (snap) => {
+      const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
+      db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
         if (data && data.text) {
           document.getElementById('partner-status-display').innerText = `Status: ${data.text}`;
@@ -1262,6 +1238,24 @@
       if (hugHoldTimer) clearInterval(hugHoldTimer);
       hugProgress = 0;
       document.getElementById('hug-fill').style.width = '0%';
+    }
+
+    function sharePlayLink() {
+      const linkInput = document.getElementById('play-link-input');
+      const url = linkInput.value.trim();
+      if (!url) { alert("Please paste a link first!"); return; }
+      sendChatMessage(`🎮 Join me to Play2Gether!\n${url}`);
+      linkInput.value = "";
+      alert("Game link shared to chat stream!");
+    }
+
+    function launchPlayLink() {
+      const linkInput = document.getElementById('play-link-input');
+      const url = linkInput.value.trim();
+      if (!url) { alert("Please paste a link first!"); return; }
+      document.getElementById('game-iframe').src = url;
+      openModal('game-frame-modal');
+      addXP(15);
     }
 
     async function toggleVoiceNoteRecording() {
@@ -1322,149 +1316,122 @@
       reader.readAsDataURL(file);
     }
 
-    /* REAL JITSI INTEGRATION FOR VOICE CALL */
-    function loadJitsiScript(callback) {
-      if (window.JitsiMeetExternalAPI) {
-        callback();
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = 'https://meet.jit.si/external_api.js';
-      script.async = true;
-      script.onload = callback;
-      document.body.appendChild(script);
-    }
-
+    /* DIRECT JITSI CALL INTEGRATION */
     function initiateVoiceCall() {
-      openModal('call-modal');
-      loadJitsiScript(() => {
-        const domain = 'meet.jit.si';
-        const options = {
-          roomName: 'TheoreticalStadiumsFixNowhere',
-          width: '100%',
-          height: '100%',
-          parentNode: document.getElementById('jitsi-container'),
-          configOverwrite: {
-            startWithAudioMuted: false,
-            startWithVideoMuted: true,
-            disableVideoQualityLabel: true
-          },
-          interfaceConfigOverwrite: {
-            TOOLBAR_BUTTONS: [
-              'microphone', 'hangup', 'chat', 'settings', 'raisehand'
-            ]
-          },
-          userInfo: {
-            displayName: currentUserRole
-          }
-        };
-
-        if (jitsiApi) {
-          jitsiApi.dispose();
-        }
-
-        jitsiApi = new JitsiMeetExternalAPI(domain, options);
-
-        jitsiApi.addEventListeners({
-          readyToClose: function () {
-            endVoiceCall();
-          }
+      if (currentUserRole === "Mrs. Sudip") {
+        db.ref('appState/wifeyActivity/lastCallAttempt').set({
+          type: "Tried to Call Mr. Sudip (Jitsi)",
+          formatted: getFormattedTime()
         });
-      });
-    }
-
-    function endVoiceCall() {
-      if (jitsiApi) {
-        jitsiApi.dispose();
-        jitsiApi = null;
       }
-      const container = document.getElementById('jitsi-container');
-      if (container) container.innerHTML = '';
-      closeModal('call-modal');
+      
+      const exactJitsiUrl = "https://meet.jit.si/TheoreticalStadiumsFixNowhere";
+      window.open(exactJitsiUrl, '_blank', 'noopener,noreferrer');
     }
 
-    /* HIGH-PERFORMANCE CHAT FETCH & REALTIME LISTENERS (EXACTLY 15 LATEST FIRST) */
+    /* CHAT CORE - INITIAL LATEST 15 & ORDERING */
     function initializeChatFeed(isRetry = false) {
       const chatContainer = document.getElementById('chat-stream');
-      const historyLoader = document.getElementById('history-loader');
+      const loaderBar = document.getElementById('history-loader-bar');
+      
+      chatContainer.innerHTML = "";
+      chatContainer.appendChild(loaderBar);
+      
+      dedupMap.clear();
+      oldestLoadedKey = null;
+      newestLoadedKey = null;
+      allOlderLoaded = false;
+      isFetchingOlder = false;
+      isInitialLoadComplete = false;
 
-      if (isRetry) {
-        chatContainer.innerHTML = "";
-        if (historyLoader) chatContainer.appendChild(historyLoader);
-        renderedMessageKeys.clear();
-        earliestMessageKey = null;
-        allOlderLoaded = false;
-      }
-
-      // STRICTLY fetch latest 15 messages first
+      // Query EXACTLY 15 latest items from DB
       db.ref('appState/chatFeed').limitToLast(15).once('value', (snapshot) => {
-        const messages = snapshot.val();
-        if (messages) {
-          const keys = Object.keys(messages);
+        const val = snapshot.val();
+        if (val) {
+          const keys = Object.keys(val); // In Firebase RTDB, Object.keys is strictly sorted chronologically
           if (keys.length > 0) {
-            earliestMessageKey = keys[0];
+            oldestLoadedKey = keys[0];
+            newestLoadedKey = keys[keys.length - 1];
+
             keys.forEach(key => {
-              renderOrUpdateMessage(key, messages[key], false);
-              persistMessagesCache(key, messages[key]);
+              const msgData = val[key];
+              dedupMap.set(key, msgData);
+              renderMessageElement(key, msgData, false);
             });
           }
+          if (keys.length < 15) {
+            allOlderLoaded = true;
+          }
+        } else {
+          allOlderLoaded = true;
         }
-        
+
         chatContainer.scrollTop = chatContainer.scrollHeight;
         hideLoadingScreen();
-        
-        // Silently load older messages in the background
-        setTimeout(() => { fetchOlderHistoryBatch(20); }, 500);
-        
-        attachRealtimeListeners();
-      }, (error) => {
-        console.error("Firebase chat load error:", error);
-        hideLoadingScreen();
-        attachRealtimeListeners();
-      });
+        isInitialLoadComplete = true;
 
-      setupScrollToLoadOlder();
+        if (!realtimeChildAddedAttached) {
+          attachRealtimeListeners();
+          realtimeChildAddedAttached = true;
+        }
+
+        setupScrollToLoadOlder();
+      }, (error) => {
+        console.error("Firebase initial chat query failed:", error);
+        hideLoadingScreen();
+      });
     }
 
-    /* CURSOR-BASED HISTORICAL BATCHING */
-    function fetchOlderHistoryBatch(batchSize = 20) {
-      if (isFetchingOlder || allOlderLoaded || !earliestMessageKey) return;
+    /* CURSOR-BASED HISTORICAL PAGINATION (UPWARD SCROLLING) */
+    function fetchOlderHistoryBatch() {
+      if (isFetchingOlder || allOlderLoaded || !oldestLoadedKey) return;
       isFetchingOlder = true;
 
+      const loaderBar = document.getElementById('history-loader-bar');
+      if (loaderBar) loaderBar.classList.add('active');
+
       const chatContainer = document.getElementById('chat-stream');
-      const historyLoader = document.getElementById('history-loader');
-      if (historyLoader) historyLoader.style.display = 'block';
-
       const oldScrollHeight = chatContainer.scrollHeight;
+      const oldScrollTop = chatContainer.scrollTop;
 
+      // Query older messages up to current oldest key
       db.ref('appState/chatFeed')
         .orderByKey()
-        .endAt(earliestMessageKey)
-        .limitToLast(batchSize + 1)
+        .endAt(oldestLoadedKey)
+        .limitToLast(21) // 20 older + 1 overlapping cursor key
         .once('value', (snapshot) => {
-          const messages = snapshot.val();
-          if (messages) {
-            const keys = Object.keys(messages);
+          const val = snapshot.val();
+          if (val) {
+            const keys = Object.keys(val);
             if (keys.length <= 1) {
               allOlderLoaded = true;
             } else {
-              keys.pop(); // remove duplicate current earliest key
-              earliestMessageKey = keys[0];
-              
+              // Exclude the current oldest key overlap
+              keys.pop(); 
+              oldestLoadedKey = keys[0];
+
+              // Insert older items above sequentially
               keys.reverse().forEach(key => {
-                renderOrUpdateMessage(key, messages[key], true);
+                const msgData = val[key];
+                if (!dedupMap.has(key)) {
+                  dedupMap.set(key, msgData);
+                  renderMessageElement(key, msgData, true);
+                }
               });
 
+              // Preserve scroll position relative to newly inserted height
               const newScrollHeight = chatContainer.scrollHeight;
-              chatContainer.scrollTop += (newScrollHeight - oldScrollHeight);
+              chatContainer.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
             }
           } else {
             allOlderLoaded = true;
           }
-          if (historyLoader) historyLoader.style.display = 'none';
+
+          if (loaderBar) loaderBar.classList.remove('active');
           isFetchingOlder = false;
         }, (err) => {
-          if (historyLoader) historyLoader.style.display = 'none';
+          console.error("Error fetching history batch:", err);
+          if (loaderBar) loaderBar.classList.remove('active');
           isFetchingOlder = false;
         });
     }
@@ -1473,59 +1440,69 @@
       const chatContainer = document.getElementById('chat-stream');
       if (!chatContainer) return;
       chatContainer.onscroll = () => {
-        if (chatContainer.scrollTop < 80 && !isFetchingOlder && !allOlderLoaded) {
-          fetchOlderHistoryBatch(20);
+        if (chatContainer.scrollTop < 100 && !isFetchingOlder && !allOlderLoaded && isInitialLoadComplete) {
+          fetchOlderHistoryBatch();
         }
       };
     }
 
     function attachRealtimeListeners() {
-      const chatRef = db.ref('appState/chatFeed').limitToLast(1);
+      // Realtime listener for brand new messages appended
+      db.ref('appState/chatFeed').limitToLast(1).on('child_added', (snapshot) => {
+        if (!isInitialLoadComplete) return;
 
-      chatRef.on('child_added', (snapshot) => {
-        const chatContainer = document.getElementById('chat-stream');
-        const isAtBottom = (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 120;
-        
-        renderOrUpdateMessage(snapshot.key, snapshot.val(), false);
-        persistMessagesCache(snapshot.key, snapshot.val());
-        hideLoadingScreen();
+        const key = snapshot.key;
+        const msgData = snapshot.val();
 
-        if (isAtBottom) {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
+        if (!dedupMap.has(key)) {
+          dedupMap.set(key, msgData);
+          newestLoadedKey = key;
+
+          const chatContainer = document.getElementById('chat-stream');
+          const isAtBottom = (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 150;
+
+          renderMessageElement(key, msgData, false);
+
+          if (isAtBottom) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }
         }
       });
 
       db.ref('appState/chatFeed').on('child_changed', (snapshot) => {
-        renderOrUpdateMessage(snapshot.key, snapshot.val(), false);
+        const key = snapshot.key;
+        const msgData = snapshot.val();
+        dedupMap.set(key, msgData);
+        
+        const existingEl = document.getElementById(`msg-${key}`);
+        if (existingEl) {
+          updateMessageElementUI(existingEl, key, msgData);
+        }
       });
 
       db.ref('appState/chatFeed').on('child_removed', (snapshot) => {
-        const el = document.getElementById(`msg-${snapshot.key}`);
-        if (el) el.remove();
-        renderedMessageKeys.delete(snapshot.key);
+        const key = snapshot.key;
+        dedupMap.delete(key);
+        const existingEl = document.getElementById(`msg-${key}`);
+        if (existingEl) existingEl.remove();
       });
     }
 
-    function renderOrUpdateMessage(key, msg, prependToTop = false) {
+    function renderMessageElement(key, msg, prependToTop = false) {
       const currentUserIdKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
-      
-      if (msg.deletedFor && msg.deletedFor[currentUserIdKey]) {
-        const existingMsg = document.getElementById(`msg-${key}`);
-        if (existingMsg) existingMsg.remove();
-        return;
-      }
+      if (msg.deletedFor && msg.deletedFor[currentUserIdKey]) return;
 
       const chatContainer = document.getElementById('chat-stream');
+      const loaderBar = document.getElementById('history-loader-bar');
       let div = document.getElementById(`msg-${key}`);
-      
+
       if (!div) {
         div = document.createElement('div');
         div.id = `msg-${key}`;
-        
+
         if (prependToTop) {
-          const historyLoader = document.getElementById('history-loader');
-          if (historyLoader && historyLoader.nextSibling) {
-            chatContainer.insertBefore(div, historyLoader.nextSibling);
+          if (loaderBar && loaderBar.nextSibling) {
+            chatContainer.insertBefore(div, loaderBar.nextSibling);
           } else {
             chatContainer.insertBefore(div, chatContainer.firstChild);
           }
@@ -1534,8 +1511,13 @@
         }
       }
 
+      updateMessageElementUI(div, key, msg);
+    }
+
+    function updateMessageElementUI(div, key, msg) {
       const isSudip = msg.sender === "Mr. Sudip";
       const isWifey = msg.sender === "Mrs. Sudip";
+      
       div.className = `msg-bubble ${isSudip ? 'msg-sudip' : 'msg-wifey'}`;
       div.onclick = () => openDeleteModal(key);
 
@@ -1562,8 +1544,6 @@
 
         div.innerHTML = `<div class="msg-sender"><span>${senderRibbonBadge}${escapeHTML(msg.sender)}</span><span class="msg-time">${msg.time}</span></div>${bodyContent}`;
       }
-
-      renderedMessageKeys.add(key);
     }
 
     function openLightbox(url, sender, time) {
@@ -1626,6 +1606,7 @@
 
     function openDeleteModal(msgKey) { selectedMsgKeyForDelete = msgKey; openModal('delete-msg-modal'); }
 
+    /* PROPER SECURE DELETION SYSTEM */
     async function confirmDeleteMsg(type) {
       if (!selectedMsgKeyForDelete) return;
       const key = selectedMsgKeyForDelete;
