@@ -589,7 +589,7 @@
       <div class="tab-panel" id="panel-chat">
         <div class="chat-messages" id="chat-stream">
           <div class="history-loader-bar" id="history-loader-bar">
-            <span>✨ Streaming older memories (2 msgs/sec)...</span>
+            <span>✨ Syncing memories...</span>
           </div>
         </div>
 
@@ -714,7 +714,7 @@
       <h2 style="font-family: 'Cinzel', serif; color: var(--gold-accent); margin-bottom: 10px;">Delete Message</h2>
       <p style="font-size: 0.85rem;">Choose how you want to delete this message:</p>
       <div class="btn-group" style="flex-direction: column; gap: 8px;">
-        <button class="btn-primary" style="background: #ef4444;" onclick="confirmDeleteMsg('everyone')">Delete for Everyone 🗑️️</button>
+        <button class="btn-primary" style="background: #ef4444;" onclick="confirmDeleteMsg('everyone')">Delete for Everyone 🗑</button>
         <button class="btn-secondary" onclick="confirmDeleteMsg('me')">Delete for Me 🙈</button>
         <button class="btn-secondary" style="border:none;" onclick="closeModal('delete-msg-modal')">Cancel</button>
       </div>
@@ -777,10 +777,6 @@
     let allOlderLoaded = false;
     let isInitialLoadComplete = false;
     let realtimeChildAddedAttached = false;
-
-    // HIGH PERFORMANCE STREAM QUEUE FOR OLD MEMORIES
-    let memoryStreamQueue = [];
-    let memoryStreamTimer = null;
 
     // TYPING STATE & REALTIME PRESENCE CACHE
     let typingDebounceTimer = null;
@@ -1354,7 +1350,7 @@
       });
     }
 
-    /* OPTIMIZED STREAMING ENGINE: PUSH 2 MESSAGES PER SECOND ON SCROLL */
+    /* OPTIMIZED INSTANT PROGRESSIVE PREFETCHING ENGINE */
     function fetchOlderHistoryBatch() {
       if (isFetchingOlder || allOlderLoaded || !oldestLoadedKey) return;
       isFetchingOlder = true;
@@ -1362,32 +1358,42 @@
       const loaderBar = document.getElementById('history-loader-bar');
       if (loaderBar) loaderBar.classList.add('active');
 
+      const chatContainer = document.getElementById('chat-stream');
+      const prevScrollHeight = chatContainer.scrollHeight;
+      const prevScrollTop = chatContainer.scrollTop;
+
       db.ref('appState/chatFeed')
         .orderByKey()
         .endAt(oldestLoadedKey)
-        .limitToLast(11) // Fetch batch of 10 older items
+        .limitToLast(21) // Query 20 older items + 1 cursor duplicate
         .once('value', (snapshot) => {
           const val = snapshot.val();
           if (val) {
             const keys = Object.keys(val);
             if (keys.length <= 1) {
               allOlderLoaded = true;
-              if (loaderBar) loaderBar.classList.remove('active');
-              isFetchingOlder = false;
             } else {
-              keys.pop(); // Remove overlapping cursor
+              keys.pop(); // Remove overlapping cursor key
               oldestLoadedKey = keys[0];
 
-              // Push fetched items into streaming queue (reversed to process top-down)
-              const batchToQueue = keys.reverse().map(k => ({ key: k, data: val[k] }));
-              memoryStreamQueue.push(...batchToQueue);
-              startMemoryStreaming();
+              // Render batch in reverse chronological top-down order to preserve order
+              keys.reverse().forEach(k => {
+                if (!dedupMap.has(k)) {
+                  dedupMap.set(k, val[k]);
+                  renderMessageElement(k, val[k], true);
+                }
+              });
+
+              // Preserve scroll position relative to prepended content
+              const newScrollHeight = chatContainer.scrollHeight;
+              chatContainer.scrollTop = prevScrollTop + (newScrollHeight - prevScrollHeight);
             }
           } else {
             allOlderLoaded = true;
-            if (loaderBar) loaderBar.classList.remove('active');
-            isFetchingOlder = false;
           }
+
+          if (loaderBar) loaderBar.classList.remove('active');
+          isFetchingOlder = false;
         }, (err) => {
           console.error("Error fetching history batch:", err);
           if (loaderBar) loaderBar.classList.remove('active');
@@ -1395,44 +1401,20 @@
         });
     }
 
-    function startMemoryStreaming() {
-      if (memoryStreamTimer) return;
-
-      const loaderBar = document.getElementById('history-loader-bar');
-      const chatContainer = document.getElementById('chat-stream');
-
-      // 500ms interval = strictly 2 messages per second
-      memoryStreamTimer = setInterval(() => {
-        if (memoryStreamQueue.length === 0) {
-          clearInterval(memoryStreamTimer);
-          memoryStreamTimer = null;
-          if (loaderBar) loaderBar.classList.remove('active');
-          isFetchingOlder = false;
-          return;
-        }
-
-        const oldScrollHeight = chatContainer.scrollHeight;
-        const oldScrollTop = chatContainer.scrollTop;
-
-        // Render 1 message per tick (2 per second)
-        const item = memoryStreamQueue.shift();
-        if (item && !dedupMap.has(item.key)) {
-          dedupMap.set(item.key, item.data);
-          renderMessageElement(item.key, item.data, true);
-
-          const newScrollHeight = chatContainer.scrollHeight;
-          chatContainer.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
-        }
-      }, 500);
-    }
-
     function setupScrollToLoadOlder() {
       const chatContainer = document.getElementById('chat-stream');
       if (!chatContainer) return;
+
+      let scrollTimeout = null;
       chatContainer.onscroll = () => {
-        if (chatContainer.scrollTop < 100 && !isFetchingOlder && !allOlderLoaded && isInitialLoadComplete) {
-          fetchOlderHistoryBatch();
-        }
+        if (scrollTimeout) return;
+        scrollTimeout = setTimeout(() => {
+          scrollTimeout = null;
+          // Prefetch threshold: trigger fetch when within 400px of top
+          if (chatContainer.scrollTop < 400 && !isFetchingOlder && !allOlderLoaded && isInitialLoadComplete) {
+            fetchOlderHistoryBatch();
+          }
+        }, 30);
       };
     }
 
