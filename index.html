@@ -705,6 +705,10 @@
 
           <div class="input-actions-row">
             <button class="upload-btn" id="voice-record-btn" onclick="toggleVoiceNoteRecording()" title="Record Voice Note">🎤</button>
+            <label class="upload-btn" title="Send Audio File">
+              🎵
+              <input type="file" id="audio-input" accept="audio/*" style="display: none;" onchange="handleFileUpload(event, 'audio')">
+            </label>
             <label class="upload-btn" title="Send Image">
               📷
               <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'image')">
@@ -1357,7 +1361,7 @@
           mediaRecorder.start();
           isRecordingVoice = true;
           recBtn.classList.add('record-btn-active');
-          recBtn.innerText = "⏹️";
+          recBtn.innerText = "⏹️️";
           textContainer.style.display = 'none';
           recInd.style.display = 'flex';
           recordSeconds = 0;
@@ -1382,9 +1386,14 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(event) {
-        sendChatMessage("📷 Image shared", event.target.result, 'image');
+        if (type === 'audio') {
+          sendChatMessage("🎵 Audio file", event.target.result, 'audio');
+        } else {
+          sendChatMessage("📷 Image shared", event.target.result, 'image');
+        }
       };
       reader.readAsDataURL(file);
+      e.target.value = "";
     }
 
     /* DIRECT JITSI CALL INTEGRATION */
@@ -1518,10 +1527,8 @@
     }
 
     function attachRealtimeListeners() {
-      // Realtime listener for brand new messages appended
-      db.ref('appState/chatFeed').limitToLast(1).on('child_added', (snapshot) => {
-        if (!isInitialLoadComplete) return;
-
+      // Listen for all incoming real-time messages instantly across users
+      db.ref('appState/chatFeed').on('child_added', (snapshot) => {
         const key = snapshot.key;
         const msgData = snapshot.val();
 
@@ -1534,7 +1541,7 @@
 
           renderMessageElement(key, msgData, false);
 
-          if (isAtBottom) {
+          if (isAtBottom || isInitialLoadComplete) {
             chatContainer.scrollTop = chatContainer.scrollHeight;
           }
         }
