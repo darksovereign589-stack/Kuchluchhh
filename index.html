@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title id="page-title">Eternal Connection | Private Realm</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0d0b1e">
+  <meta name="theme-color" content="#07050D">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,17 +17,17 @@
 
   <style>
     :root {
-      /* Theme: Deep Midnight Blue / Purple / Indigo Gradient Theme */
-      --bg-dark: #0d0b1e;
-      --bg-card: rgba(21, 18, 45, 0.92);
-      --neon-primary: #8b5cf6;
-      --neon-glow: rgba(139, 92, 246, 0.45);
-      --soft-indigo: #c084fc;
-      --accent-pink: #ec4899;
+      /* UPGRADED COLOR PALETTE */
+      --bg-dark: #07050D;           /* Main black */
+      --bg-card: rgba(33, 19, 51, 0.88); /* Deep purple */
+      --neon-primary: #703DB4;       /* Violet */
+      --neon-glow: rgba(112, 61, 180, 0.45);
+      --soft-indigo: #A875E8;       /* Soft purple */
+      --accent-pink: #FF4F9A;       /* Pink accent */
+      --gold-accent: #D8B56A;       /* Royal gold */
       --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --glass-border: rgba(139, 92, 246, 0.3);
-      --gold-accent: #ffd700;
+      --text-muted: #a8a29e;
+      --glass-border: rgba(168, 117, 232, 0.25);
       --nav-height: 68px;
     }
 
@@ -46,16 +46,16 @@
     body::before {
       content: "";
       position: absolute; inset: 0;
-      background: radial-gradient(circle at center, rgba(30, 24, 68, 0.8) 0%, rgba(8, 6, 18, 0.98) 100%);
+      background: radial-gradient(circle at center, rgba(33, 19, 51, 0.85) 0%, rgba(7, 5, 13, 0.98) 100%);
       z-index: 0;
     }
 
-    #ambient-canvas { position: fixed; inset: 0; pointer-events: auto; z-index: 1; }
+    #ambient-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-    /* ROMANTIC MESSAGE LOADING SCREEN */
+    /* LOADING SCREEN */
     #chat-loading-screen {
       position: fixed; inset: 0;
-      background: radial-gradient(circle at center, #1b1338 0%, #070512 100%);
+      background: radial-gradient(circle at center, #211333 0%, #07050D 100%);
       z-index: 500;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       text-align: center; padding: 24px;
@@ -64,25 +64,23 @@
     }
 
     #chat-loading-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      opacity: 0; visibility: hidden; pointer-events: none;
     }
 
     .loading-card-content {
       position: relative; z-index: 2;
       max-width: 360px; width: 100%;
-      background: rgba(21, 18, 45, 0.65);
-      border: 1px solid rgba(236, 72, 153, 0.35);
+      background: rgba(33, 19, 51, 0.75);
+      border: 1px solid var(--glass-border);
       border-radius: 28px; padding: 2.2rem 1.5rem;
-      box-shadow: 0 0 40px rgba(236, 72, 153, 0.25);
+      box-shadow: 0 0 40px rgba(255, 79, 154, 0.25);
       backdrop-filter: blur(16px);
       display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
 
     .loading-ribbon-header {
       font-size: 2.2rem; display: flex; gap: 8px; align-items: center;
-      filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.6));
+      filter: drop-shadow(0 0 10px var(--accent-pink));
       animation: gentlePulse 2s ease-in-out infinite;
     }
 
@@ -94,37 +92,33 @@
     .loading-main-text {
       font-family: 'Cinzel', serif;
       font-size: 1.25rem; font-weight: 700;
-      color: #f472b6; text-shadow: 0 0 12px rgba(244, 114, 182, 0.5);
+      color: var(--accent-pink); text-shadow: 0 0 12px rgba(255, 79, 154, 0.5);
     }
 
     .loading-sub-text {
-      font-size: 0.88rem; color: #e2e8f0;
-      font-style: italic; line-height: 1.4;
+      font-size: 0.88rem; color: #e2e8f0; font-style: italic; line-height: 1.4;
     }
 
     .loading-pulse-text {
-      font-size: 0.78rem; color: #c084fc;
+      font-size: 0.78rem; color: var(--soft-indigo);
       margin-top: 6px; display: flex; align-items: center; gap: 6px;
     }
 
     .romantic-spinner {
       width: 36px; height: 36px; margin-top: 8px;
-      border: 3px solid rgba(236, 72, 153, 0.2);
+      border: 3px solid rgba(255, 79, 154, 0.2);
       border-top: 3px solid var(--accent-pink);
       border-radius: 50%;
       animation: spinRomantic 1s linear infinite;
     }
 
-    @keyframes spinRomantic {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spinRomantic { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .loading-bf-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
     .loading-flutter-bf {
       position: absolute; font-size: 1.8rem;
       animation: floatLoadingBf 8s ease-in-out infinite;
-      opacity: 0.7; filter: drop-shadow(0 0 8px #ec4899);
+      opacity: 0.7; filter: drop-shadow(0 0 8px var(--accent-pink));
     }
 
     @keyframes floatLoadingBf {
@@ -133,16 +127,11 @@
       100% { transform: translate(0, 0) rotate(0deg); }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .loading-ribbon-header, .romantic-spinner, .loading-flutter-bf { animation: none !important; }
-    }
-
     /* GATEWAY OVERLAY */
     .gateway-overlay {
       position: fixed; inset: 0;
-      background: rgba(10, 8, 22, 0.96);
-      backdrop-filter: blur(20px);
-      z-index: 100;
+      background: rgba(7, 5, 13, 0.96);
+      backdrop-filter: blur(20px); z-index: 100;
       display: flex; justify-content: center; align-items: center; padding: 20px;
       transition: opacity 0.8s ease, visibility 0.8s;
     }
@@ -158,19 +147,19 @@
     .secret-flower {
       font-size: 3.5rem; display: inline-block; cursor: pointer;
       margin-bottom: 1rem; animation: floatFlower 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 15px var(--neon-primary));
+      filter: drop-shadow(0 0 15px var(--accent-pink));
     }
     @keyframes floatFlower { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-    h1 { font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+    h1 { font-family: 'Cinzel', serif; color: var(--gold-accent); font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
     p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.5; }
 
     .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--neon-primary) 0%, #4c1d95 100%);
+      background: linear-gradient(135deg, var(--neon-primary) 0%, var(--accent-pink) 100%);
       color: #fff; border: none; padding: 10px 20px; border-radius: 50px;
-      font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+      font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(255, 79, 154, 0.3);
       white-space: nowrap; font-size: 0.85rem; transition: transform 0.2s, box-shadow 0.2s;
       text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
     }
@@ -194,126 +183,58 @@
       .app-container { height: 94vh; border-radius: 28px; box-shadow: 0 0 50px var(--neon-glow); }
     }
 
-    /* OPTIMIZED CHAT HEADER */
     .chat-header {
       padding: 10px 14px;
-      background: rgba(13, 10, 30, 0.95);
+      background: rgba(7, 5, 13, 0.95);
       border-bottom: 1px solid var(--glass-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      min-height: 72px;
-      position: relative;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px; flex-shrink: 0; min-height: 72px; position: relative;
     }
 
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      min-width: 0;
-      cursor: pointer;
-    }
+    .user-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; cursor: pointer; }
     .avatar { font-size: 1.8rem; flex-shrink: 0; }
     
-    .user-details {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-      flex: 1;
-    }
+    .user-details { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
     .user-details h2 {
-      font-size: 0.95rem;
-      color: var(--soft-indigo);
-      font-family: 'Cinzel', serif;
-      font-weight: 700;
-      line-height: 1.2;
-      word-break: break-word;
+      font-size: 0.95rem; color: var(--gold-accent); font-family: 'Cinzel', serif;
+      font-weight: 700; line-height: 1.2; word-break: break-word;
     }
-    .presence-text {
-      font-size: 0.72rem;
-      color: #a7f3d0;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-    .global-status {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      font-style: italic;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-    
-    .own-status-display {
-      font-size: 0.68rem;
-      color: #cbd5e1;
-      line-height: 1.2;
-      word-break: break-word;
-      opacity: 0.95;
-    }
+    .presence-text { font-size: 0.72rem; color: #a7f3d0; line-height: 1.25; word-break: break-word; }
+    .global-status { font-size: 0.72rem; color: var(--soft-indigo); font-style: italic; line-height: 1.25; word-break: break-word; }
+    .own-status-display { font-size: 0.68rem; color: #cbd5e1; line-height: 1.2; word-break: break-word; opacity: 0.95; }
 
     .set-status-action {
-      font-size: 0.68rem;
-      color: var(--soft-indigo);
-      cursor: pointer;
-      text-decoration: underline;
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      margin-top: 1px;
-      opacity: 0.9;
-      line-height: 1.2;
-    }
-    .set-status-action:hover { opacity: 1; }
-
-    .header-actions {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      flex-shrink: 0;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      max-width: 50%;
+      font-size: 0.68rem; color: var(--accent-pink); cursor: pointer;
+      text-decoration: underline; display: inline-flex; align-items: center; gap: 2px;
+      margin-top: 1px; opacity: 0.9; line-height: 1.2;
     }
 
-    /* WEATHER & TIME CORNER WIDGET */
+    .header-actions { display: flex; gap: 5px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; max-width: 50%; }
+
     .weather-corner-widget {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--glass-border);
-      padding: 3px 8px;
-      border-radius: 14px;
-      font-size: 0.68rem;
-      color: #f1f5f9;
-      white-space: nowrap;
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border);
+      padding: 3px 8px; border-radius: 14px; font-size: 0.68rem; color: #f1f5f9; white-space: nowrap;
     }
 
     .xp-pill {
-      background: rgba(255, 215, 0, 0.15); border: 1px solid var(--gold-accent);
+      background: rgba(216, 181, 106, 0.15); border: 1px solid var(--gold-accent);
       color: var(--gold-accent); padding: 4px 8px; border-radius: 20px;
-      font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 3px;
-      white-space: nowrap;
+      font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 3px; white-space: nowrap;
     }
 
     .call-btn {
       background: linear-gradient(135deg, #10b981 0%, #047857 100%);
       border: none; color: #fff; padding: 6px 10px; border-radius: 20px;
       font-weight: 600; font-size: 0.75rem; cursor: pointer;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); white-space: nowrap;
     }
 
     .kiss-btn {
       background: linear-gradient(135deg, var(--accent-pink), #be185d);
       border: none; color: #fff; padding: 6px 10px; border-radius: 20px;
       font-weight: 600; font-size: 0.75rem; cursor: pointer;
-      box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
-      white-space: nowrap;
+      box-shadow: 0 0 12px rgba(255, 79, 154, 0.5); white-space: nowrap;
     }
 
     /* VIEWPORT PANELS */
@@ -327,7 +248,7 @@
     .flutter-bf {
       position: absolute; font-size: 1.8rem;
       animation: flyAround 12s linear infinite;
-      filter: drop-shadow(0 0 10px var(--neon-primary));
+      filter: drop-shadow(0 0 10px var(--accent-pink));
     }
     @keyframes flyAround {
       0% { transform: translate(0px, 0px) rotate(0deg) scale(0.8); }
@@ -340,15 +261,15 @@
     .realm-scroll { padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; position: relative; z-index: 1; }
     
     .ai-greeting-card {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(13, 10, 30, 0.8));
+      background: linear-gradient(135deg, rgba(112, 61, 180, 0.25), rgba(7, 5, 13, 0.85));
       border: 1px solid var(--neon-primary); border-radius: 20px; padding: 18px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--soft-indigo); margin-bottom: 8px; }
+    .ai-greeting-card h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-accent); margin-bottom: 8px; }
     .ai-greeting-card p { font-style: italic; color: #e2e8f0; font-size: 0.92rem; line-height: 1.5; margin-bottom: 0; }
 
     .admin-monitor-card {
-      background: rgba(139, 92, 246, 0.08); border: 1px solid var(--neon-primary);
+      background: rgba(112, 61, 180, 0.12); border: 1px solid var(--neon-primary);
       border-radius: 20px; padding: 16px; display: none; flex-direction: column; gap: 8px;
     }
     .admin-monitor-card h4 { font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1rem; }
@@ -356,7 +277,7 @@
     .monitor-val { color: var(--text-main); font-weight: 600; }
 
     .daily-drop-card {
-      background: rgba(21, 18, 45, 0.85); border: 1px dashed var(--glass-border);
+      background: rgba(33, 19, 51, 0.85); border: 1px dashed var(--glass-border);
       border-radius: 20px; padding: 16px; text-align: center;
     }
 
@@ -367,33 +288,26 @@
       border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; color: var(--text-main);
       white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
-    .mood-chip.active { background: var(--neon-primary); border-color: var(--neon-primary); color: #fff; }
+    .mood-chip.active { background: var(--accent-pink); border-color: var(--accent-pink); color: #fff; }
 
     .hug-widget {
-      background: rgba(139, 92, 246, 0.12); border: 1px solid var(--glass-border);
+      background: rgba(112, 61, 180, 0.15); border: 1px solid var(--glass-border);
       border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
       position: relative; overflow: hidden;
     }
     .hug-heart-icon { font-size: 3rem; transition: transform 0.2s; display: inline-block; }
     .hug-progress-fill {
       position: absolute; bottom: 0; left: 0; height: 100%; width: 0%;
-      background: rgba(139, 92, 246, 0.3); transition: width 0.1s linear; pointer-events: none;
+      background: rgba(255, 79, 154, 0.35); transition: width 0.1s linear; pointer-events: none;
     }
 
     /* CHAT STREAM PANEL */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
     .history-loader-bar {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px;
-      font-size: 0.75rem;
-      color: var(--soft-indigo);
-      background: rgba(139, 92, 246, 0.1);
-      border-radius: 12px;
-      margin-bottom: 8px;
+      display: none; align-items: center; justify-content: center; gap: 8px;
+      padding: 8px; font-size: 0.75rem; color: var(--soft-indigo);
+      background: rgba(112, 61, 180, 0.15); border-radius: 12px; margin-bottom: 8px;
     }
     .history-loader-bar.active { display: flex; }
 
@@ -404,30 +318,23 @@
     }
     @keyframes popIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* MR. SUDIP MESSAGES (UNCHANGED BLUE/PURPLE) */
+    /* PRESERVED EXACT TEXT COLORS FOR BOTH USERS */
     .msg-sudip {
       align-self: flex-start;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(76, 29, 149, 0.28) 100%);
+      background: linear-gradient(135deg, rgba(112, 61, 180, 0.35) 0%, rgba(33, 19, 51, 0.45) 100%);
       border: 1px solid var(--neon-primary); border-bottom-left-radius: 4px;
     }
 
-    /* MRS. SUDIP MESSAGES (LIGHT PINK + SOFT LAVENDER) */
     .msg-wifey {
       align-self: flex-end;
-      background: linear-gradient(135deg, rgba(244, 114, 182, 0.22) 0%, rgba(192, 132, 252, 0.22) 100%);
-      border: 1px solid rgba(244, 114, 182, 0.5);
+      background: linear-gradient(135deg, rgba(255, 79, 154, 0.22) 0%, rgba(168, 117, 232, 0.22) 100%);
+      border: 1px solid rgba(255, 79, 154, 0.5);
       border-bottom-right-radius: 4px;
-      box-shadow: 0 0 15px rgba(244, 114, 182, 0.12);
+      box-shadow: 0 0 15px rgba(255, 79, 154, 0.12);
     }
 
-    .msg-wifey-ribbon-tag {
-      font-size: 0.85rem; margin-right: 4px; vertical-align: middle;
-    }
-
-    .msg-deleted {
-      font-style: italic; opacity: 0.6; color: var(--text-muted);
-    }
-
+    .msg-wifey-ribbon-tag { font-size: 0.85rem; margin-right: 4px; vertical-align: middle; }
+    .msg-deleted { font-style: italic; opacity: 0.6; color: var(--text-muted); }
     .msg-sender { font-size: 0.75rem; font-weight: 700; color: var(--soft-indigo); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
     .msg-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
 
@@ -437,7 +344,7 @@
 
     /* INPUT TOOLBAR */
     .chat-input-area {
-      padding: 12px 14px 14px; background: rgba(13, 10, 30, 0.95);
+      padding: 12px 14px 14px; background: rgba(7, 5, 13, 0.95);
       border-top: 1px solid var(--glass-border); display: flex; flex-direction: column;
       gap: 10px; flex-shrink: 0;
     }
@@ -462,16 +369,16 @@
       background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
       border-radius: 20px; font-size: 1.3rem; padding: 6px 12px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s, background 0.2s;
     }
-    .emoji-pill-btn:active { transform: scale(0.9); background: rgba(139, 92, 246, 0.25); }
+    .emoji-pill-btn:active { transform: scale(0.9); background: rgba(112, 61, 180, 0.3); }
 
     .input-actions-row { display: flex; gap: 8px; align-items: center; width: 100%; }
     .upload-btn {
-      background: rgba(139, 92, 246, 0.2); border: 1px solid var(--glass-border);
+      background: rgba(112, 61, 180, 0.2); border: 1px solid var(--glass-border);
       border-radius: 50%; width: 42px; height: 42px; font-size: 1.1rem; color: var(--soft-indigo);
       font-weight: 600; cursor: pointer; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.15s;
     }
-    .upload-btn:active { transform: scale(0.92); background: rgba(139, 92, 246, 0.4); }
+    .upload-btn:active { transform: scale(0.92); background: rgba(112, 61, 180, 0.4); }
 
     .record-btn-active {
       background: #ef4444 !important; border-color: #f87171 !important;
@@ -485,9 +392,7 @@
       width: 100%; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border);
       color: var(--text-main); padding: 10px 16px; border-radius: 25px; font-size: 0.88rem; outline: none; transition: border-color 0.2s;
     }
-    input[type="text"]:focus, input[type="password"]:focus, input[type="url"]:focus {
-      border-color: var(--neon-primary);
-    }
+    input[type="text"]:focus, input[type="password"]:focus, input[type="url"]:focus { border-color: var(--soft-indigo); }
 
     .recording-bar-indicator {
       display: none; flex: 1; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.15);
@@ -501,26 +406,25 @@
     }
     
     .feature-card {
-      background: rgba(21, 18, 45, 0.85); border: 1px solid var(--glass-border);
+      background: rgba(33, 19, 51, 0.85); border: 1px solid var(--glass-border);
       border-radius: 24px; padding: 24px 20px; max-width: 400px; width: 100%;
       box-shadow: 0 0 30px var(--neon-glow); display: flex; flex-direction: column;
       align-items: center; gap: 14px;
     }
 
     .notice-box {
-      background: rgba(139, 92, 246, 0.15); border: 1px dashed var(--neon-primary);
+      background: rgba(112, 61, 180, 0.18); border: 1px dashed var(--neon-primary);
       border-radius: 16px; padding: 12px 16px; font-size: 0.85rem; color: var(--soft-indigo);
       line-height: 1.4; text-align: left; width: 100%;
     }
     .notice-box p { margin-bottom: 0; color: #f8fafc; font-size: 0.85rem; }
 
-    /* BOTTOM MOBILE NAVBAR (EXACTLY 4 EQUAL ITEMS) */
+    /* BOTTOM NAVBAR */
     .bottom-nav {
-      height: var(--nav-height); background: rgba(10, 8, 22, 0.98);
+      height: var(--nav-height); background: rgba(7, 5, 13, 0.98);
       border-top: 1px solid var(--glass-border); display: flex;
       justify-content: space-around; align-items: center; flex-shrink: 0;
-      padding: 0 4px;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding: 0 4px; padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -528,16 +432,13 @@
       cursor: pointer; text-decoration: none; padding: 6px 8px; border-radius: 16px;
       transition: all 0.25s ease; flex: 1 1 25%; text-align: center; max-width: 25%;
     }
-    .nav-item.active {
-      color: var(--soft-indigo);
-      background: rgba(139, 92, 246, 0.15);
-    }
+    .nav-item.active { color: var(--gold-accent); background: rgba(112, 61, 180, 0.2); }
     .nav-icon { font-size: 1.3rem; transition: transform 0.2s; }
     .nav-item.active .nav-icon { transform: translateY(-2px) scale(1.1); }
 
     /* MODAL OVERLAYS */
     .modal {
-      position: fixed; inset: 0; background: rgba(5, 4, 12, 0.88); backdrop-filter: blur(14px);
+      position: fixed; inset: 0; background: rgba(7, 5, 13, 0.88); backdrop-filter: blur(14px);
       z-index: 200; display: flex; justify-content: center; align-items: center; padding: 20px;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
@@ -549,7 +450,7 @@
       max-height: 85vh; overflow-y: auto;
     }
 
-    /* FULLSCREEN LIGHTBOX MODAL */
+    /* LIGHTBOX MODAL */
     .lightbox-modal {
       position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
       z-index: 300; display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -559,7 +460,7 @@
     .lightbox-img { max-width: 100%; max-height: 75vh; border-radius: 16px; border: 1px solid var(--glass-border); object-fit: contain; }
     .lightbox-meta { margin-top: 15px; font-size: 0.85rem; color: var(--soft-indigo); display: flex; gap: 15px; }
 
-    /* FULLSCREEN KISS OVERLAY */
+    /* KISS OVERLAY */
     #kiss-overlay {
       position: fixed; inset: 0; pointer-events: none; z-index: 999;
       display: flex; justify-content: center; align-items: center;
@@ -579,7 +480,7 @@
 </head>
 <body>
 
-  <!-- ROMANTIC MESSAGE LOADING SCREEN -->
+  <!-- ROMANTIC LOADING SCREEN -->
   <div id="chat-loading-screen">
     <div class="loading-bf-bg" id="loading-bf-container"></div>
     <div class="loading-card-content">
@@ -619,10 +520,8 @@
         <div class="user-details">
           <h2 id="partner-title-display">Mr. Sudip</h2>
           <div class="presence-text" id="partner-presence-display">Connecting...</div>
-          <!-- OTHER PERSON'S STATUS -->
           <div class="global-status" id="partner-status-display">Status: Free 💖</div>
           <div class="set-status-action" onclick="event.stopPropagation(); openStatusModal();">✏️ Set your status</div>
-          <!-- CURRENT LOGGED-IN USER'S OWN STATUS BELOW -->
           <div class="own-status-display" id="own-status-display">Your status: Free 💖</div>
         </div>
       </div>
@@ -650,7 +549,7 @@
             <p id="realm-greeting-body">Bringing your shared space together...</p>
           </div>
 
-          <!-- MR SUDIP'S WIFEY MONITOR PANEL -->
+          <!-- ADMIN MONITOR PANEL -->
           <div class="admin-monitor-card" id="admin-wifey-monitor">
             <h4>🎀 Mrs. Sudip Live Status</h4>
             <div class="monitor-row"><span>Online Status:</span> <span class="monitor-val" id="mon-online">Offline</span></div>
@@ -661,7 +560,7 @@
           </div>
 
           <div class="daily-drop-card">
-            <h4 style="color: var(--soft-indigo); font-family: 'Cinzel', serif; margin-bottom: 6px;">🌹 Today's Love Drop</h4>
+            <h4 style="color: var(--gold-accent); font-family: 'Cinzel', serif; margin-bottom: 6px;">🌹 Today's Love Drop</h4>
             <p id="daily-love-drop-text" style="font-style: italic; font-size: 0.88rem; color: #cbd5e1;">Generating daily dynamic quote...</p>
           </div>
 
@@ -680,7 +579,7 @@
           <div class="hug-widget" id="hug-btn-widget" onmousedown="startHugHold()" onmouseup="endHugHold()" onmouseleave="endHugHold()" ontouchstart="startHugHold()" ontouchend="endHugHold()">
             <div class="hug-progress-fill" id="hug-fill"></div>
             <div class="hug-heart-icon" id="hug-heart">🫂</div>
-            <h4 style="color: var(--soft-indigo); font-family: 'Cinzel', serif; margin-top: 4px; font-size: 0.95rem;">Hold for Interactive Hug</h4>
+            <h4 style="color: var(--gold-accent); font-family: 'Cinzel', serif; margin-top: 4px; font-size: 0.95rem;">Hold for Interactive Hug</h4>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0;">Press and hold 2 seconds to send warmth</p>
           </div>
         </div>
@@ -690,7 +589,7 @@
       <div class="tab-panel" id="panel-chat">
         <div class="chat-messages" id="chat-stream">
           <div class="history-loader-bar" id="history-loader-bar">
-            <span>✨ Fetching older memories...</span>
+            <span>✨ Streaming older memories (2 msgs/sec)...</span>
           </div>
         </div>
 
@@ -731,7 +630,7 @@
         <div class="feature-container">
           <div class="feature-card">
             <div style="font-size: 3.5rem;">🎬</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.3rem;">Watch2Gether</h3>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--gold-accent); font-size: 1.3rem;">Watch2Gether</h3>
             
             <div class="notice-box">
               <strong>⚠️ Important Notice:</strong>
@@ -750,7 +649,7 @@
         <div class="feature-container">
           <div class="feature-card">
             <div style="font-size: 3.5rem;">🎮</div>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1.3rem;">Play2Gether</h3>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--gold-accent); font-size: 1.3rem;">Play2Gether</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">Paste a game/room link below to share it in the chat or launch it together instantly!</p>
 
             <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
@@ -766,7 +665,7 @@
 
     </div>
 
-    <!-- BOTTOM NAVBAR (EXACTLY 4 OPTIONS) -->
+    <!-- BOTTOM NAVBAR -->
     <div class="bottom-nav">
       <a class="nav-item active" onclick="switchTab('realm', this)"><span class="nav-icon">🌹</span><span>Realm</span></a>
       <a class="nav-item" onclick="switchTab('chat', this)"><span class="nav-icon">💬</span><span>Chat</span></a>
@@ -775,7 +674,7 @@
     </div>
   </div>
 
-  <!-- FULLSCREEN LIGHTBOX MODAL -->
+  <!-- LIGHTBOX MODAL -->
   <div class="lightbox-modal" id="lightbox-modal" onclick="closeModal('lightbox-modal')">
     <img id="lightbox-img" class="lightbox-img" src="" alt="Expanded Memory" />
     <div class="lightbox-meta">
@@ -787,7 +686,7 @@
   <!-- ADMIN PIN MODAL -->
   <div class="modal" id="admin-pin-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Mr. Sudip Access</h2>
+      <h2 style="font-family: 'Cinzel', serif; color: var(--gold-accent); margin-bottom: 10px;">Mr. Sudip Access</h2>
       <p style="font-size: 0.85rem;">Enter secret PIN to log in as Mr. Sudip:</p>
       <input type="password" id="admin-pin-input" placeholder="••••" style="text-align: center; font-size: 1.2rem; margin-bottom: 15px;">
       <div class="btn-group">
@@ -797,10 +696,10 @@
     </div>
   </div>
 
-  <!-- STATUS & PRIVACY MODAL -->
+  <!-- STATUS MODAL -->
   <div class="modal" id="status-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Update Your Personal Status</h2>
+      <h2 style="font-family: 'Cinzel', serif; color: var(--gold-accent); margin-bottom: 10px;">Update Your Personal Status</h2>
       <input type="text" id="status-input" placeholder="Enter status message (e.g. Cooking, Cold Shower)..." style="margin-bottom: 15px;">
       <div class="btn-group">
         <button class="btn-primary" onclick="updateGlobalStatus()">Set Status 🚀</button>
@@ -812,10 +711,10 @@
   <!-- DELETE MESSAGE MODAL -->
   <div class="modal" id="delete-msg-modal">
     <div class="modal-card">
-      <h2 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); margin-bottom: 10px;">Delete Message</h2>
+      <h2 style="font-family: 'Cinzel', serif; color: var(--gold-accent); margin-bottom: 10px;">Delete Message</h2>
       <p style="font-size: 0.85rem;">Choose how you want to delete this message:</p>
       <div class="btn-group" style="flex-direction: column; gap: 8px;">
-        <button class="btn-primary" style="background: #ef4444;" onclick="confirmDeleteMsg('everyone')">Delete for Everyone 🗑️</button>
+        <button class="btn-primary" style="background: #ef4444;" onclick="confirmDeleteMsg('everyone')">Delete for Everyone 🗑️️</button>
         <button class="btn-secondary" onclick="confirmDeleteMsg('me')">Delete for Me 🙈</button>
         <button class="btn-secondary" style="border:none;" onclick="closeModal('delete-msg-modal')">Cancel</button>
       </div>
@@ -826,7 +725,7 @@
   <div class="modal" id="game-frame-modal">
     <div class="modal-card" style="max-width: 90vw; width: 600px; height: 80vh; display: flex; flex-direction: column; padding: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-family: 'Cinzel', serif; color: var(--soft-indigo); font-size: 1rem;">🎮 Play2Gether</h3>
+        <h3 style="font-family: 'Cinzel', serif; color: var(--gold-accent); font-size: 1rem;">🎮 Play2Gether</h3>
         <button class="btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="closeModal('game-frame-modal')">Close ✖</button>
       </div>
       <iframe id="game-iframe" style="width: 100%; flex: 1; border: 1px solid var(--glass-border); border-radius: 12px; background: #000;" src="about:blank"></iframe>
@@ -847,7 +746,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // TELEGRAM BOT CONFIGURATION
     const TELEGRAM_BOT_TOKEN = "7963353459:AAFfF6GkllP5A5m825p39G53r-g4u0W6GvA";
     const TELEGRAM_CHAT_ID = "8283865056";
 
@@ -872,13 +770,17 @@
     let loadingTimeout = null;
 
     // HIGH PERFORMANCE CHAT & PAGINATION STATE
-    let dedupMap = new Map(); // key -> msgData
+    let dedupMap = new Map();
     let oldestLoadedKey = null;
     let newestLoadedKey = null;
     let isFetchingOlder = false;
     let allOlderLoaded = false;
     let isInitialLoadComplete = false;
     let realtimeChildAddedAttached = false;
+
+    // HIGH PERFORMANCE STREAM QUEUE FOR OLD MEMORIES
+    let memoryStreamQueue = [];
+    let memoryStreamTimer = null;
 
     // TYPING STATE & REALTIME PRESENCE CACHE
     let typingDebounceTimer = null;
@@ -914,11 +816,8 @@
       if (savedRole === "Mr. Sudip") currentUserRole = "Mr. Sudip";
       
       initLoadingScreenDecorations();
-      
-      // Load initial latest 15 messages strictly from server/DB
       initializeChatFeed();
 
-      // Background non-blocking background initializations
       setTimeout(() => {
         startLoadingTimeoutGuard();
         setupPresenceSystem();
@@ -1177,7 +1076,7 @@
 
       if (isPartnerTyping) {
         displayEl.innerText = `✍️ ${partnerName} is writing something...`;
-        displayEl.style.color = "#c084fc";
+        displayEl.style.color = "#a875e8";
         return;
       }
 
@@ -1189,15 +1088,15 @@
         } else {
           const lastTimeStr = currentPartnerPresenceData.lastSeen ? getFormattedTime(currentPartnerPresenceData.lastSeen) : "recently";
           displayEl.innerText = `⚫ Last seen ${lastTimeStr}`;
-          displayEl.style.color = "#94a3b8";
+          displayEl.style.color = "#a8a29e";
         }
       } else {
         displayEl.innerText = "⚫ Offline";
-        displayEl.style.color = "#94a3b8";
+        displayEl.style.color = "#a8a29e";
       }
     }
 
-    /* REAL-TIME TYPING INDICATOR SYSTEM */
+    /* REAL-TIME TYPING INDICATOR */
     function setupTypingSystem() {
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       const partnerTypingRef = db.ref(`appState/typing/${partnerKey}`);
@@ -1258,11 +1157,9 @@
     }
 
     function listenForStatusUpdates() {
-      // ALWAYS derive keys strictly based on currentUserRole to avoid any cross-role mismatch
       const partnerKey = currentUserRole === "Mr. Sudip" ? "wifey" : "sudip";
       const ownKey = currentUserRole === "Mr. Sudip" ? "sudip" : "wifey";
 
-      // 1. Partner's status listener -> ALWAYS updates the main header display
       db.ref(`appState/status/${partnerKey}`).off();
       db.ref(`appState/status/${partnerKey}`).on('value', (snap) => {
         const data = snap.val();
@@ -1276,7 +1173,6 @@
         }
       });
 
-      // 2. Currently logged-in user's status listener -> ALWAYS updates the lower "Your status:" display
       db.ref(`appState/status/${ownKey}`).off();
       db.ref(`appState/status/${ownKey}`).on('value', (snap) => {
         const data = snap.val();
@@ -1361,7 +1257,7 @@
           mediaRecorder.start();
           isRecordingVoice = true;
           recBtn.classList.add('record-btn-active');
-          recBtn.innerText = "⏹️️";
+          recBtn.innerText = "⏹";
           textContainer.style.display = 'none';
           recInd.style.display = 'flex';
           recordSeconds = 0;
@@ -1396,7 +1292,6 @@
       e.target.value = "";
     }
 
-    /* DIRECT JITSI CALL INTEGRATION */
     function initiateVoiceCall() {
       if (currentUserRole === "Mrs. Sudip") {
         db.ref('appState/wifeyActivity/lastCallAttempt').set({
@@ -1409,7 +1304,7 @@
       window.open(exactJitsiUrl, '_blank', 'noopener,noreferrer');
     }
 
-    /* CHAT CORE - INITIAL LATEST 15 & ORDERING */
+    /* CHAT CORE - INITIAL LOAD & FAST INSTANT DUAL-ONLINE SYNC */
     function initializeChatFeed(isRetry = false) {
       const chatContainer = document.getElementById('chat-stream');
       const loaderBar = document.getElementById('history-loader-bar');
@@ -1424,11 +1319,10 @@
       isFetchingOlder = false;
       isInitialLoadComplete = false;
 
-      // Query EXACTLY 15 latest items from DB
       db.ref('appState/chatFeed').limitToLast(15).once('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
-          const keys = Object.keys(val); // In Firebase RTDB, Object.keys is strictly sorted chronologically
+          const keys = Object.keys(val);
           if (keys.length > 0) {
             oldestLoadedKey = keys[0];
             newestLoadedKey = keys[keys.length - 1];
@@ -1439,9 +1333,7 @@
               renderMessageElement(key, msgData, false);
             });
           }
-          if (keys.length < 15) {
-            allOlderLoaded = true;
-          }
+          if (keys.length < 15) allOlderLoaded = true;
         } else {
           allOlderLoaded = true;
         }
@@ -1462,7 +1354,7 @@
       });
     }
 
-    /* CURSOR-BASED HISTORICAL PAGINATION (UPWARD SCROLLING) */
+    /* OPTIMIZED STREAMING ENGINE: PUSH 2 MESSAGES PER SECOND ON SCROLL */
     function fetchOlderHistoryBatch() {
       if (isFetchingOlder || allOlderLoaded || !oldestLoadedKey) return;
       isFetchingOlder = true;
@@ -1470,50 +1362,68 @@
       const loaderBar = document.getElementById('history-loader-bar');
       if (loaderBar) loaderBar.classList.add('active');
 
-      const chatContainer = document.getElementById('chat-stream');
-      const oldScrollHeight = chatContainer.scrollHeight;
-      const oldScrollTop = chatContainer.scrollTop;
-
-      // Query older messages up to current oldest key
       db.ref('appState/chatFeed')
         .orderByKey()
         .endAt(oldestLoadedKey)
-        .limitToLast(21) // 20 older + 1 overlapping cursor key
+        .limitToLast(11) // Fetch batch of 10 older items
         .once('value', (snapshot) => {
           const val = snapshot.val();
           if (val) {
             const keys = Object.keys(val);
             if (keys.length <= 1) {
               allOlderLoaded = true;
+              if (loaderBar) loaderBar.classList.remove('active');
+              isFetchingOlder = false;
             } else {
-              // Exclude the current oldest key overlap
-              keys.pop(); 
+              keys.pop(); // Remove overlapping cursor
               oldestLoadedKey = keys[0];
 
-              // Insert older items above sequentially
-              keys.reverse().forEach(key => {
-                const msgData = val[key];
-                if (!dedupMap.has(key)) {
-                  dedupMap.set(key, msgData);
-                  renderMessageElement(key, msgData, true);
-                }
-              });
-
-              // Preserve scroll position relative to newly inserted height
-              const newScrollHeight = chatContainer.scrollHeight;
-              chatContainer.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
+              // Push fetched items into streaming queue (reversed to process top-down)
+              const batchToQueue = keys.reverse().map(k => ({ key: k, data: val[k] }));
+              memoryStreamQueue.push(...batchToQueue);
+              startMemoryStreaming();
             }
           } else {
             allOlderLoaded = true;
+            if (loaderBar) loaderBar.classList.remove('active');
+            isFetchingOlder = false;
           }
-
-          if (loaderBar) loaderBar.classList.remove('active');
-          isFetchingOlder = false;
         }, (err) => {
           console.error("Error fetching history batch:", err);
           if (loaderBar) loaderBar.classList.remove('active');
           isFetchingOlder = false;
         });
+    }
+
+    function startMemoryStreaming() {
+      if (memoryStreamTimer) return;
+
+      const loaderBar = document.getElementById('history-loader-bar');
+      const chatContainer = document.getElementById('chat-stream');
+
+      // 500ms interval = strictly 2 messages per second
+      memoryStreamTimer = setInterval(() => {
+        if (memoryStreamQueue.length === 0) {
+          clearInterval(memoryStreamTimer);
+          memoryStreamTimer = null;
+          if (loaderBar) loaderBar.classList.remove('active');
+          isFetchingOlder = false;
+          return;
+        }
+
+        const oldScrollHeight = chatContainer.scrollHeight;
+        const oldScrollTop = chatContainer.scrollTop;
+
+        // Render 1 message per tick (2 per second)
+        const item = memoryStreamQueue.shift();
+        if (item && !dedupMap.has(item.key)) {
+          dedupMap.set(item.key, item.data);
+          renderMessageElement(item.key, item.data, true);
+
+          const newScrollHeight = chatContainer.scrollHeight;
+          chatContainer.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
+        }
+      }, 500);
     }
 
     function setupScrollToLoadOlder() {
@@ -1527,7 +1437,7 @@
     }
 
     function attachRealtimeListeners() {
-      // Listen for all incoming real-time messages instantly across users
+      // INSTANT DUAL-ONLINE SYNCHRONIZATION WITHOUT REFRESH
       db.ref('appState/chatFeed').on('child_added', (snapshot) => {
         const key = snapshot.key;
         const msgData = snapshot.val();
@@ -1537,10 +1447,11 @@
           newestLoadedKey = key;
 
           const chatContainer = document.getElementById('chat-stream');
-          const isAtBottom = (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 150;
+          const isAtBottom = (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 180;
 
           renderMessageElement(key, msgData, false);
 
+          // Always auto-scroll if user is near bottom or on initial sync
           if (isAtBottom || isInitialLoadComplete) {
             chatContainer.scrollTop = chatContainer.scrollHeight;
           }
@@ -1684,7 +1595,6 @@
 
     function openDeleteModal(msgKey) { selectedMsgKeyForDelete = msgKey; openModal('delete-msg-modal'); }
 
-    /* PROPER SECURE DELETION SYSTEM */
     async function confirmDeleteMsg(type) {
       if (!selectedMsgKeyForDelete) return;
       const key = selectedMsgKeyForDelete;
@@ -1707,7 +1617,6 @@
       } else if (type === 'me') {
         const el = document.getElementById(`msg-${key}`);
         if (el) el.remove();
-        
         await db.ref(`appState/chatFeed/${key}/deletedFor/${currentUserIdKey}`).set(true);
       }
       closeModal('delete-msg-modal');
